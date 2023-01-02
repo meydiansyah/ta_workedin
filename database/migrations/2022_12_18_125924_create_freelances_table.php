@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('nik')->unique();
             $table->string('nim')->unique();
             $table->unsignedBigInteger('major_id')->index();
-            $table->unsignedBigInteger('kode_pt')->index();
+            $table->string('kode_pt');
             $table->float('rating')->default(0);
 			$table->string('full_address');
             $table->unsignedBigInteger('village_id')->index();

@@ -14,12 +14,13 @@ return new class extends Migration
     public function up()
     {
         Schema::create('universities', function (Blueprint $table) {
-            $table->bigIncrements('kodept');
+            // $table->bigIncrements('id');
+			$table->string('kodept', 10)->primary();
 			$table->string('name')->unique();
 			$table->string('email')->unique();
 			$table->string('phone')->unique();
 			$table->string('fax')->unique();
-			$table->string('logo')->unique();
+			$table->string('logo')->nullable();
 			$table->string('url')->unique();
 			$table->string('full_address');
             $table->unsignedBigInteger('village_id')->index();

@@ -12,7 +12,7 @@ const Navbar = () => {
         useState(false);
 
     return (
-        <nav className="fixed top-0 w-full bg-white border-b border-gray-100">
+        <nav className="fixed top-0 w-full bg-white border-b border-gray-100 z-50">
             <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div className="flex justify-between h-16">
                     <div className="flex">
@@ -25,8 +25,8 @@ const Navbar = () => {
 
                     <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                         <NavLink
-                            href={route("home")}
-                            active={route().current("home")}
+                            href={route("admin.university")}
+                            active={route().current("admin.university") || route().current("university.edit") || route().current("university.create")}
                         >
                             University
                         </NavLink>

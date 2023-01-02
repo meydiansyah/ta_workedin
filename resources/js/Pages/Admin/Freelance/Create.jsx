@@ -68,7 +68,7 @@ export default function FreelanceCreate({ universities }) {
                                     </span>
                                 </div>
 
-                                <Link className="font-bold">Periksa</Link>
+                                <Link href={route("university.create")} className="font-bold">Periksa</Link>
                             </div>
                         </div>
                     )}

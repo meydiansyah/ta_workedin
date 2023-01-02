@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\FreelanceController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UniversityController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -45,6 +46,16 @@ Route::middleware(['auth', 'checkRole:Admin'])->group(function () {
 	Route::get('/admin/freelance/edit', [FreelanceController::class, 'edit'])->name('freelance.edit');
 	Route::patch('/admin/freelance', [FreelanceController::class, 'update'])->name('freelance.update');
 	Route::delete('/admin/freelance', [FreelanceController::class, 'destroy'])->name('freelance.destroy');
+});
+
+Route::get('/university', [UniversityController::class, 'index'])->name('university');
+Route::middleware(['auth', 'checkRole:Admin'])->group(function () {
+	Route::get('/admin/university', [UniversityController::class, 'index'])->name('admin.university');
+	Route::get('/admin/university/create', [UniversityController::class, 'create'])->name('university.create');
+	Route::patch('/admin/university/create', [UniversityController::class, 'store'])->name('university.store');
+	Route::get('/admin/university/edit', [UniversityController::class, 'edit'])->name('university.edit');
+	Route::patch('/admin/university', [UniversityController::class, 'update'])->name('university.update');
+	Route::delete('/admin/university', [UniversityController::class, 'destroy'])->name('university.destroy');
 });
 
 
