@@ -27,7 +27,6 @@ class UserSeeder extends Seeder
             'remember_token'    => null,
             'role_id'           => 1,
             'status_id'         => 1,
-            'full_address'      => null,
 			'profile_photo_url' => null,
         ]);
     }

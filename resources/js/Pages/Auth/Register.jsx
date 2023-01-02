@@ -1,37 +1,86 @@
-import { useEffect } from 'react';
-import GuestLayout from '@/Layouts/GuestLayout';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import { Head, Link, useForm } from '@inertiajs/inertia-react';
+import { useEffect, useState } from "react";
+import GuestLayout from "@/Layouts/GuestLayout";
+import InputError from "@/Components/InputError";
+import InputLabel from "@/Components/InputLabel";
+import PrimaryButton from "@/Components/PrimaryButton";
+import TextInput from "@/Components/TextInput";
+import { Head, Link, useForm } from "@inertiajs/inertia-react";
 
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm({
-        name: '',
-        email: '',
-        password: '',
-        password_confirmation: '',
+        name: "",
+        email: "",
+        password: "",
+        password_confirmation: "",
     });
+
+    const [freelance, setFreelance] = useState(true);
+    const [client, setClient] = useState(false);
 
     useEffect(() => {
         return () => {
-            reset('password', 'password_confirmation');
+            reset("password", "password_confirmation");
         };
     }, []);
 
     const onHandleChange = (event) => {
-        setData(event.target.name, event.target.type === 'checkbox' ? event.target.checked : event.target.value);
+        console.log(freelance);
+        setData(
+            event.target.name,
+            event.target.type === "checkbox"
+                ? event.target.checked
+                : event.target.value
+        );
     };
 
     const submit = (e) => {
         e.preventDefault();
 
-        post(route('register'));
+        post(route("register"));
     };
 
+    const clickFreelance = (e) => {
+        console.log("setFreelance");
+        setFreelance(true);
+        setClient(false);
+    };
+
+    const clickClient = (e) => {
+        setFreelance(false);
+        setClient(true);
+    };
     return (
-        <GuestLayout>
+        <GuestLayout
+            head={
+                <div>
+                    <p className="mt-1 text-md text-center text-black mb-4">
+                        Daftarkan sebagai :
+                    </p>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div
+                            className={`${
+                                freelance
+                                    ? "bg-white shadow-md border-transparent hover:bg-transparent"
+                                    : "bg-transparent border-[#2C7E5B]"
+                            } text-center rounded-lg px-12 py-2 border-2  hover:cursor-pointer hover:opacity-90`}
+                            onClick={clickFreelance}
+                        >
+                            <h2>Freelancer</h2>
+                        </div>
+                        <div
+                            className={`${
+                                client
+                                    ? "bg-white shadow-md border-transparent hover:bg-transparent"
+                                    : "bg-transparent border-[#2C7E5B]"
+                            } text-center rounded-lg px-12 py-2 border-2  hover:cursor-pointer hover:opacity-90`}
+                            onClick={clickClient}
+                        >
+                            <h2>Client</h2>
+                        </div>
+                    </div>
+                </div>
+            }
+        >
             <Head title="Register" />
 
             <form onSubmit={submit}>
@@ -42,7 +91,7 @@ export default function Register() {
                         id="name"
                         name="name"
                         value={data.name}
-                        className="mt-1 block w-full"
+                        className="block w-full mt-1"
                         autoComplete="name"
                         isFocused={true}
                         handleChange={onHandleChange}
@@ -60,7 +109,7 @@ export default function Register() {
                         type="email"
                         name="email"
                         value={data.email}
-                        className="mt-1 block w-full"
+                        className="block w-full mt-1"
                         autoComplete="username"
                         handleChange={onHandleChange}
                         required
@@ -77,7 +126,7 @@ export default function Register() {
                         type="password"
                         name="password"
                         value={data.password}
-                        className="mt-1 block w-full"
+                        className="block w-full mt-1"
                         autoComplete="new-password"
                         handleChange={onHandleChange}
                         required
@@ -87,25 +136,31 @@ export default function Register() {
                 </div>
 
                 <div className="mt-4">
-                    <InputLabel forInput="password_confirmation" value="Confirm Password" />
+                    <InputLabel
+                        forInput="password_confirmation"
+                        value="Confirm Password"
+                    />
 
                     <TextInput
                         id="password_confirmation"
                         type="password"
                         name="password_confirmation"
                         value={data.password_confirmation}
-                        className="mt-1 block w-full"
+                        className="block w-full mt-1"
                         handleChange={onHandleChange}
                         required
                     />
 
-                    <InputError message={errors.password_confirmation} className="mt-2" />
+                    <InputError
+                        message={errors.password_confirmation}
+                        className="mt-2"
+                    />
                 </div>
 
                 <div className="flex items-center justify-end mt-4">
                     <Link
-                        href={route('login')}
-                        className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        href={route("login")}
+                        className="text-sm text-gray-600 underline hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     >
                         Already registered?
                     </Link>

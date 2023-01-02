@@ -15,11 +15,11 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
 			$table->unsignedBigInteger('role_id')
-					->after('password')
+					->after('password')->default('2')
 					->index();
 
 			$table->unsignedBigInteger('status_id')
-					->after('role_id')
+					->after('role_id')->default('2')
 					->index();
 
 			$table->foreign('status_id')
