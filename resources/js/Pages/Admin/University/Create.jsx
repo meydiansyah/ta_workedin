@@ -292,16 +292,22 @@ export default function UniversityCreate({ provinces, cities, districts }) {
                                     />
 
                                     <select
-                                        id="countries"
+                                        id="provinceId"
+                                        name="provinceId"
                                         class="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                        onChange={(val) =>
-                                            setProvince(val.target.value)
-                                        }
+                                        onChange={(val) => {
+                                            setData(
+                                                "provinceId",
+                                                val.target.value
+                                            );
+                                            setProvince(val.target.value);
+                                            console.log(val.target.value);
+                                        }}
                                     >
                                         <option selected>Pilih provinsi</option>
 
                                         {provinces.map((item) => (
-                                            <option value={item.code}>
+                                            <option value={item.name}>
                                                 {item.name}
                                             </option>
                                         ))}
@@ -313,28 +319,28 @@ export default function UniversityCreate({ provinces, cities, districts }) {
                                     />
                                 </div>
 
-                                {province && (
+                                {cities && (
                                     <div>
-                                        {province}
+                                        {province.data}
                                         {/* <InputLabel for="cityId" value="Kota" /> */}
-
-                                        {/* <select
-                                            id="countries"
-                                            class="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            onChange={(val) => setCity(val)}
-                                        >
-                                            <option selected>Pilih kota</option>
-                                            {cities.cities.map((item) => (
-                                                <option value={item.name}>
-                                                    {item.name}
-                                                </option>
-                                            ))}
-                                        </select> */}
-
-                                        <InputError
-                                            className="mt-2"
-                                            message={errors.cityId}
-                                        />
+                                        {/*  */}
+                                        {/* <select */}
+                                        {/*     id="countries" */}
+                                        {/*     class="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" */}
+                                        {/*     onChange={(val) => setCity(val)} */}
+                                        {/* > */}
+                                        {/*     <option selected>Pilih kota</option> */}
+                                        {/*     {province.cities.map((item) => ( */}
+                                        {/*         <option value={item.name}> */}
+                                        {/*             {item.name} */}
+                                        {/*         </option> */}
+                                        {/*     ))} */}
+                                        {/* </select> */}
+                                        {/*  */}
+                                        {/* <InputError */}
+                                        {/*     className="mt-2" */}
+                                        {/*     message={errors.cityId} */}
+                                        {/* /> */}
                                     </div>
                                 )}
                             </div>
