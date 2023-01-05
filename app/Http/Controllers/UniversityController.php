@@ -126,3 +126,4 @@ class UniversityController extends Controller
 		//
 	}
 }
+
