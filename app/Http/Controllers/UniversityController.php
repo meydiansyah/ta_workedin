@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\University;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Laravolt\Indonesia\Models\Province;
 
@@ -16,8 +17,12 @@ class UniversityController extends Controller
 	 */
 	public function index()
 	{
-		return Inertia::render('Admin/University/Index');
-	}
+        if(Auth::user()) {
+            return Inertia::render('Admin/University/Index');
+        } else {
+            return Inertia::render('University/Index');
+        }
+    }
 
 	/**
 	 * Show the form for creating a new resource.
@@ -47,38 +52,38 @@ class UniversityController extends Controller
 			'phone' => 'required|string|max:255|min:1|unique:universities',
 			'fax' => 'required|string|max:255|min:1|unique:universities',
 			'url' => 'required|string|max:255|min:1|unique:universities',
-			'fullAddress' => 'required',
-			'provinceId' => 'required',
-			'cityId' => 'required',
-			'districtId' => 'required',
-			'villageId' => 'required',
-			'logo' => 'image|file|max:10240',
+			'full_address' => 'required|string',
+			'province_id' => 'required|numeric',
+			'city_id' => 'required|numeric',
+			'district_id' => 'required|numeric',
+			'village_id' => 'required|numeric',
+			// 'logo' => 'image|file|max:10240',
 
 		]);
 
-		if ($request->file('logo')) {
-			$validateData['logo'] = $request->file('logo')->store('logo-university');
-		}
+		// if ($request->file('logo')) {
+		// 	$validateData['logo'] = $request->file('logo')->store('logo-university');
+		// }
 
-		University::create($validateData);
+		$un = University::create($validateData);
+        // dd($un->kodept);
 
-		// University::create([
-		// 	'kodept' => $request->get('kodept'),
-		// 	'name' => $request->get('name'),
-		// 	'email' => $request->get('email'),
-		// 	'phone' => $request->get('phone'),
-		// 	'fax' => $request->get('fax'),
-		// 	'url' => $request->get('url'),
-		// 	'full_address' => $request->get('fullAddress'),
-		// 	'province_id' => $request->get('provinceId'),
-		// 	'city_id' => $request->get('cityId'),
-		// 	'district_id' => $request->get('districtId'),
-		// 	'village_id' => $request->get('villageId'),
-		// 	// 'photo_path' => Request::file('photo') ? Request::file('photo')->store('users') : null,
-		// ]);
+        return redirect()->route('university.createMajor', [
+            'id' => $un->kodept
+        ]);
 
-		return redirect()->route('admin.university')->with('success', 'User created.');
+		// return redirect()->route('admin.university')->with('success', 'User created.');
 	}
+
+    public function createMajor(Request $request) {
+        return Inertia::render('Admin/University/CreateMajor', [
+            'id'=> $request->get('id')
+        ]);
+    }
+
+    public function storeMajor(Request $requst) {
+
+    }
 
 
 	/**

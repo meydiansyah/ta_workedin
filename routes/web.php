@@ -39,6 +39,8 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/freelances', [FreelanceController::class, 'index'])->name('freelance');
+Route::get('/university', [UniversityController::class, 'index'])->name('university');
+
 Route::middleware(['auth', 'checkRole:Admin'])->group(function () {
 	Route::get('/admin/freelances', [FreelanceController::class, 'index'])->name('admin.freelance');
 	Route::get('/admin/freelance/create', [FreelanceController::class, 'create'])->name('freelance.create');
@@ -46,17 +48,18 @@ Route::middleware(['auth', 'checkRole:Admin'])->group(function () {
 	Route::get('/admin/freelance/edit', [FreelanceController::class, 'edit'])->name('freelance.edit');
 	Route::patch('/admin/freelance', [FreelanceController::class, 'update'])->name('freelance.update');
 	Route::delete('/admin/freelance', [FreelanceController::class, 'destroy'])->name('freelance.destroy');
-});
 
-Route::get('/university', [UniversityController::class, 'index'])->name('university');
-Route::middleware(['auth', 'checkRole:Admin'])->group(function () {
 	Route::get('/admin/university', [UniversityController::class, 'index'])->name('admin.university');
 	Route::get('/admin/university/create', [UniversityController::class, 'create'])->name('university.create');
+	Route::get('/admin/university/major/create', [UniversityController::class, 'createMajor'])->name('university.createMajor');
+	Route::patch('/admin/university/major/create', [UniversityController::class, 'storeMajor'])->name('university.storeMajor');
 	Route::patch('/admin/university/create', [UniversityController::class, 'store'])->name('university.store');
 	Route::get('/admin/university/edit', [UniversityController::class, 'edit'])->name('university.edit');
 	Route::patch('/admin/university', [UniversityController::class, 'update'])->name('university.update');
 	Route::delete('/admin/university', [UniversityController::class, 'destroy'])->name('university.destroy');
+
 });
+
 
 
 require __DIR__ . '/auth.php';

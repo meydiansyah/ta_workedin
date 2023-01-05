@@ -24,7 +24,7 @@ return new class extends Migration
 			$table->text('bio')->nullable();
             $table->string('nik')->unique();
             $table->string('nim')->unique();
-            $table->unsignedBigInteger('major_id')->index();
+            $table->string('kode_major');
             $table->string('kode_pt');
             $table->float('rating')->default(0);
 			$table->string('full_address');
@@ -68,6 +68,12 @@ return new class extends Migration
 			$table->foreign('kode_pt')
 					 ->references('kodept')
 					 ->on('universities')
+					 ->onUpdate('cascade')
+					 ->onDelete('cascade');
+
+            $table->foreign('kode_major')
+					 ->references('kode')
+					 ->on('majors')
 					 ->onUpdate('cascade')
 					 ->onDelete('cascade');
         });

@@ -24,40 +24,60 @@ const Navbar = () => {
                     </div>
 
                     <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                        <NavLink
-                            href={route("admin.university")}
-                            active={route().current("admin.university") || route().current("university.edit") || route().current("university.create")}
-                        >
-                            University
-                        </NavLink>
-                        <NavLink
-                            href={route("dashboard")}
-                            active={route().current("dashboard")}
-                        >
-                            Jobs
-                        </NavLink>
-                        {is_admin ? (
-                            <NavLink
-                                href={route("admin.freelance")}
-                                active={
-                                    route().current("admin.freelance") ||
-                                    route().current("freelance.create") ||
-                                    route().current("freelance.edit")
-                                }
-                            >
-                                Freelances
-                            </NavLink>
+                        {user !== null && is_admin ? (
+                            <>
+                                <NavLink
+                                    href={route("admin.university")}
+                                    active={
+                                        route().current("admin.university") ||
+                                        route().current("university.edit") ||
+                                        route().current("university.create")
+                                    }
+                                >
+                                    University
+                                </NavLink>
+                                <NavLink
+                                    href={route("dashboard")}
+                                    active={route().current("dashboard")}
+                                >
+                                    Jobs
+                                </NavLink>
+                                <NavLink
+                                    href={route("admin.freelance")}
+                                    active={
+                                        route().current("admin.freelance") ||
+                                        route().current("freelance.create") ||
+                                        route().current("freelance.edit")
+                                    }
+                                >
+                                    Freelances
+                                </NavLink>
+                            </>
                         ) : (
-                            <NavLink
-                                href={route("dashboard")}
-                                active={route().current("dashboard")}
-                            >
-                                Freelances
-                            </NavLink>
+                            <>
+                                <NavLink
+                                    href={route("university")}
+                                    active={route().current("university")}
+                                >
+                                    University
+                                </NavLink>
+                                <NavLink
+                                    href={route("dashboard")}
+                                    active={route().current("dashboard")}
+                                >
+                                    Jobs
+                                </NavLink>
+                                <NavLink
+                                    href={route("freelance")}
+                                    active={route().current("freelances")}
+                                >
+                                    Freelances
+                                </NavLink>
+                            </>
                         )}
                     </div>
 
-                    {user == null ? (
+                    {user === null ? (
                         <div className="flex">
                             <Link
                                 href={route("register")}

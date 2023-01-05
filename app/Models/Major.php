@@ -10,6 +10,7 @@ class Major extends Model
 	use HasFactory;
 
 	protected $fillable = [
+		'kode',
 		'name',
 		'faculty_id',
 	];
