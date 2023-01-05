@@ -3,35 +3,45 @@ import InputLabel from "@/Components/InputLabel";
 import PrimaryButton from "@/Components/PrimaryButton";
 import TextInput from "@/Components/TextInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Transition } from "@headlessui/react";
-import { Head, Link, useForm, usePage } from "@inertiajs/inertia-react";
+import { Head, Link, useForm } from "@inertiajs/inertia-react";
+import axios from "axios";
 import { useState } from "react";
-import { BiInfoCircle } from "react-icons/bi";
+import ImageUploading from "react-images-uploading";
 
-export default function UniversityCreate({ provinces, cities, districts }) {
-    const { data, setData, patch, errors, processing, recentlySuccessful } =
-        useForm({
-            kodept: "",
-            name: "",
-            email: "",
-            phone: "",
-            fax: "",
-            logo: "",
-            url: "",
-            fullAddress: "",
-            // villageId: 2,
-            districtId: "",
-            cityId: "",
-            provinceId: "",
-        });
-
-    const [province, setProvince] = useState(null);
+export default function UniversityCreate({ provinces }) {
+    const [images, setImages] = useState([]);
+    const maxNumber = 69;
     const [city, setCity] = useState(null);
     const [district, setDistrict] = useState(null);
+    const [village, setVillage] = useState(null);
+
+    const onChange = (imageList, addUpdateIndex) => {
+        // data for submit
+        console.log(imageList, addUpdateIndex);
+        setImages(imageList);
+        setData("logo", images[0].data_url);
+        console.log(data.logo);
+    };
+
+    const { data, setData, patch, errors, processing } = useForm({
+        kodept: "",
+        name: "",
+        email: "",
+        phone: "",
+        fax: "",
+        logo: null,
+        url: "",
+        fullAddress: "",
+        villageId: "",
+        districtId: "",
+        cityId: "",
+        provinceId: "",
+    });
 
     const submit = (e) => {
         e.preventDefault();
 
+        // console.log(data);
         patch(route("university.store"));
     };
 
@@ -41,9 +51,12 @@ export default function UniversityCreate({ provinces, cities, districts }) {
                 header={
                     <div className="flex justify-between">
                         <div className="flex">
-                            <h2 className="text-xl leading-tight text-gray-800">
+                            <Link
+                                href={route("admin.university")}
+                                className="text-xl leading-tight text-gray-800"
+                            >
                                 University {" / "}
-                            </h2>
+                            </Link>
                             <h2 className="text-xl font-semibold leading-tight text-gray-800">
                                 Create
                             </h2>
@@ -55,14 +68,6 @@ export default function UniversityCreate({ provinces, cities, districts }) {
                             >
                                 Cancel
                             </Link>
-                            {/* <Link
-                        type="submit"
-                            // href={route("admin.freelance")}
-                            className="inline-flex items-center px-4 py-2 ml-4 text-xs font-bold tracking-widest text-white uppercase bg-blue-600 border border-transparent rounded-md hover:bg-gray focus:bg-gray active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-gray focus:ring-offset-2 transition ease-in-out duration-150"
-                        >
-                            Save
-                        </Link> */}
-
                             <PrimaryButton className="ml-4">Save</PrimaryButton>
                         </div>
                     </div>
@@ -72,14 +77,14 @@ export default function UniversityCreate({ provinces, cities, districts }) {
 
                 <div className="py-12">
                     <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                        <div className="p-4 bg-white max-w-2xl mx-auto shadow sm:p-8 sm:rounded-lg">
+                        <div className="max-w-2xl p-4 mx-auto bg-white shadow sm:p-8 sm:rounded-lg">
                             <header>
                                 <h2 className="text-lg font-medium text-gray-900">
-                                    University Information
+                                    Informasi Universitas
                                 </h2>
 
                                 <p className="mt-1 text-sm text-gray-600">
-                                    Create detail university data from{" "}
+                                    Pastikan data sesuai dengan :{" "}
                                     <Link
                                         href="https://pddikti.kemdikbud.go.id"
                                         className="text-blue-500 underline"
@@ -89,6 +94,84 @@ export default function UniversityCreate({ provinces, cities, districts }) {
                                 </p>
                             </header>
                             <div className="mt-6 space-y-6">
+                                <ImageUploading
+                                    multiple
+                                    value={images}
+                                    onChange={onChange}
+                                    maxNumber={maxNumber}
+                                    dataURLKey="data_url"
+                                >
+                                    {({
+                                        imageList,
+                                        onImageUpload,
+                                        onImageRemoveAll,
+                                        onImageUpdate,
+                                        onImageRemove,
+                                        isDragging,
+                                        dragProps,
+                                    }) => (
+                                        // write your building UI
+                                        <div>
+                                            <div className="flex justify-center">
+                                                {imageList.map(
+                                                    (image, index) => (
+                                                        <div className="flex">
+                                                            <img
+                                                                key={index}
+                                                                src={
+                                                                    image[
+                                                                        "data_url"
+                                                                    ]
+                                                                }
+                                                                className="w-32 h-32 rounded-md ring-2 ring-gray-300"
+                                                                alt=""
+                                                            />
+                                                            <div className="image-item__btn-wrapper">
+                                                                <button
+                                                                    onClick={() =>
+                                                                        onImageUpdate(
+                                                                            index
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    Update
+                                                                </button>
+                                                                <button
+                                                                    onClick={() =>
+                                                                        onImageRemove(
+                                                                            index
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    Remove
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    )
+                                                )}
+                                            </div>
+                                            <div className="upload__image-wrapper flex justify-between">
+                                                <button
+                                                    style={
+                                                        isDragging
+                                                            ? { color: "red" }
+                                                            : undefined
+                                                    }
+                                                    onClick={onImageUpload}
+                                                    {...dragProps}
+                                                >
+                                                    Click or Drop here
+                                                </button>
+                                                &nbsp;
+                                                <button
+                                                    onClick={onImageRemoveAll}
+                                                >
+                                                    Remove all images
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
+                                </ImageUploading>
                                 <div>
                                     <InputLabel for="kodept" value="Kode PT" />
 
@@ -202,13 +285,14 @@ export default function UniversityCreate({ provinces, cities, districts }) {
                                         </span>{" "}
                                     </InputLabel>
 
-                                    <TextInput
+                                    <input
                                         id="logo"
-                                        className="block w-full mt-1"
-                                        value={data.logo}
-                                        handleChange={(e) =>
-                                            setData("logo", e.target.value)
-                                        }
+                                        type="file"
+                                        accept="image/png"
+                                        className="mt-1 form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                                        onChange={(e) => {
+                                            setData("logo", e.target.files[0]);
+                                        }}
                                         autoComplete="logo"
                                     />
 
@@ -219,12 +303,7 @@ export default function UniversityCreate({ provinces, cities, districts }) {
                                 </div>
 
                                 <div>
-                                    <InputLabel for="url">
-                                        Url{" "}
-                                        <span className="inline-block text-sm text-gray-600">
-                                            (optional)
-                                        </span>{" "}
-                                    </InputLabel>
+                                    <InputLabel for="url" value="Url" />
 
                                     <TextInput
                                         id="url"
@@ -234,6 +313,7 @@ export default function UniversityCreate({ provinces, cities, districts }) {
                                         handleChange={(e) =>
                                             setData("url", e.target.value)
                                         }
+                                        required
                                         autoComplete="url"
                                     />
 
@@ -244,8 +324,7 @@ export default function UniversityCreate({ provinces, cities, districts }) {
                                 </div>
                             </div>
                         </div>
-
-                        <div className="p-4 my-12 bg-white max-w-2xl mx-auto shadow sm:p-8 sm:rounded-lg">
+                        <div className="max-w-2xl p-4 mx-auto my-12 bg-white shadow sm:p-8 sm:rounded-lg">
                             <header>
                                 <h2 className="text-lg font-medium text-gray-900">
                                     Detail alamat
@@ -269,6 +348,7 @@ export default function UniversityCreate({ provinces, cities, districts }) {
                                     />
 
                                     <textarea
+                                        id="fullAddress"
                                         className="block w-full mt-1 border-gray-300 focus:border-[#2C7E5B] focus:ring-[#2C7E5B] rounded-md shadow-sm"
                                         value={data.fullAddress}
                                         onChange={(e) =>
@@ -285,6 +365,15 @@ export default function UniversityCreate({ provinces, cities, districts }) {
                                     />
                                 </div>
 
+                                {/* <div> */}
+                                {/*     <Select */}
+                                {/*         classNamePrefix="select" */}
+                                {/*         defaultValue={provinces[0].name} */}
+                                {/*         name="provinceId" */}
+                                {/*         options={provinces.map((name) => name)} */}
+                                {/*     /> */}
+                                {/* </div> */}
+
                                 <div>
                                     <InputLabel
                                         for="provinceId"
@@ -293,21 +382,39 @@ export default function UniversityCreate({ provinces, cities, districts }) {
 
                                     <select
                                         id="provinceId"
-                                        name="provinceId"
-                                        class="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        defaultValue="pilih"
                                         onChange={(val) => {
-                                            setData(
-                                                "provinceId",
-                                                val.target.value
-                                            );
-                                            setProvince(val.target.value);
-                                            console.log(val.target.value);
+                                            if (val.target.value !== "pilih") {
+                                                setData(
+                                                    "provinceId",
+                                                    val.target.value
+                                                );
+                                                axios
+                                                    .get(route("cities"), {
+                                                        params: {
+                                                            id: val.target
+                                                                .value,
+                                                        },
+                                                    })
+                                                    .then((res) => {
+                                                        setCity(res.data);
+                                                    });
+                                            } else {
+                                                setCity(null);
+                                                setDistrict(null);
+                                            }
                                         }}
                                     >
-                                        <option selected>Pilih provinsi</option>
+                                        <option value="pilih">
+                                            Pilih provinsi
+                                        </option>
 
                                         {provinces.map((item) => (
-                                            <option value={item.name}>
+                                            <option
+                                                key={item.id}
+                                                value={item.id}
+                                            >
                                                 {item.name}
                                             </option>
                                         ))}
@@ -319,28 +426,166 @@ export default function UniversityCreate({ provinces, cities, districts }) {
                                     />
                                 </div>
 
-                                {cities && (
+                                {city && (
                                     <div>
-                                        {province.data}
-                                        {/* <InputLabel for="cityId" value="Kota" /> */}
-                                        {/*  */}
-                                        {/* <select */}
-                                        {/*     id="countries" */}
-                                        {/*     class="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" */}
-                                        {/*     onChange={(val) => setCity(val)} */}
-                                        {/* > */}
-                                        {/*     <option selected>Pilih kota</option> */}
-                                        {/*     {province.cities.map((item) => ( */}
-                                        {/*         <option value={item.name}> */}
-                                        {/*             {item.name} */}
-                                        {/*         </option> */}
-                                        {/*     ))} */}
-                                        {/* </select> */}
-                                        {/*  */}
-                                        {/* <InputError */}
-                                        {/*     className="mt-2" */}
-                                        {/*     message={errors.cityId} */}
-                                        {/* /> */}
+                                        <InputLabel
+                                            for="cityId"
+                                            value="Kabupaten / Kota"
+                                        />
+
+                                        <select
+                                            id="cityId"
+                                            className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            defaultValue="pilih"
+                                            onChange={(val) => {
+                                                if (
+                                                    val.target.value !== "pilih"
+                                                ) {
+                                                    setData(
+                                                        "cityId",
+                                                        val.target.value
+                                                    );
+                                                    axios
+                                                        .get(
+                                                            route("districts"),
+                                                            {
+                                                                params: {
+                                                                    id: val
+                                                                        .target
+                                                                        .value,
+                                                                },
+                                                            }
+                                                        )
+                                                        .then((res) => {
+                                                            setDistrict(
+                                                                res.data
+                                                            );
+                                                        });
+                                                } else {
+                                                    setDistrict(null);
+                                                }
+                                            }}
+                                        >
+                                            <option value="pilih">
+                                                Pilih kota
+                                            </option>
+                                            {city.map(({ name, id }) => (
+                                                <option value={id} key={id}>
+                                                    {name}
+                                                </option>
+                                            ))}
+                                        </select>
+
+                                        <InputError
+                                            className="mt-2"
+                                            message={errors.cityId}
+                                        />
+                                    </div>
+                                )}
+
+                                {district && (
+                                    <div>
+                                        <InputLabel
+                                            for="districtId"
+                                            value="Kecamatan"
+                                        />
+
+                                        <select
+                                            id="districtId"
+                                            className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            defaultValue="pilih"
+                                            onChange={(val) => {
+                                                if (
+                                                    val.target.value !== "pilih"
+                                                ) {
+                                                    setData(
+                                                        "districtId",
+                                                        val.target.value
+                                                    );
+                                                    axios
+                                                        .get(
+                                                            route("villages"),
+                                                            {
+                                                                params: {
+                                                                    id: val
+                                                                        .target
+                                                                        .value,
+                                                                },
+                                                            }
+                                                        )
+                                                        .then((res) => {
+                                                            setVillage(
+                                                                res.data
+                                                            );
+                                                        });
+                                                } else {
+                                                    setDistrict(null);
+                                                }
+                                            }}
+                                        >
+                                            <option value="pilih">
+                                                Pilih Kecamatan
+                                            </option>
+                                            {district.map(({ name, id }) => (
+                                                <option
+                                                    id={id}
+                                                    value={id}
+                                                    key={id}
+                                                >
+                                                    {name}
+                                                </option>
+                                            ))}
+                                        </select>
+
+                                        <InputError
+                                            className="mt-2"
+                                            message={errors.cityId}
+                                        />
+                                    </div>
+                                )}
+
+                                {village && (
+                                    <div>
+                                        <InputLabel
+                                            for="villageId"
+                                            value="Kecamatan"
+                                        />
+
+                                        <select
+                                            id="villageId"
+                                            className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            defaultValue="pilih"
+                                            onChange={(val) => {
+                                                if (
+                                                    val.target.value !== "pilih"
+                                                ) {
+                                                    setData(
+                                                        "villageId",
+                                                        val.target.value
+                                                    );
+                                                } else {
+                                                    setVillage(null);
+                                                }
+                                            }}
+                                        >
+                                            <option value="pilih">
+                                                Pilih Kecamatan
+                                            </option>
+                                            {village.map(({ name, id }) => (
+                                                <option
+                                                    id={id}
+                                                    value={id}
+                                                    key={id}
+                                                >
+                                                    {name}
+                                                </option>
+                                            ))}
+                                        </select>
+
+                                        <InputError
+                                            className="mt-2"
+                                            message={errors.villageId}
+                                        />
                                     </div>
                                 )}
                             </div>

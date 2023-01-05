@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\University;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Request as rq;
-// use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
-use Laravolt\Indonesia\Models\City;
-use Laravolt\Indonesia\Models\District;
 use Laravolt\Indonesia\Models\Province;
 
 class UniversityController extends Controller
@@ -29,18 +26,9 @@ class UniversityController extends Controller
 	 */
 	public function create()
 	{
-		$province = \Indonesia::allProvinces(['cities']);
-		$provinceId = rq::only('provinceId');
-		// $city = \Indonesia::findCity(11);
-		// $city = City::where('province', '=', $provinceId)->get();
-		$city = City::all();
-		$district = District::all();
-		dd(City()->province);
+		$province = Province::all();
 		return Inertia::render('Admin/University/Create', [
-			'provinces' => $province,
-			'cities' => $city,
-			'districts' => $district,
-			// 'provinceId' => $provinceId,
+			'provinces' => $province
 		]);
 	}
 
@@ -52,33 +40,46 @@ class UniversityController extends Controller
 	 */
 	public function store(Request $request)
 	{
-		// $rules = array(
+		$validateData = $request->validate([
+			'kodept' => 'required|string|max:255|min:1|unique:universities',
+			'name' => 'required|string|max:255|min:1|unique:universities',
+			'email' => 'required|string|max:255|min:1|unique:universities',
+			'phone' => 'required|string|max:255|min:1|unique:universities',
+			'fax' => 'required|string|max:255|min:1|unique:universities',
+			'url' => 'required|string|max:255|min:1|unique:universities',
+			'fullAddress' => 'required',
+			'provinceId' => 'required',
+			'cityId' => 'required',
+			'districtId' => 'required',
+			'villageId' => 'required',
+			'logo' => 'image|file|max:10240',
 
-		// );
-		// Validator::make($request->input(), $rules);
-
-		// $request->validate([
-		//     'kodept' => ['required', 'string', 'max:255'],
-		//     'name' => ['required', 'string', 'name', 'max:255', 'unique:universities'],
-		//     'email' => ['required', 'string', 'email', 'max:255', 'unique:universities'],
-		//     'phone' => ['required', 'string', 'phone', 'max:255', 'unique:universities'],
-		//     'fax' => ['required', 'string', 'fax', 'max:255', 'unique:universities'],
-		//     'logo' => ['string', 'logo', 'max:255', 'unique:universities'],
-		//     'url' => ['string', 'url', 'max:255', 'unique:universities'],
-		//     'fullAddress' => ['string', 'full_address', 'max:255', 'unique:universities'],
-
-		// ]);
-
-		$request->validate([
-			'kodept' => 'required|string|max:255|min:1',
-			'name' => 'required|string|max:255|min:1',
-			'email' => 'required|string|max:255|min:1',
-			'phone' => 'required|string|max:255|min:1',
-			'fax' => 'required|string|max:255|min:1'
 		]);
 
-		dd($request);
+		if ($request->file('logo')) {
+			$validateData['logo'] = $request->file('logo')->store('logo-university');
+		}
+
+		University::create($validateData);
+
+		// University::create([
+		// 	'kodept' => $request->get('kodept'),
+		// 	'name' => $request->get('name'),
+		// 	'email' => $request->get('email'),
+		// 	'phone' => $request->get('phone'),
+		// 	'fax' => $request->get('fax'),
+		// 	'url' => $request->get('url'),
+		// 	'full_address' => $request->get('fullAddress'),
+		// 	'province_id' => $request->get('provinceId'),
+		// 	'city_id' => $request->get('cityId'),
+		// 	'district_id' => $request->get('districtId'),
+		// 	'village_id' => $request->get('villageId'),
+		// 	// 'photo_path' => Request::file('photo') ? Request::file('photo')->store('users') : null,
+		// ]);
+
+		return redirect()->route('admin.university')->with('success', 'User created.');
 	}
+
 
 	/**
 	 * Display the specified resource.
