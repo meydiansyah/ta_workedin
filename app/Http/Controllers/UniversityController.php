@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Major;
 use App\Models\University;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,12 +18,12 @@ class UniversityController extends Controller
 	 */
 	public function index()
 	{
-        if(Auth::user()) {
-            return Inertia::render('Admin/University/Index');
-        } else {
-            return Inertia::render('University/Index');
-        }
-    }
+		if (Auth::user()) {
+			return Inertia::render('Admin/University/Index');
+		} else {
+			return Inertia::render('University/Index');
+		}
+	}
 
 	/**
 	 * Show the form for creating a new resource.
@@ -46,7 +47,7 @@ class UniversityController extends Controller
 	public function store(Request $request)
 	{
 		$validateData = $request->validate([
-			'kodept' => 'required|string|max:255|min:1|unique:universities',
+			'codept' => 'required|string|max:255|min:1|unique:universities',
 			'name' => 'required|string|max:255|min:1|unique:universities',
 			'email' => 'required|string|max:255|min:1|unique:universities',
 			'phone' => 'required|string|max:255|min:1|unique:universities',
@@ -61,29 +62,31 @@ class UniversityController extends Controller
 
 		]);
 
-		// if ($request->file('logo')) {
-		// 	$validateData['logo'] = $request->file('logo')->store('logo-university');
-		// }
-
-		$un = University::create($validateData);
-        // dd($un->kodept);
-
-        return redirect()->route('university.createMajor', [
-            'id' => $un->kodept
-        ]);
-
-		// return redirect()->route('admin.university')->with('success', 'User created.');
+			return Inertia::render('Admin/University/CreateMajor', [
+				'validateData' => $validateData
+			]);
+		
 	}
 
-    public function createMajor(Request $request) {
-        return Inertia::render('Admin/University/CreateMajor', [
-            'id'=> $request->get('id')
-        ]);
-    }
+	public function storeMajor(Request $request)
+	{
+		$un = University::create($request->get('validateData'));
 
-    public function storeMajor(Request $requst) {
+		foreach ($request->get('listData') as $major) {
+			Major::create([
+				'code' => $major['kode'],
+				'name' => $major['name'],
+				'level' => $major['level'],
+				'accredity' => $major['accredity'],
+				'sk' => $major['sk'],
+				'website' => $major['website'],
+				'date_standing' => $major['dateStanding'],
+				'pt_code' => $un->codept
+			]);
+		}
 
-    }
+		return redirect()->route('admin.university')->with('success', 'Universitas berhasil dibuat.');
+	}
 
 
 	/**
@@ -131,4 +134,3 @@ class UniversityController extends Controller
 		//
 	}
 }
-

@@ -10,18 +10,23 @@ class Major extends Model
 	use HasFactory;
 
 	protected $fillable = [
-		'kode',
+		'code',
 		'name',
-		'faculty_id',
+		'level',
+		'accredity',
+		'sk',
+		'website',
+		'date_standing',
+		'pt_code',
 	];
 
-	public function faculty()
+	public function university()
 	{
-		return $this->belongsTo(Faculty::class, 'faculty_id');
+		return $this->belongsTo(University::class, 'pt_code');
 	}
 
-	public function faculties()
+	public function universities()
 	{
-		return $this->belongsToMany(Faculty::class);
+		return $this->belongsToMany(University::class);
 	}
 }

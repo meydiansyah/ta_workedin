@@ -28,6 +28,8 @@
         "vite": "^4.0.0"
     },
     "dependencies": {
+        "date-fns": "^2.29.3",
+        "react-date-picker": "^9.1.0",
         "react-icons": "^4.7.1"
     }
 }

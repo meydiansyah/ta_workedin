@@ -6,7 +6,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, useForm } from "@inertiajs/inertia-react";
 import axios from "axios";
 import { useState } from "react";
-import ImageUploading from "react-images-uploading";
+// import ImageUploading from "react-images-uploading";
 
 export default function UniversityCreate({ provinces }) {
     const [images, setImages] = useState([]);
@@ -23,8 +23,8 @@ export default function UniversityCreate({ provinces }) {
         console.log(data.logo);
     };
 
-    const { data, setData, patch, errors } = useForm({
-        kodept: "",
+    const { data, setData, post, errors, isDirty } = useForm({
+        codept: "",
         name: "",
         email: "",
         phone: "",
@@ -44,7 +44,7 @@ export default function UniversityCreate({ provinces }) {
         e.preventDefault();
 
         // console.log(data);
-        patch(route("university.store"));
+        post(route("university.store"));
     };
 
     return (
@@ -52,14 +52,15 @@ export default function UniversityCreate({ provinces }) {
             <AuthenticatedLayout
                 header={
                     <div className="flex justify-between">
-                        <div className="flex">
+                        <div className="flex text-xl text-gray-800">
                             <Link
                                 href={route("admin.university")}
-                                className="text-xl leading-tight text-gray-800"
+								className="leading-tight hover:underline underline-offset-4"
                             >
-                                University {" / "}
+                                University
                             </Link>
-                            <h2 className="text-xl font-semibold leading-tight text-gray-800">
+							<span className="mx-2 text-xl"> {'>'} </span>
+                            <h2 className="font-semibold leading-tight ">
                                 Create
                             </h2>
                         </div>
@@ -70,16 +71,16 @@ export default function UniversityCreate({ provinces }) {
                             >
                                 Cancel
                             </Link>
-                            <PrimaryButton className="ml-4">Save</PrimaryButton>
+                            <PrimaryButton className="ml-4 bg-blue-600">Lanjut</PrimaryButton>
                         </div>
                     </div>
                 }
             >
                 <Head title="Admin - Create University" />
 
-                <div className="py-12">
-                    <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                        <div className="max-w-2xl p-4 mx-auto bg-white shadow sm:p-8 sm:rounded-lg">
+                <div className="py-10">
+					<div className="mx-auto max-w-7xl md:flex md:space-x-6 sm:px-6 lg:px-8">
+						<div className="p-4 md:grow bg-white shadow sm:p-8 sm:rounded-lg">
                             <header>
                                 <h2 className="text-lg font-medium text-gray-900">
                                     Informasi Universitas
@@ -175,23 +176,23 @@ export default function UniversityCreate({ provinces }) {
                                     )}
                                 </ImageUploading> */}
                                 <div>
-                                    <InputLabel for="kodept" value="Kode PT" />
+                                    <InputLabel for="codept" value="Kode PT" />
 
                                     <TextInput
-                                        id="kodept"
+                                        id="codept"
                                         className="block w-full mt-1"
-                                        value={data.kodept}
+                                        value={data.codept}
                                         handleChange={(e) =>
-                                            setData("kodept", e.target.value)
+                                            setData("codept", e.target.value)
                                         }
                                         required
                                         autofocus
-                                        autoComplete="kodept"
+                                        autoComplete="codept"
                                     />
 
                                     <InputError
                                         className="mt-2"
-                                        message={errors.kodept}
+                                        message={errors.codept}
                                     />
                                 </div>
 
@@ -326,7 +327,7 @@ export default function UniversityCreate({ provinces }) {
                                 </div>
                             </div>
                         </div>
-                        <div className="max-w-2xl p-4 mx-auto my-12 bg-white shadow sm:p-8 sm:rounded-lg">
+						<div className=" p-4 md:grow-0 my-12 md:my-auto bg-white shadow sm:p-8 sm:rounded-lg">
                             <header>
                                 <h2 className="text-lg font-medium text-gray-900">
                                     Detail alamat

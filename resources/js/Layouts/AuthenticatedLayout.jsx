@@ -19,7 +19,7 @@ export default function Authenticated({ auth, header, children }) {
                 </header>
             )}
 
-            <main className="mt-32">{children}</main>
+            <main className="pt-32">{children}</main>
         </div>
     );
 }

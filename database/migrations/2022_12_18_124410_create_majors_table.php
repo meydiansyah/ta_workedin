@@ -14,16 +14,21 @@ return new class extends Migration
     public function up()
     {
         Schema::create('majors', function (Blueprint $table) {
-			$table->string('kode', 10)->primary();
+			$table->string('code', 10)->primary();
             $table->string('name');
-            $table->unsignedBigInteger('faculty_id')->index();
+			$table->string('level');
+			$table->string('accredity');
+			$table->string('sk');
+			$table->string('website')->nullable();
+			$table->string('date_standing');
+			$table->string('pt_code');
             $table->timestamps();
 
-			$table->foreign('faculty_id')
-					 ->references('id')
-					 ->on('faculties')
-					 ->onUpdate('cascade')
-					 ->onDelete('cascade');
+			$table->foreign('pt_code')
+				->references('codept')
+				->on('universities')
+				->onUpdate('cascade')
+				->onDelete('cascade');
         });
     }
 

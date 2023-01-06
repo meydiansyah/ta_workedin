@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class University extends Model
 {
-    use HasFactory;
+	use HasFactory;
 	use SoftDeletes;
 
 	protected $fillable = [
-		'kodept',
+		'codept',
 		'name',
 		'email',
 		'phone',

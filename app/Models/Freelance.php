@@ -21,8 +21,8 @@ class Freelance extends Model
         'phone',
         'nik',
         'nim',
-        'major_id',
-        'kode_pt',
+        'major_code',
+        'pt_code',
         'rating',
         'full_address',
         'village_id',
@@ -92,7 +92,7 @@ class Freelance extends Model
      */
     public function major()
     {
-        return $this->belongsTo(Major::class, 'major_id');
+        return $this->belongsTo(Major::class, 'major_code');
     }
 
     public function majors()
@@ -100,12 +100,13 @@ class Freelance extends Model
         return $this->belongsToMany(Major::class);
     }
 
+	
 	/**
      * Get University Data
      */
     public function university()
     {
-		return $this->belongsTo(University::class, 'kode_pt');
+		return $this->belongsTo(University::class, 'pt_code');
     }
 
     public function universities()

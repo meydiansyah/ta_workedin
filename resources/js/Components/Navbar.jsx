@@ -78,20 +78,13 @@ const Navbar = () => {
                     </div>
 
                     {user === null ? (
-                        <div className="flex">
+                        <div className="flex hidden sm:block">
                             <Link
                                 href={route("register")}
-                                className="inline-flex items-center px-4 py-2 bg-[#2C7E5B] border border-transparent rounded-md font-bold text-xs text-white uppercase tracking-widest hover:bg-grey focus:bg-grey active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-grey focus:ring-offset-2 transition ease-in-out duration-150 m-4"
+                                className="inline-flex items-center px-4 py-2 bg-[#2C7E5B] border border-transparent rounded-md font-bold text-xs text-white uppercase tracking-widest hover:bg-grey focus:bg-grey active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-[#2C7E5B] focus:ring-offset-2 transition ease-in-out duration-150 m-4"
                             >
                                 Join now
                             </Link>
-                            {/* <NavLink */}
-                            {/*     href={route("register")} */}
-                            {/*     active={route().current("register")} */}
-                            {/*     className="bg-indigo" */}
-                            {/* > */}
-                            {/*     Join now */}
-                            {/* </NavLink> */}
                         </div>
                     ) : (
                         <div className="hidden sm:flex sm:items-center sm:ml-6">
@@ -148,96 +141,154 @@ const Navbar = () => {
                         </div>
                     )}
 
-                    {/* <div className="flex items-center -mr-2 sm:hidden"> */}
-                    {/*     <button */}
-                    {/*         onClick={() => */}
-                    {/*             setShowingNavigationDropdown( */}
-                    {/*                 (previousState) => !previousState */}
-                    {/*             ) */}
-                    {/*         } */}
-                    {/*         className="inline-flex items-center justify-center p-2 text-gray-400 rounded-md hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out" */}
-                    {/*     > */}
-                    {/*         <svg */}
-                    {/*             className="w-6 h-6" */}
-                    {/*             stroke="currentColor" */}
-                    {/*             fill="none" */}
-                    {/*             viewBox="0 0 24 24" */}
-                    {/*         > */}
-                    {/*             <path */}
-                    {/*                 className={ */}
-                    {/*                     !showingNavigationDropdown */}
-                    {/*                         ? "inline-flex" */}
-                    {/*                         : "hidden" */}
-                    {/*                 } */}
-                    {/*                 strokeLinecap="round" */}
-                    {/*                 strokeLinejoin="round" */}
-                    {/*                 strokeWidth="2" */}
-                    {/*                 d="M4 6h16M4 12h16M4 18h16" */}
-                    {/*             /> */}
-                    {/*             <path */}
-                    {/*                 className={ */}
-                    {/*                     showingNavigationDropdown */}
-                    {/*                         ? "inline-flex" */}
-                    {/*                         : "hidden" */}
-                    {/*                 } */}
-                    {/*                 strokeLinecap="round" */}
-                    {/*                 strokeLinejoin="round" */}
-                    {/*                 strokeWidth="2" */}
-                    {/*                 d="M6 18L18 6M6 6l12 12" */}
-                    {/*             /> */}
-                    {/*         </svg> */}
-                    {/*     </button> */}
-                    {/* </div> */}
+                    <div className="flex items-center -mr-2 sm:hidden">
+                        {!user && (
+                            <div className="flex sm:hidden ">
+                                <Link
+                                    href={route("register")}
+                                    className="inline-flex items-center px-4 py-2 bg-[#2C7E5B] border border-transparent rounded-md font-bold text-xs text-white uppercase tracking-widest hover:bg-grey focus:bg-grey active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-[#2C7E5B] focus:ring-offset-2 transition ease-in-out duration-150 m-4"
+                                >
+                                    Join now
+                                </Link>
+                            </div>
+                        )}
+
+                        <button
+                            onClick={() =>
+                                setShowingNavigationDropdown(
+                                    (previousState) => !previousState
+                                )
+                            }
+                            className="inline-flex items-center justify-center p-2 text-gray-400 rounded-md hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"
+                        >
+                            <svg
+                                className="w-6 h-6"
+                                stroke="currentColor"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    className={
+                                        !showingNavigationDropdown
+                                            ? "inline-flex"
+                                            : "hidden"
+                                    }
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M4 6h16M4 12h16M4 18h16"
+                                />
+                                <path
+                                    className={
+                                        showingNavigationDropdown
+                                            ? "inline-flex"
+                                            : "hidden"
+                                    }
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M6 18L18 6M6 6l12 12"
+                                />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            {user && (
-                <div
-                    className={
-                        (showingNavigationDropdown ? "block" : "hidden") +
-                        " sm:hidden"
-                    }
-                >
-                    <div className="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink
-                            href={route("dashboard")}
-                            active={route().current("dashboard")}
-                        >
-                            Dashboard
+            <div
+                className={
+                    (showingNavigationDropdown ? "block" : "hidden") +
+                    " sm:hidden"
+                }
+            >
+                <div className="pt-4 pb-1 border-t border-gray-200">
+                    {user && (
+                        <ResponsiveNavLink href={route("profile.edit")}>
+                            <div className="block">
+                                <div className="text-base font-medium text-gray-800">
+                                    {user.name}
+                                </div>
+                                <div className="text-sm font-medium text-gray-500">
+                                    {user.email}
+                                </div>
+                            </div>
                         </ResponsiveNavLink>
-                    </div>
+                    )}
 
-                    <div className="pt-4 pb-1 border-t border-gray-200">
-                        <div className="px-4">
-                            <div className="text-base font-medium text-gray-800">
-                                {user.name}
-                            </div>
-                            <div className="text-sm font-medium text-gray-500">
-                                {user.email}
-                            </div>
-                        </div>
+                    <div className="mt-3 space-y-1">
+                        {user !== null && is_admin ? (
+                            <>
+                                <ResponsiveNavLink
+                                    href={route("dashboard")}
+                                    active={route().current("dashboard")}
+                                >
+                                    Dashboard
+                                </ResponsiveNavLink>
 
-                        <div className="mt-3 space-y-1">
-                            <ResponsiveNavLink
-                                href={route("dashboard")}
-                                className="border-b-2"
-                            >
-                                Dashboard
-                            </ResponsiveNavLink>
-                            <ResponsiveNavLink href={route("profile.edit")}>
-                                Profile
-                            </ResponsiveNavLink>
-                            <ResponsiveNavLink
-                                method="post"
-                                href={route("logout")}
-                                as="button"
-                            >
-                                Log Out
-                            </ResponsiveNavLink>
-                        </div>
+                                <ResponsiveNavLink
+                                    href={route("admin.university")}
+                                    active={
+                                        route().current("admin.university") ||
+                                        route().current("university.edit") ||
+                                        route().current("university.create")
+                                    }
+                                >
+                                    University
+                                </ResponsiveNavLink>
+                                <ResponsiveNavLink
+                                    href={route("dashboard")}
+                                    active={route().current("dashboard")}
+                                >
+                                    Jobs
+                                </ResponsiveNavLink>
+
+                                <ResponsiveNavLink
+                                    href={route("admin.freelance")}
+                                    active={
+                                        route().current("admin.freelance") ||
+                                        route().current("freelance.create") ||
+                                        route().current("freelance.edit")
+                                    }
+                                >
+                                    Freelances
+                                </ResponsiveNavLink>
+                                <ResponsiveNavLink href={route("profile.edit")}>
+                                    Profile
+                                </ResponsiveNavLink>
+                                <ResponsiveNavLink
+                                    method="post"
+                                    href={route("logout")}
+                                    as="button"
+                                >
+                                    Log Out
+                                </ResponsiveNavLink>
+                            </>
+                        ) : (
+                            <>
+                                <ResponsiveNavLink
+                                    href={route("university")}
+                                    active={route().current("university")}
+                                >
+                                    University
+                                </ResponsiveNavLink>
+                                <ResponsiveNavLink
+                                    href={route("dashboard")}
+                                    active={route().current("dashboard")}
+                                >
+                                    Jobs
+                                </ResponsiveNavLink>
+
+                                <ResponsiveNavLink
+                                    href={route("freelance")}
+                                    active={route().current("freelances")}
+                                >
+                                    Freelances
+                                </ResponsiveNavLink>
+                            </>
+                        )}
                     </div>
                 </div>
-            )}
+            </div>
         </nav>
     );
 };

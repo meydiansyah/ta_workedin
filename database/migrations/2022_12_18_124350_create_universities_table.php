@@ -13,20 +13,14 @@ return new class extends Migration
 	 */
 	public function up()
 	{
-		Schema::create('freelances', function (Blueprint $table) {
-			$table->bigIncrements('id');
-			$table->unsignedBigInteger('user_id')->index()->unique();
-			$table->string('first_name');
-			$table->string('last_name');
-			$table->string('image_url', 2048)->nullable();
+		Schema::create('universities', function (Blueprint $table) {
+			$table->string('codept', 10)->primary();
+			$table->string('name')->unique();
 			$table->string('email')->unique();
 			$table->string('phone')->unique();
-			$table->text('bio')->nullable();
-			$table->string('nik')->unique();
-			$table->string('nim')->unique();
-			$table->string('major_code');
-			$table->string('pt_code');
-			$table->float('rating')->default(0);
+			$table->string('fax')->unique();
+			$table->string('logo')->nullable();
+			$table->string('url')->unique();
 			$table->string('full_address');
 			$table->unsignedBigInteger('village_id')->index();
 			$table->unsignedBigInteger('district_id')->index();
@@ -34,12 +28,6 @@ return new class extends Migration
 			$table->unsignedBigInteger('province_id')->index();
 			$table->softDeletes();
 			$table->timestamps();
-
-			$table->foreign('user_id')
-				->references('id')
-				->on('users')
-				->onUpdate('cascade')
-				->onDelete('cascade');
 
 			$table->foreign('village_id')
 				->references('id')
@@ -64,19 +52,6 @@ return new class extends Migration
 				->on('indonesia_provinces')
 				->onUpdate('cascade')
 				->onDelete('cascade');
-
-			$table->foreign('pt_code')
-				->references('codept')
-				->on('universities')
-				->onUpdate('cascade')
-				->onDelete('cascade');
-
-			$table->foreign('major_code')
-				->references('code')
-				->on('majors')
-				->onUpdate('cascade')
-				->onDelete('cascade');
-
 		});
 	}
 
@@ -87,6 +62,6 @@ return new class extends Migration
 	 */
 	public function down()
 	{
-		Schema::dropIfExists('freelances');
+		Schema::dropIfExists('universities');
 	}
 };

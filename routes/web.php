@@ -51,9 +51,9 @@ Route::middleware(['auth', 'checkRole:Admin'])->group(function () {
 
 	Route::get('/admin/university', [UniversityController::class, 'index'])->name('admin.university');
 	Route::get('/admin/university/create', [UniversityController::class, 'create'])->name('university.create');
-	Route::get('/admin/university/major/create', [UniversityController::class, 'createMajor'])->name('university.createMajor');
-	Route::patch('/admin/university/major/create', [UniversityController::class, 'storeMajor'])->name('university.storeMajor');
-	Route::patch('/admin/university/create', [UniversityController::class, 'store'])->name('university.store');
+	// Route::post('/admin/university/major/create', [UniversityController::class, 'createMajor'])->name('university.createMajor');
+	Route::post('/admin/university/major/create', [UniversityController::class, 'storeMajor'])->name('university.storeMajor');
+	Route::post('/admin/university/create', [UniversityController::class, 'store'])->name('university.store');
 	Route::get('/admin/university/edit', [UniversityController::class, 'edit'])->name('university.edit');
 	Route::patch('/admin/university', [UniversityController::class, 'update'])->name('university.update');
 	Route::delete('/admin/university', [UniversityController::class, 'destroy'])->name('university.destroy');

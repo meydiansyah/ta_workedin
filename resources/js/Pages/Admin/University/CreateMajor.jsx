@@ -1,44 +1,73 @@
-import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
 import PrimaryButton from "@/Components/PrimaryButton";
 import TextInput from "@/Components/TextInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, useForm } from "@inertiajs/inertia-react";
-import axios from "axios";
 import { useState } from "react";
+import DatePicker from "react-date-picker";
+import { format } from 'date-fns'
 
-export default function MajorCreate({ id }) {
-    const [listData, setListData] = useState([]);
 
-    // const [dataMajor, setDataMajor] = useState({
-    //     kode: "",
-    //     name: "",
-    // });
+export default function MajorCreate({ validateData }) {
+    const accredity = ["A", "B", "C", "Tidak terakreditasi"];
 
-    const { data, setData, patch, errors } = useForm({
+    const level = ["D3", "D4", "S1", "S2", "S3"];
+
+    const [date, changeDate] = useState(new Date());
+
+    const { data, setData, post } = useForm({
         kode: "",
         name: "",
+        level: "",
+        accredity: "",
+        sk: "",
+        website: "",
+        dateStanding: "",
+        listData: [],
+        validateData: validateData,
     });
 
-    const addMajor = (e) => {
-        // var _list = listData.push(data);
-        setListData([data, ...listData]);
+    const addMajor = (
+        kode,
+        name,
+        level,
+        accredity,
+        sk,
+        website,
+        dateStanding
+    ) => {
         setData({
             kode: "",
             name: "",
+            level: "",
+            accredity: "",
+            sk: "",
+            website: "",
+            dateStanding: "",
+            listData: [
+                {
+                    kode: kode,
+                    name: name,
+                    level: level,
+                    accredity: accredity,
+                    sk: sk,
+                    website: website,
+                    dateStanding: dateStanding,
+                },
+                ...data.listData,
+            ],
+            validateData: validateData,
         });
-        console.log(listData);
     };
 
     const removeMajor = (kode) => {
-        const newList = listData.filter((item) => item.kode !== kode);
-        setListData(newList);
+        const newList = data.listData.filter((item) => item.kode !== kode);
+        setData("listData", newList);
     };
 
     const submit = (e) => {
         e.preventDefault();
-
-        patch(route("university.store"));
+        post(route("university.storeMajor"));
     };
 
     return (
@@ -51,8 +80,9 @@ export default function MajorCreate({ id }) {
                                 href={route("admin.university")}
                                 className="text-xl leading-tight text-gray-800"
                             >
-                                University {" / "}
+                                University
                             </Link>
+							<span className="mx-2"> {'/'} </span>
                             <h2 className="text-xl font-semibold leading-tight text-gray-800">
                                 Create
                             </h2>
@@ -103,7 +133,6 @@ export default function MajorCreate({ id }) {
                                         handleChange={(e) =>
                                             setData("kode", e.target.value)
                                         }
-                                        required
                                         autofocus
                                         autoComplete="kode"
                                     />
@@ -121,16 +150,108 @@ export default function MajorCreate({ id }) {
                                         handleChange={(e) =>
                                             setData("name", e.target.value)
                                         }
-                                        required
                                         autofocus
                                         autoComplete="name"
                                     />
                                 </div>
 
+                                <div>
+                                    <InputLabel
+                                        for="sk"
+                                        value="SK Penyelenggaraan"
+                                    />
+
+                                    <TextInput
+                                        id="sk"
+                                        className="block w-full mt-1"
+                                        value={data.sk}
+                                        handleChange={(e) =>
+                                            setData("sk", e.target.value)
+                                        }
+                                        autofocus
+                                        autoComplete="sk"
+                                    />
+                                </div>
+                                <div>
+                                    <InputLabel for="website" value="Website" />
+
+                                    <TextInput
+                                        id="website"
+                                        className="block w-full mt-1"
+                                        value={data.website}
+                                        handleChange={(e) =>
+                                            setData("website", e.target.value)
+                                        }
+                                        autofocus
+                                        type="url"
+                                        autoComplete="sk"
+                                    />
+                                </div>
+<div>
+                                    <InputLabel for="accredity" value="Akreditasi" />
+                                    <select
+                                        id="accredity"
+                                        className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        defaultValue={data.accredity === null ? 'Pilih akreditasi' : data.accredity}
+                                        onChange={(val) => {
+                                            setData("accredity", val.target.value);
+                                        }}
+                                    >
+                                        <option value="Pilih akreditasi">
+                                            Pilih akreditasi
+                                        </option>
+
+                                        {accredity.map((item) => (
+                                            <option key={item} value={item}>
+                                                {item}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div>
+                                    <InputLabel for="level" value="Jenjang" />
+                                    <select
+                                        id="level"
+                                        className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        defaultValue={data.level === null ? 'Pilih jenjang' : data.level}
+                                        onChange={(val) => {
+                                            setData("level", val.target.value);
+                                        }}
+                                    >
+                                        <option value="Pilih jenjang">
+                                            Pilih jenjang
+                                        </option>
+
+                                        {level.map((item) => (
+                                            <option key={item} value={item}>
+                                                {item}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div>
+                                    <DatePicker
+										onChange={(e) => {
+											console.log(e, 'dd/mm/yyyy')
+											setData('dateStanding', format(e, 'dd/mm/yyyy'))
+										}}
+                                        value={date}
+                                    />
+                                </div>
                                 <div className="flex justify-end">
                                     <button
                                         type="button"
-                                        onClick={addMajor}
+                                        onClick={(e) =>
+                                            addMajor(
+                                                data.kode,
+                                                data.name,
+                                                data.level,
+                                                data.accredity,
+                                                data.sk,
+                                                data.website,
+                                                date
+                                            )
+                                        }
                                         className="inline-flex items-center px-4 py-2 text-xs font-bold tracking-widest uppercase bg-gray-600 text-white border rounded-md hover:bg-gray-100 focus:bg-gray active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-gray focus:ring-offset-2 transition ease-in-out duration-150"
                                     >
                                         Tambah
@@ -139,7 +260,7 @@ export default function MajorCreate({ id }) {
                             </div>
                         </div>
 
-                        {listData.length !== 0 && (
+                        {data.listData.length !== 0 && (
                             <div className="max-w-2xl mt-12 p-2  mx-auto bg-white shadow sm:p-8 sm:rounded-lg">
                                 <header>
                                     <h2 className="text-lg font-medium text-gray-900">
@@ -174,47 +295,55 @@ export default function MajorCreate({ id }) {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {listData.map(({ kode, name }) => (
-                                                <tr
-                                                    key={kode}
-                                                    className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                                                >
-                                                    <th
-                                                        scope="row"
-                                                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                                            {data.listData.map(
+                                                ({ kode, name }) => (
+                                                    <tr
+                                                        key={kode}
+                                                        className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                                                     >
-                                                        {kode}
-                                                    </th>
-                                                    <td className="px-6 py-4">
-                                                        {name}
-                                                    </td>
-                                                    <td className="px-6 py-4 text-right">
-                                                        <button
-                                                            type="button"
-                                                            onClick={(e) => {
-                                                                setData({
-                                                                    kode: kode,
-                                                                    name: name,
-                                                                });
-                                                            }}
-                                                            className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                                                        <th
+                                                            scope="row"
+                                                            className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                                                         >
-                                                            Edit
-                                                        </button>
-                                                        <button
-                                                            type="button"
-                                                            onClick={(e) =>
-                                                                removeMajor(
-                                                                    kode
-                                                                )
-                                                            }
-                                                            className="font-medium ml-4 text-red-600 dark:text-red-500 hover:underline"
-                                                        >
-                                                            Hapus
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            ))}
+                                                            {kode}
+                                                        </th>
+                                                        <td className="px-6 py-4">
+                                                            {name}
+                                                        </td>
+                                                        <td className="px-6 py-4 text-right">
+                                                            <button
+                                                                type="button"
+                                                                onClick={(
+                                                                    e
+                                                                ) => {
+                                                                    setData({
+                                                                        kode: kode,
+                                                                        name: name,
+                                                                        listData:
+                                                                            data.listData,
+                                                                        validateData:
+                                                                            validateData,
+                                                                    });
+                                                                }}
+                                                                className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                                                            >
+                                                                Edit
+                                                            </button>
+                                                            <button
+                                                                type="button"
+                                                                onClick={(e) =>
+                                                                    removeMajor(
+                                                                        kode
+                                                                    )
+                                                                }
+                                                                className="font-medium ml-4 text-red-600 dark:text-red-500 hover:underline"
+                                                            >
+                                                                Hapus
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            )}
                                         </tbody>
                                     </table>
                                 </div>
