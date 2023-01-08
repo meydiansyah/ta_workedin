@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\FreelanceController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SkillController;
 use App\Http\Controllers\UniversityController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -51,12 +52,17 @@ Route::middleware(['auth', 'checkRole:Admin'])->group(function () {
 
 	Route::get('/admin/university', [UniversityController::class, 'index'])->name('admin.university');
 	Route::get('/admin/university/create', [UniversityController::class, 'create'])->name('university.create');
-	// Route::post('/admin/university/major/create', [UniversityController::class, 'createMajor'])->name('university.createMajor');
 	Route::post('/admin/university/major/create', [UniversityController::class, 'storeMajor'])->name('university.storeMajor');
 	Route::post('/admin/university/create', [UniversityController::class, 'store'])->name('university.store');
+	Route::get('/admin/university/{id}/detail', [UniversityController::class, 'show'])->name('university.detail');
 	Route::get('/admin/university/edit', [UniversityController::class, 'edit'])->name('university.edit');
 	Route::patch('/admin/university', [UniversityController::class, 'update'])->name('university.update');
 	Route::delete('/admin/university', [UniversityController::class, 'destroy'])->name('university.destroy');
+
+	Route::get('/admin/skills', [SkillController::class, 'index'])->name('admin.skills');
+	Route::post('/admin/skills', [SkillController::class, 'store'])->name('skill.store');
+	Route::patch('/admin/{skill}/skills', [SkillController::class, 'update'])->name('skill.update');
+	Route::delete('/admin/{skill}/skills', [SkillController::class, 'destroy'])->name('skill.destroy');
 
 });
 

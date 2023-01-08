@@ -19,7 +19,10 @@ class UniversityController extends Controller
 	public function index()
 	{
 		if (Auth::user()) {
-			return Inertia::render('Admin/University/Index');
+			$universitas = University::all();
+			return Inertia::render('Admin/University/Index', [
+				'universities'=> $universitas
+			]);
 		} else {
 			return Inertia::render('University/Index');
 		}
@@ -97,7 +100,10 @@ class UniversityController extends Controller
 	 */
 	public function show($id)
 	{
-		//
+		$data = University::where('codept', '=', $id)->get()->first();
+		return Inertia::render('Admin/University/Detail', [
+			'data' => $data
+		]);
 	}
 
 	/**
@@ -106,9 +112,11 @@ class UniversityController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function edit($id)
+	public function edit(University $university)
 	{
-		//
+		return Inertia::render('Admin/University/Edit', [
+			'data' => $university
+		]);
 	}
 
 	/**

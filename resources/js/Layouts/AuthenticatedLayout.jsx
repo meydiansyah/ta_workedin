@@ -6,7 +6,7 @@ import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
 import { Link } from "@inertiajs/inertia-react";
 import Navbar from "@/Components/Navbar";
 
-export default function Authenticated({ auth, header, children }) {
+export default function Authenticated({ header, children }) {
     return (
         <div className="min-h-screen bg-gray-100">
             <Navbar />

@@ -6,40 +6,16 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, useForm } from "@inertiajs/inertia-react";
 import axios from "axios";
 import { useState } from "react";
+import { DataUniversity } from "./data/Interface";
 // import ImageUploading from "react-images-uploading";
 
 export default function UniversityCreate({ provinces }) {
-    const [images, setImages] = useState([]);
-    const maxNumber = 69;
+    const { data, setData, post, errors } = useForm(DataUniversity);
+
     const [city, setCity] = useState(null);
     const [district, setDistrict] = useState(null);
     const [village, setVillage] = useState(null);
-
-    const onChange = (imageList, addUpdateIndex) => {
-        // data for submit
-        console.log(imageList, addUpdateIndex);
-        setImages(imageList);
-        setData("logo", images[0].data_url);
-        console.log(data.logo);
-    };
-
-    const { data, setData, post, errors, isDirty } = useForm({
-        codept: "",
-        name: "",
-        email: "",
-        phone: "",
-        fax: "",
-        logo: null,
-        url: "",
-        full_address: "",
-        village_id: "",
-        district_id: "",
-        city_id: "",
-        province_id: "",
-    });
-
     const [getLocation, setGetLocation] = useState(false);
-
     const submit = (e) => {
         e.preventDefault();
 
@@ -55,13 +31,13 @@ export default function UniversityCreate({ provinces }) {
                         <div className="flex text-xl text-gray-800">
                             <Link
                                 href={route("admin.university")}
-								className="leading-tight hover:underline underline-offset-4"
+                                className="leading-tight hover:underline underline-offset-4"
                             >
-                                University
+                                Universitas
                             </Link>
-							<span className="mx-2 text-xl"> {'>'} </span>
+                            <span className="mx-2 text-xl"> {">"} </span>
                             <h2 className="font-semibold leading-tight ">
-                                Create
+                                Tambah
                             </h2>
                         </div>
                         <div className="flex">
@@ -69,9 +45,11 @@ export default function UniversityCreate({ provinces }) {
                                 href={route("admin.university")}
                                 className="inline-flex items-center px-4 py-2 text-xs font-bold tracking-widest uppercase bg-white border border-gray-600 rounded-md hover:bg-gray-100 focus:bg-gray active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-gray focus:ring-offset-2 transition ease-in-out duration-150"
                             >
-                                Cancel
+                                Batal
                             </Link>
-                            <PrimaryButton className="ml-4 bg-blue-600">Lanjut</PrimaryButton>
+                            <PrimaryButton className="ml-4 bg-blue-600">
+                                Lanjut
+                            </PrimaryButton>
                         </div>
                     </div>
                 }
@@ -79,8 +57,8 @@ export default function UniversityCreate({ provinces }) {
                 <Head title="Admin - Create University" />
 
                 <div className="py-10">
-					<div className="mx-auto max-w-7xl md:flex md:space-x-6 sm:px-6 lg:px-8">
-						<div className="p-4 md:grow bg-white shadow sm:p-8 sm:rounded-lg">
+                    <div className="mx-auto max-w-7xl md:flex md:space-x-6 sm:px-6 lg:px-8">
+                        <div className="p-4 md:grow bg-white shadow sm:p-8 sm:rounded-lg">
                             <header>
                                 <h2 className="text-lg font-medium text-gray-900">
                                     Informasi Universitas
@@ -97,84 +75,6 @@ export default function UniversityCreate({ provinces }) {
                                 </p>
                             </header>
                             <div className="mt-6 space-y-6">
-                                {/* <ImageUploading
-                                    multiple
-                                    value={images}
-                                    onChange={onChange}
-                                    maxNumber={maxNumber}
-                                    dataURLKey="data_url"
-                                >
-                                    {({
-                                        imageList,
-                                        onImageUpload,
-                                        onImageRemoveAll,
-                                        onImageUpdate,
-                                        onImageRemove,
-                                        isDragging,
-                                        dragProps,
-                                    }) => (
-                                        // write your building UI
-                                        <div>
-                                            <div className="flex justify-center">
-                                                {imageList.map(
-                                                    (image, index) => (
-                                                        <div className="flex">
-                                                            <img
-                                                                key={index}
-                                                                src={
-                                                                    image[
-                                                                        "data_url"
-                                                                    ]
-                                                                }
-                                                                className="w-32 h-32 rounded-md ring-2 ring-gray-300"
-                                                                alt=""
-                                                            />
-                                                            <div className="image-item__btn-wrapper">
-                                                                <button
-                                                                    onClick={() =>
-                                                                        onImageUpdate(
-                                                                            index
-                                                                        )
-                                                                    }
-                                                                >
-                                                                    Update
-                                                                </button>
-                                                                <button
-                                                                    onClick={() =>
-                                                                        onImageRemove(
-                                                                            index
-                                                                        )
-                                                                    }
-                                                                >
-                                                                    Remove
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    )
-                                                )}
-                                            </div>
-                                            <div className="upload__image-wrapper flex justify-between">
-                                                <button
-                                                    style={
-                                                        isDragging
-                                                            ? { color: "red" }
-                                                            : undefined
-                                                    }
-                                                    onClick={onImageUpload}
-                                                    {...dragProps}
-                                                >
-                                                    Click or Drop here
-                                                </button>
-                                                &nbsp;
-                                                <button
-                                                    onClick={onImageRemoveAll}
-                                                >
-                                                    Remove all images
-                                                </button>
-                                            </div>
-                                        </div>
-                                    )}
-                                </ImageUploading> */}
                                 <div>
                                     <InputLabel for="codept" value="Kode PT" />
 
@@ -327,7 +227,7 @@ export default function UniversityCreate({ provinces }) {
                                 </div>
                             </div>
                         </div>
-						<div className=" p-4 md:grow-0 my-12 md:my-auto bg-white shadow sm:p-8 sm:rounded-lg">
+                        <div className=" p-4 md:grow-0 my-12 md:my-auto bg-white shadow sm:p-8 sm:rounded-lg">
                             <header>
                                 <h2 className="text-lg font-medium text-gray-900">
                                     Detail alamat
@@ -376,7 +276,7 @@ export default function UniversityCreate({ provinces }) {
 
                                     <select
                                         id="province_id"
-                                        className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
                                         defaultValue="pilih"
                                         onChange={(val) => {
                                             if (val.target.value !== "pilih") {
@@ -438,7 +338,7 @@ export default function UniversityCreate({ provinces }) {
 
                                         <select
                                             id="city_id"
-                                            className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
                                             defaultValue={city[0].name}
                                             onChange={(val) => {
                                                 if (
@@ -506,7 +406,7 @@ export default function UniversityCreate({ provinces }) {
 
                                         <select
                                             id="district_id"
-                                            className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
                                             defaultValue={district[0].name}
                                             onChange={(val) => {
                                                 if (
@@ -572,7 +472,7 @@ export default function UniversityCreate({ provinces }) {
 
                                         <select
                                             id="village_id"
-                                            className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
                                             defaultValue={village[0].name}
                                             onChange={(val) => {
                                                 if (

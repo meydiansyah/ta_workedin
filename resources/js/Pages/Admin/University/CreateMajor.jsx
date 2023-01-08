@@ -5,8 +5,8 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, useForm } from "@inertiajs/inertia-react";
 import { useState } from "react";
 import DatePicker from "react-date-picker";
-import { format } from 'date-fns'
-
+import { format } from "date-fns";
+import { DataMajor } from "./data/Interface";
 
 export default function MajorCreate({ validateData }) {
     const accredity = ["A", "B", "C", "Tidak terakreditasi"];
@@ -15,17 +15,7 @@ export default function MajorCreate({ validateData }) {
 
     const [date, changeDate] = useState(new Date());
 
-    const { data, setData, post } = useForm({
-        kode: "",
-        name: "",
-        level: "",
-        accredity: "",
-        sk: "",
-        website: "",
-        dateStanding: "",
-        listData: [],
-        validateData: validateData,
-    });
+    const { data, setData, post } = useForm(DataMajor);
 
     const addMajor = (
         kode,
@@ -80,11 +70,11 @@ export default function MajorCreate({ validateData }) {
                                 href={route("admin.university")}
                                 className="text-xl leading-tight text-gray-800"
                             >
-                                University
+                                Universitas
                             </Link>
-							<span className="mx-2"> {'/'} </span>
+                            <span className="mx-2"> {"/"} </span>
                             <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                                Create
+                                Buat
                             </h2>
                         </div>
                         <div className="flex">
@@ -92,9 +82,11 @@ export default function MajorCreate({ validateData }) {
                                 href={route("admin.university")}
                                 className="inline-flex items-center px-4 py-2 text-xs font-bold tracking-widest uppercase bg-white border border-gray-600 rounded-md hover:bg-gray-100 focus:bg-gray active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-gray focus:ring-offset-2 transition ease-in-out duration-150"
                             >
-                                Cancel
+                                Batal
                             </Link>
-                            <PrimaryButton className="ml-4">Save</PrimaryButton>
+                            <PrimaryButton className="ml-4">
+                                Simpan
+                            </PrimaryButton>
                         </div>
                     </div>
                 }
@@ -187,14 +179,43 @@ export default function MajorCreate({ validateData }) {
                                         autoComplete="sk"
                                     />
                                 </div>
-<div>
-                                    <InputLabel for="accredity" value="Akreditasi" />
+                                <div>
+                                    <div className="flex justify-between">
+                                        <InputLabel value="Tanggal diterbitkan" />
+
+                                        <DatePicker
+                                            onChange={(e) => {
+                                                console.log(e, "dd/mm/yyyy");
+                                                setData(
+                                                    "dateStanding",
+                                                    format(e, "dd/mm/yyyy")
+                                                );
+                                            }}
+                                            value={date}
+                                            calendarIcon={null}
+                                            clearIcon={null}
+                                            className="border-0"
+                                        />
+                                    </div>
+                                </div>
+                                <div>
+                                    <InputLabel
+                                        for="accredity"
+                                        value="Akreditasi"
+                                    />
                                     <select
                                         id="accredity"
-                                        className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                        defaultValue={data.accredity === null ? 'Pilih akreditasi' : data.accredity}
+                                        className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                        defaultValue={
+                                            data.accredity === null
+                                                ? "Pilih akreditasi"
+                                                : data.accredity
+                                        }
                                         onChange={(val) => {
-                                            setData("accredity", val.target.value);
+                                            setData(
+                                                "accredity",
+                                                val.target.value
+                                            );
                                         }}
                                     >
                                         <option value="Pilih akreditasi">
@@ -212,8 +233,12 @@ export default function MajorCreate({ validateData }) {
                                     <InputLabel for="level" value="Jenjang" />
                                     <select
                                         id="level"
-                                        className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                        defaultValue={data.level === null ? 'Pilih jenjang' : data.level}
+                                        className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                        defaultValue={
+                                            data.level === null
+                                                ? "Pilih jenjang"
+                                                : data.level
+                                        }
                                         onChange={(val) => {
                                             setData("level", val.target.value);
                                         }}
@@ -228,15 +253,6 @@ export default function MajorCreate({ validateData }) {
                                             </option>
                                         ))}
                                     </select>
-                                </div>
-                                <div>
-                                    <DatePicker
-										onChange={(e) => {
-											console.log(e, 'dd/mm/yyyy')
-											setData('dateStanding', format(e, 'dd/mm/yyyy'))
-										}}
-                                        value={date}
-                                    />
                                 </div>
                                 <div className="flex justify-end">
                                     <button
@@ -269,8 +285,8 @@ export default function MajorCreate({ validateData }) {
                                 </header>
 
                                 <div className="relative mt-6 overflow-x-auto sm:rounded-lg">
-                                    <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                                        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                    <table className="w-full text-sm text-left text-gray-500">
+                                        <thead className="text-xs text-gray-700 uppercase bg-gray-50">
                                             <tr>
                                                 <th
                                                     scope="col"
@@ -299,11 +315,11 @@ export default function MajorCreate({ validateData }) {
                                                 ({ kode, name }) => (
                                                     <tr
                                                         key={kode}
-                                                        className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                                                        className="bg-white border-b "
                                                     >
                                                         <th
                                                             scope="row"
-                                                            className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                                                            className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap "
                                                         >
                                                             {kode}
                                                         </th>
@@ -325,7 +341,7 @@ export default function MajorCreate({ validateData }) {
                                                                             validateData,
                                                                     });
                                                                 }}
-                                                                className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                                                                className="font-medium text-blue-600  hover:underline"
                                                             >
                                                                 Edit
                                                             </button>
@@ -336,7 +352,7 @@ export default function MajorCreate({ validateData }) {
                                                                         kode
                                                                     )
                                                                 }
-                                                                className="font-medium ml-4 text-red-600 dark:text-red-500 hover:underline"
+                                                                className="font-medium ml-4 text-red-600  hover:underline"
                                                             >
                                                                 Hapus
                                                             </button>

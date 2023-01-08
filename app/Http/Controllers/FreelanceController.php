@@ -16,6 +16,7 @@ class FreelanceController extends Controller
 	 */
 	public function index()
 	{
+		
 		return Inertia::render('Admin/Freelance/Index');
 	}
 
@@ -28,7 +29,7 @@ class FreelanceController extends Controller
 	{
 		$universities = University::all();
 		return Inertia::render('Admin/Freelance/Create', [
-			'univerisities' => $universities,
+			'universities' => $universities,
 		]);
 	}
 

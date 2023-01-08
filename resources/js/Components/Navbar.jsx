@@ -30,6 +30,7 @@ const Navbar = () => {
                                     href={route("admin.university")}
                                     active={
                                         route().current("admin.university") ||
+                                        route().current("university.detail") ||
                                         route().current("university.edit") ||
                                         route().current("university.create")
                                     }
@@ -47,10 +48,22 @@ const Navbar = () => {
                                     active={
                                         route().current("admin.freelance") ||
                                         route().current("freelance.create") ||
+                                        route().current("freelance.detail") ||
                                         route().current("freelance.edit")
                                     }
                                 >
                                     Freelances
+                                </NavLink>
+                                <NavLink
+                                    href={route("admin.skills")}
+                                    active={
+                                        route().current("admin.skills") ||
+                                        route().current("skills.create") ||
+                                        route().current("skills.detail") ||
+                                        route().current("skills.edit")
+                                    }
+                                >
+                                    Skills
                                 </NavLink>
                             </>
                         ) : (
@@ -229,6 +242,7 @@ const Navbar = () => {
                                     href={route("admin.university")}
                                     active={
                                         route().current("admin.university") ||
+                                        route().current("university.detail") ||
                                         route().current("university.edit") ||
                                         route().current("university.create")
                                     }
@@ -246,6 +260,7 @@ const Navbar = () => {
                                     href={route("admin.freelance")}
                                     active={
                                         route().current("admin.freelance") ||
+                                        route().current("freelance.detail") ||
                                         route().current("freelance.create") ||
                                         route().current("freelance.edit")
                                     }
