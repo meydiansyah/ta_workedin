@@ -2,15 +2,27 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Jetstream\HasProfilePhoto;
+use Laravolt\Indonesia\Models\City;
+use Laravolt\Indonesia\Models\District;
+use Laravolt\Indonesia\Models\Province;
+use Laravolt\Indonesia\Models\Village;
 
 class Freelance extends Model
 {
     use HasFactory;
     use HasProfilePhoto;
     use SoftDeletes;
+
+	public $table = 'freelances';
+
+    protected $appends = [
+        'full_name'
+    ];
 
     protected $fillable = [
         'user_id',
@@ -36,17 +48,24 @@ class Freelance extends Model
      *
      * @var array
      */
-    protected $appends = [
-        'image_url',
-    ];
+    // protected $appends = [
+    //     'image_url',
+    // ];
+
+    protected function fullName(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value, $attributes) => ucfirst($attributes['first_name']). " ". ucfirst($attributes['last_name']),
+        );
+    }
 
     /**
      * Get Full Name
      */
-    public function getFullName()
-    {
-        return $this->first_name . ' ' . $this->last_name;
-    }
+    // public function getFullName()
+    // {
+    //     return $this->first_name . ' ' . $this->last_name;
+    // }
 
     /**
      * Search user
@@ -82,25 +101,39 @@ class Freelance extends Model
     /**
      * Get Location Data
      */
-	public function location() 
-	{
-		return $this->belongsTo(Location::class);
-	}
+	public function village()
+    {
+        return $this->belongsTo(Village::class, 'village_id');
+    }
+
+	public function district()
+    {
+        return $this->belongsTo(District::class, 'district_id');
+    }
+
+    public function city()
+    {
+        return $this->belongsTo(City::class, 'city_id');
+    }
+
+    public function province()
+    {
+        return $this->belongsTo(Province::class, 'province_id');
+    }
 
 	/**
      * Get Major Data
      */
     public function major()
     {
-        return $this->belongsTo(Major::class, 'major_code');
+        return $this->belongsTo(Major::class, 'major_code', 'code');
     }
 
     public function majors()
     {
-        return $this->belongsToMany(Major::class);
+        return $this->belongsToMany(Major::class, 'freelance_majors', 'freelance_id', 'major_code');
     }
 
-	
 	/**
      * Get University Data
      */
@@ -111,6 +144,10 @@ class Freelance extends Model
 
     public function universities()
     {
-        return $this->belongsToMany(University::class);
+        return $this->belongsToMany(University::class, 'freelance_universities', 'freelance_id', 'pt_code');
+    }
+
+    public function skills() {
+        return $this->belongsToMany(Skill::class, 'freelance_skills', 'freelance_id', 'skill_id');
     }
 }

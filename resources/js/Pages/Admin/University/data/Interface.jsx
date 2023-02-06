@@ -1,4 +1,4 @@
-export const  DataUniversity = {
+export const DataUniversity = {
     codept: String,
     name: String,
     email: String,
@@ -11,10 +11,10 @@ export const  DataUniversity = {
     district_id: String,
     city_id: String,
     province_id: String,
-}
+};
 
 export const DataMajor = {
-    kode: String,
+    code: String,
     name: String,
     level: String,
     accredity: String,
@@ -23,4 +23,4 @@ export const DataMajor = {
     dateStanding: String,
     listData: [],
     validateData: {},
-}
+};

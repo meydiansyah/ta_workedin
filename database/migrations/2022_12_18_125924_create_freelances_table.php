@@ -22,12 +22,12 @@ return new class extends Migration
 			$table->string('email')->unique();
 			$table->string('phone')->unique();
 			$table->text('bio')->nullable();
-			$table->string('nik')->unique();
-			$table->string('nim')->unique();
-			$table->string('major_code');
-			$table->string('pt_code');
+			$table->string('nik')->unique()->nullable();
+			$table->string('nim')->unique()->nullable();
+			$table->string('major_code')->nullable();
+			$table->string('pt_code')->nullable();
 			$table->float('rating')->default(0);
-			$table->string('full_address');
+			$table->string('full_address')->nullable();
 			$table->unsignedBigInteger('village_id')->index();
 			$table->unsignedBigInteger('district_id')->index();
 			$table->unsignedBigInteger('city_id')->index();

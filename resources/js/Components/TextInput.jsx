@@ -9,18 +9,14 @@ export default forwardRef(function TextInput(
         className,
         autoComplete,
         required,
-        isFocused,
         handleChange,
+        placeholder,
+        max,
+        min,
     },
     ref
 ) {
     const input = ref ? ref : useRef();
-
-    useEffect(() => {
-        if (isFocused) {
-            input.current.focus();
-        }
-    }, []);
 
     return (
         <div className="flex flex-col items-start">
@@ -28,15 +24,18 @@ export default forwardRef(function TextInput(
                 type={type}
                 name={name}
                 id={id}
-                value={value}
+                defaultValue={value}
                 className={
                     `border-gray-300 focus:border-[#2C7E5B] focus:ring-[#2C7E5B] rounded-md shadow-sm ` +
                     className
                 }
                 ref={input}
+                min={min}
+                max={max}
                 autoComplete={autoComplete}
                 required={required}
                 onChange={(e) => handleChange(e)}
+                placeholder={placeholder}
             />
         </div>
     );

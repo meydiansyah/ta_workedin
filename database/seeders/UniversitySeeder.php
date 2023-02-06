@@ -15,22 +15,25 @@ class UniversitySeeder extends Seeder
      */
     public function run()
     {
-        // $listUniversities = [
-        //     [
-        //         'kodept'=> 031033,
-        //         'name' => 'Universitas Esa Unggul',
-        //         'email'=> 'pmb@esaunggul.ac.id',
-        //         'phone'=> '(021) 5674152',
-        //         'fax' => '(021) 5682503',
-        //         'logo' => null,
-        //         'url' => 'https://www.esaunggul.ac.id',
-        //         'full_address' => 'Jl Terusan Arjuna Tol Tomang Kebon Jeruk',
-                
-        //     ]
-        // ];
+        $listUniversities = [
+            [
+                'codept'=> 31033,
+                'name' => 'Universitas Esa Unggul',
+                'email'=> 'pmb@esaunggul.ac.id',
+                'phone'=> '(021) 5674152',
+                'fax' => '(021) 5682503',
+                'logo' => '/storage/university/logo-ueu.png',
+                'url' => 'https://www.esaunggul.ac.id',
+                'full_address' => 'Jl. Arjuna Utara No.9, Duri Kepa, Kec. Kb. Jeruk, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11510',
+                "province_id" => "11",
+                "city_id" => "158",
+                "district_id" => "1969",
+                "village_id" => "25505",
+            ]
+        ];
 
-        // foreach ($listSkills as $data) {
-        //     Skill::create(['name' => $data]);
-        // }
+        foreach ($listUniversities as $data) {
+            University::create($data);
+        }
     }
 }

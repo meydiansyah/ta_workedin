@@ -14,10 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('job_skills', function (Blueprint $table) {
-            $table->bigIncrements('id');
             $table->unsignedBigInteger('job_id')->index();
             $table->unsignedBigInteger('skill_id')->index();
-            $table->timestamps();
 			
 			$table->foreign('job_id')
 					->references('id')

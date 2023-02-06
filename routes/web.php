@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\FreelanceController;
+use App\Http\Controllers\JobController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\SkillController;
 use App\Http\Controllers\UniversityController;
+use App\Models\Company;
+use App\Models\University;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -35,38 +37,38 @@ Route::get('/admin/dashboard', function () {
 
 Route::middleware('auth')->group(function () {
 	Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+	Route::patch('/profile/freelance', [ProfileController::class, 'freelanceStore'])->name('profile.freelance.store');
+	Route::patch('/profile/client', [ProfileController::class, 'clientStore'])->name('profile.client.store');
+	Route::patch('/profile/{freelance}/freelance', [ProfileController::class, 'freelanceUpdate'])->name('profile.freelance.update');
+	Route::patch('/profile/{client}/client', [ProfileController::class, 'clientUpdate'])->name('profile.client.update');
+	Route::patch('/profile/{client}/company', [ProfileController::class, 'companyUpdate'])->name('profile.company.update');
+	Route::patch('/profile/{freelance}/university', [ProfileController::class, 'universityUpdate'])->name('profile.university.update');
+	Route::patch('/profile/{user}/status', [ProfileController::class, 'updateStatus'])->name('profile.status.update');
 	Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+	Route::patch('/profile', [ProfileController::class, 'freelanceUpdateSkills'])->name('freelance.update.skills');
 	Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 Route::get('/freelances', [FreelanceController::class, 'index'])->name('freelance');
+Route::get('/jobs', [JobController::class, 'index'])->name('jobs');
+Route::get('/jobs/{job}', [JobController::class, 'show'])->name('job.detail');
 Route::get('/university', [UniversityController::class, 'index'])->name('university');
-
-Route::middleware(['auth', 'checkRole:Admin'])->group(function () {
-	Route::get('/admin/freelances', [FreelanceController::class, 'index'])->name('admin.freelance');
-	Route::get('/admin/freelance/create', [FreelanceController::class, 'create'])->name('freelance.create');
-	Route::patch('/admin/freelance/create', [FreelanceController::class, 'store'])->name('freelance.store');
-	Route::get('/admin/freelance/edit', [FreelanceController::class, 'edit'])->name('freelance.edit');
-	Route::patch('/admin/freelance', [FreelanceController::class, 'update'])->name('freelance.update');
-	Route::delete('/admin/freelance', [FreelanceController::class, 'destroy'])->name('freelance.destroy');
-
-	Route::get('/admin/university', [UniversityController::class, 'index'])->name('admin.university');
-	Route::get('/admin/university/create', [UniversityController::class, 'create'])->name('university.create');
-	Route::post('/admin/university/major/create', [UniversityController::class, 'storeMajor'])->name('university.storeMajor');
-	Route::post('/admin/university/create', [UniversityController::class, 'store'])->name('university.store');
-	Route::get('/admin/university/{id}/detail', [UniversityController::class, 'show'])->name('university.detail');
-	Route::get('/admin/university/edit', [UniversityController::class, 'edit'])->name('university.edit');
-	Route::patch('/admin/university', [UniversityController::class, 'update'])->name('university.update');
-	Route::delete('/admin/university', [UniversityController::class, 'destroy'])->name('university.destroy');
-
-	Route::get('/admin/skills', [SkillController::class, 'index'])->name('admin.skills');
-	Route::post('/admin/skills', [SkillController::class, 'store'])->name('skill.store');
-	Route::patch('/admin/{skill}/skills', [SkillController::class, 'update'])->name('skill.update');
-	Route::delete('/admin/{skill}/skills', [SkillController::class, 'destroy'])->name('skill.destroy');
-
-});
+Route::get('/university/{university}/detail', [UniversityController::class, 'show'])->name('detail.university');
+// Route::get('/university', function() {
+// 	$university = University::all();
+// 	return Inertia::render('University/Index', [
+// 		'universities' => $university
+// 	]);
+// })->name('university');
+Route::get('/company', function() {
+	$company = Company::with('typeCompany')->get();
+	return Inertia::render('Company/Index', [
+		'companies' => $company
+	]);
+})->name('company');
 
 
-
+require __DIR__ . '/admin.php';
+require __DIR__ . '/pic.php';
 require __DIR__ . '/auth.php';
 require __DIR__ . '/location.php';

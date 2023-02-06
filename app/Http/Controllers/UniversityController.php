@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AdminStoreUniversityRequest;
+use App\Http\Requests\AdminUpdateUniversityRequest;
+use App\Models\Freelance;
 use App\Models\Major;
+use App\Models\MajorUniversity;
 use App\Models\University;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Laravolt\Indonesia\Models\Province;
 
@@ -18,13 +23,17 @@ class UniversityController extends Controller
 	 */
 	public function index()
 	{
-		if (Auth::user()) {
-			$universitas = University::all();
+		if (Auth::user() && Auth::user()->role_id === 1) {
+			$un = University::with(['majors', 'freelances'])->paginate(7);
 			return Inertia::render('Admin/University/Index', [
-				'universities'=> $universitas
+				'universities'=> $un,
+				'status' => session('status'),
 			]);
 		} else {
-			return Inertia::render('University/Index');
+			$universities = University::all();
+			return Inertia::render('University/Index', [
+				'universities' => $universities
+			]);
 		}
 	}
 
@@ -47,48 +56,33 @@ class UniversityController extends Controller
 	 * @param  \Illuminate\Http\Request  $request
 	 * @return \Illuminate\Http\Response
 	 */
-	public function store(Request $request)
+	public function store(AdminStoreUniversityRequest $request)
 	{
-		$validateData = $request->validate([
-			'codept' => 'required|string|max:255|min:1|unique:universities',
-			'name' => 'required|string|max:255|min:1|unique:universities',
-			'email' => 'required|string|max:255|min:1|unique:universities',
-			'phone' => 'required|string|max:255|min:1|unique:universities',
-			'fax' => 'required|string|max:255|min:1|unique:universities',
-			'url' => 'required|string|max:255|min:1|unique:universities',
-			'full_address' => 'required|string',
-			'province_id' => 'required|numeric',
-			'city_id' => 'required|numeric',
-			'district_id' => 'required|numeric',
-			'village_id' => 'required|numeric',
-			// 'logo' => 'image|file|max:10240',
+		$validate = $request->validated();
+		if($request->hasFile('logo')) {
+			$imageName = time() . '.' . $request['logo']->extension(); 
+			$path = $request->file('logo')->storeAs('university', $imageName, 'public');
+			$validate['logo'] = '/storage/'.$path;
+		}
 
-		]);
-
-			return Inertia::render('Admin/University/CreateMajor', [
-				'validateData' => $validateData
-			]);
-		
+		University::create($validate);
+		return redirect()->route('admin.university')->with('status', 'Berhasil menambahkan universitas.');
 	}
 
 	public function storeMajor(Request $request)
 	{
-		$un = University::create($request->get('validateData'));
-
-		foreach ($request->get('listData') as $major) {
-			Major::create([
-				'code' => $major['kode'],
-				'name' => $major['name'],
-				'level' => $major['level'],
-				'accredity' => $major['accredity'],
-				'sk' => $major['sk'],
-				'website' => $major['website'],
-				'date_standing' => $major['dateStanding'],
-				'pt_code' => $un->codept
-			]);
-		}
-
-		return redirect()->route('admin.university')->with('success', 'Universitas berhasil dibuat.');
+		$un = University::find($request->validateData['codept']);
+		Major::create([
+			'code' => $request['code'],
+			'name' => $request['name'],
+			'level' => $request['level'],
+			'accredity' => $request['accredity'],
+			'sk' => $request['sk'],
+			'website' => $request['website'],
+			'date_standing' => $request['dateStanding'],
+			'pt_code' => $request->validateData['codept']
+		]);
+		$un->majors()->attach($request['code']);
 	}
 
 
@@ -100,10 +94,22 @@ class UniversityController extends Controller
 	 */
 	public function show($id)
 	{
-		$data = University::where('codept', '=', $id)->get()->first();
-		return Inertia::render('Admin/University/Detail', [
-			'data' => $data
-		]);
+		$un = University::with(['majors', 'freelances', 'province', 'city', 'district','village'])->where('codept', $id)->get()->first();
+
+		if (Auth::user() && Auth::user()->role_id === 1) {
+			$mj = Major::with('freelances')->where('pt_code', $id)->paginate(7);
+			return Inertia::render('Admin/University/Detail', [
+				'university' => $un,
+				'majors' => $mj
+			]);
+		} else {
+			$mj = Major::with('freelances')->where('pt_code', $id)->get();
+			return Inertia::render('University/Detail', [
+				'university' => $un,
+				'majors' => $mj
+			]);
+		}
+
 	}
 
 	/**
@@ -114,8 +120,12 @@ class UniversityController extends Controller
 	 */
 	public function edit(University $university)
 	{
+		$province = Province::all();
+		$un = University::with(['majors', 'freelances', 'province', 'city', 'district', 'village'])->find($university)->first();
+
 		return Inertia::render('Admin/University/Edit', [
-			'data' => $university
+			'data' => $un,
+			'provinces' => $province,
 		]);
 	}
 
@@ -126,9 +136,43 @@ class UniversityController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function update(Request $request, $id)
+	public function update(AdminUpdateUniversityRequest $request, University $university)
 	{
-		//
+		$validate = $request->validated();
+
+		if($request->hasFile('logo')) {
+			$imageName = time() . '.' . $request['logo']->extension(); 
+			$path = $request->file('logo')->storeAs('university', $imageName, 'public');
+			$validate['logo'] = '/storage/'.$path;
+		} else {
+			$validate['logo'] = $university->logo;
+		}
+
+		$university->update($validate);
+		return redirect()->route('admin.university')->with('status', 'Universitas berhasil diperbarui');
+	}
+
+	public function updateMajor(Request $request, Major $major)
+	{
+		// dd($major);
+		$validate = $request->validate([
+			'code' => [
+				'required',
+				'numeric',
+				'min:3',
+				Rule::unique('majors')->ignore($major->code, 'code')
+			],
+			'name' => [
+				'required',
+				'string',
+				'max:255',
+				'min:3',
+				Rule::unique('majors')->ignore($major->name, 'name')
+			],
+        ]);
+
+		$major->update($validate);
+        return redirect()->back();
 	}
 
 	/**
@@ -137,8 +181,9 @@ class UniversityController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function destroy($id)
+	public function destroy(University $university)
 	{
-		//
+		$university->delete();
+        return redirect()->route('admin.university');
 	}
 }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Freelance;
+use App\Models\PicCompany;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tightenco\Ziggy\Ziggy;
@@ -38,30 +40,40 @@ class HandleInertiaRequests extends Middleware
 			'auth' => [
 				'user' => $request->user(),
 			],
-			'is_admin' => function () use ($request) {
+			'is_verified' => function() use ($request) {
 				$request = auth()->user();
-				if ($request && $request->role->id === 1) {
-					return true;
+				if($request) {
+					if($request->role_id === 3) {
+						$freelance = Freelance::with(['skills', 'university'])->where('user_id', '=', $request->id)->get()->first();
+						return $freelance && $freelance->skills->isNotEmpty() && $freelance->university && $request->email_verified_at;
+					} else {
+						$client = PicCompany::with('company')->where('user_id', '=', $request->id)->get()->first();
+						return $client && $client->company && $request->email_verified_at;
+					}
 				} else {
 					return false;
 				}
+			},
+			'is_admin' => function () use ($request) {
+				$request = auth()->user();
+				return $request && $request->role->id === 1;
 			},
 			'is_client' => function () use ($request) {
 				$request = auth()->user();
-				if ($request && $request->role->id === 2) {
-					return true;
-				} else {
-					return false;
-				}
+				return $request && $request->role->id === 2;
 			},
 			'is_freelance' => function () use ($request) {
 				$request = auth()->user();
-				if ($request && $request->role->id === 3) {
-					return true;
-				} else {
-					return false;
-				}
+				return $request && $request->role->id === 3;
 			},
+			'is_active' => function() use ($request) {
+				$request = auth()->user();
+				return $request && $request->status->id === 1;
+			},
+			'flash' => [
+				'success' => fn() => session('success'),
+				'error' => fn() => session('error'),
+			],
 			'ziggy' => function () use ($request) {
 				return array_merge((new Ziggy)->toArray(), [
 					'location' => $request->url(),

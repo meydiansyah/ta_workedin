@@ -18,7 +18,7 @@ export default function MajorCreate({ validateData }) {
     const { data, setData, post } = useForm(DataMajor);
 
     const addMajor = (
-        kode,
+        code,
         name,
         level,
         accredity,
@@ -27,16 +27,16 @@ export default function MajorCreate({ validateData }) {
         dateStanding
     ) => {
         setData({
-            kode: "",
+            code: "",
             name: "",
-            level: "",
-            accredity: "",
+            level: null,
+            accredity: null,
             sk: "",
             website: "",
-            dateStanding: "",
+            dateStanding: null,
             listData: [
                 {
-                    kode: kode,
+                    code: code,
                     name: name,
                     level: level,
                     accredity: accredity,
@@ -50,8 +50,8 @@ export default function MajorCreate({ validateData }) {
         });
     };
 
-    const removeMajor = (kode) => {
-        const newList = data.listData.filter((item) => item.kode !== kode);
+    const removeMajor = (code) => {
+        const newList = data.listData.filter((item) => item.code !== code);
         setData("listData", newList);
     };
 
@@ -72,7 +72,7 @@ export default function MajorCreate({ validateData }) {
                             >
                                 Universitas
                             </Link>
-                            <span className="mx-2"> {"/"} </span>
+                            <span className="mx-2 text-xl"> {">"} </span>
                             <h2 className="text-xl font-semibold leading-tight text-gray-800">
                                 Buat
                             </h2>
@@ -80,9 +80,9 @@ export default function MajorCreate({ validateData }) {
                         <div className="flex">
                             <Link
                                 href={route("admin.university")}
-                                className="inline-flex items-center px-4 py-2 text-xs font-bold tracking-widest uppercase bg-white border border-gray-600 rounded-md hover:bg-gray-100 focus:bg-gray active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-gray focus:ring-offset-2 transition ease-in-out duration-150"
+                                className="inline-flex items-center px-4 py-2 text-xs font-bold tracking-widest uppercase text-gray-900 "
                             >
-                                Batal
+                                {"< "} Batal
                             </Link>
                             <PrimaryButton className="ml-4">
                                 Simpan
@@ -114,19 +114,19 @@ export default function MajorCreate({ validateData }) {
                             <div className="mt-6 space-y-6">
                                 <div>
                                     <InputLabel
-                                        for="kode"
+                                        for="code"
                                         value="kode Jurusan"
                                     />
 
                                     <TextInput
-                                        id="kode"
+                                        id="code"
                                         className="block w-full mt-1"
-                                        value={data.kode}
+                                        value={data.code}
                                         handleChange={(e) =>
-                                            setData("kode", e.target.value)
+                                            setData("code", e.target.value)
                                         }
                                         autofocus
-                                        autoComplete="kode"
+                                        autoComplete="code"
                                     />
                                 </div>
                                 <div>
@@ -185,13 +185,12 @@ export default function MajorCreate({ validateData }) {
 
                                         <DatePicker
                                             onChange={(e) => {
-                                                console.log(e, "dd/mm/yyyy");
                                                 setData(
                                                     "dateStanding",
                                                     format(e, "dd/mm/yyyy")
                                                 );
                                             }}
-                                            value={date}
+                                            value={data.dateStanding}
                                             calendarIcon={null}
                                             clearIcon={null}
                                             className="border-0"
@@ -259,16 +258,16 @@ export default function MajorCreate({ validateData }) {
                                         type="button"
                                         onClick={(e) =>
                                             addMajor(
-                                                data.kode,
+                                                data.code,
                                                 data.name,
                                                 data.level,
                                                 data.accredity,
                                                 data.sk,
                                                 data.website,
-                                                date
+                                                data.dateStanding
                                             )
                                         }
-                                        className="inline-flex items-center px-4 py-2 text-xs font-bold tracking-widest uppercase bg-gray-600 text-white border rounded-md hover:bg-gray-100 focus:bg-gray active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-gray focus:ring-offset-2 transition ease-in-out duration-150"
+                                        className="inline-flex items-center px-4 py-2 text-xs font-bold tracking-widest uppercase bg-gray-600 text-white  border rounded-md hover:bg-gray-500 focus:bg-gray active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-gray focus:ring-offset-2 transition ease-in-out duration-150"
                                     >
                                         Tambah
                                     </button>
@@ -312,16 +311,16 @@ export default function MajorCreate({ validateData }) {
                                         </thead>
                                         <tbody>
                                             {data.listData.map(
-                                                ({ kode, name }) => (
+                                                ({ code, name }) => (
                                                     <tr
-                                                        key={kode}
+                                                        key={code}
                                                         className="bg-white border-b "
                                                     >
                                                         <th
                                                             scope="row"
                                                             className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap "
                                                         >
-                                                            {kode}
+                                                            {code}
                                                         </th>
                                                         <td className="px-6 py-4">
                                                             {name}
@@ -333,7 +332,7 @@ export default function MajorCreate({ validateData }) {
                                                                     e
                                                                 ) => {
                                                                     setData({
-                                                                        kode: kode,
+                                                                        code: code,
                                                                         name: name,
                                                                         listData:
                                                                             data.listData,
@@ -349,7 +348,7 @@ export default function MajorCreate({ validateData }) {
                                                                 type="button"
                                                                 onClick={(e) =>
                                                                     removeMajor(
-                                                                        kode
+                                                                        code
                                                                     )
                                                                 }
                                                                 className="font-medium ml-4 text-red-600  hover:underline"

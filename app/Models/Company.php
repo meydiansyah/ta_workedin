@@ -4,6 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Laravolt\Indonesia\Models\City;
+use Laravolt\Indonesia\Models\District;
+use Laravolt\Indonesia\Models\Province;
+use Laravolt\Indonesia\Models\Village;
 
 class Company extends Model
 {
@@ -16,6 +20,7 @@ class Company extends Model
         'fax',
         'phone',
 		'type_company_id',
+		// 'pic_company_id',
         'rating',
         'full_address',
         'village_id',
@@ -38,24 +43,43 @@ class Company extends Model
     }
 
     /**
-     * Get PIC Company Data
+     * Get Type Company Data
      */
     public function typeCompany()
     {
-        return $this->belongsTo(TypeCompany::class, 'type_company_id');
+        return $this->belongsTo(TypeCompany::class, 'type_company_id', 'id');
     }
-
-    public function typeCompanies()
+    
+    /**
+     * Get Type PICCompany Data
+     */
+    public function companyPic()
     {
-        return $this->belongsToMany(TypeCompany::class);
+        // return $this->belongsTo(PicCompany::class, 'company_id', 'id');
+        return $this->belongsToMany(PicCompany::class, 'company_pic', 'company_id', 'pic_company_id');
     }
 
      /**
      * Get Location Data
      */
-	public function location()
-	{
-		return $this->belongsTo(Location::class);
-	}
+	public function village()
+    {
+        return $this->belongsTo(Village::class, 'village_id');
+    }
+
+	public function district()
+    {
+        return $this->belongsTo(District::class, 'district_id');
+    }
+
+    public function city()
+    {
+        return $this->belongsTo(City::class, 'city_id');
+    }
+
+    public function province()
+    {
+        return $this->belongsTo(Province::class, 'province_id');
+    }
 
 }

@@ -19,14 +19,14 @@ return new class extends Migration
 
             $table->string('first_name');
             $table->string('last_name');
-			$table->string('phone');
-            $table->string('email');
+			$table->string('phone')->unique();
+            $table->string('email')->unique();
             $table->unsignedBigInteger('company_id')->index()->nullable()->unique();
-            $table->string('title');
+            $table->string('title')->nullable();
             $table->string('image_url', 2048)->nullable();
-            $table->string('nip');
+            $table->string('nip')->nullable();
             $table->string('nik');
-            $table->string('full_address')->unique();
+            $table->string('full_address')->nullable();
             $table->unsignedBigInteger('village_id')->index();
             $table->unsignedBigInteger('district_id')->index();
             $table->unsignedBigInteger('city_id')->index();
@@ -62,6 +62,12 @@ return new class extends Migration
 			$table->foreign('province_id')
 					 ->references('id')
 					 ->on('indonesia_provinces')
+					 ->onUpdate('cascade')
+					 ->onDelete('cascade');
+
+            $table->foreign('company_id')
+					 ->references('id')
+					 ->on('companies')
 					 ->onUpdate('cascade')
 					 ->onDelete('cascade');
         });

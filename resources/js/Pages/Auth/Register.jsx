@@ -12,6 +12,7 @@ export default function Register() {
         email: "",
         password: "",
         password_confirmation: "",
+        role_id: 3,
     });
 
     const [freelance, setFreelance] = useState(true);
@@ -24,7 +25,6 @@ export default function Register() {
     }, []);
 
     const onHandleChange = (event) => {
-        console.log(freelance);
         setData(
             event.target.name,
             event.target.type === "checkbox"
@@ -40,12 +40,13 @@ export default function Register() {
     };
 
     const clickFreelance = (e) => {
-        console.log("setFreelance");
+        setData("role_id", 3);
         setFreelance(true);
         setClient(false);
     };
 
     const clickClient = (e) => {
+        setData("role_id", 2);
         setFreelance(false);
         setClient(true);
     };
@@ -60,9 +61,9 @@ export default function Register() {
                         <div
                             className={`${
                                 freelance
-                                    ? "bg-white shadow-md border-transparent hover:bg-transparent"
-                                    : "bg-transparent border-[#2C7E5B]"
-                            } text-center rounded-lg px-12 py-2 border-2  hover:cursor-pointer hover:opacity-90`}
+                                    ? "bg-white shadow-md border-transparent hover:cursor-default"
+                                    : "bg-transparent border-[#2C7E5B] opacity-50"
+                            } text-center rounded-lg px-12 py-2 border-2  hover:cursor-pointer hover:opacity-100`}
                             onClick={clickFreelance}
                         >
                             <h2>Freelancer</h2>
@@ -70,8 +71,8 @@ export default function Register() {
                         <div
                             className={`${
                                 client
-                                    ? "bg-white shadow-md border-transparent hover:bg-transparent"
-                                    : "bg-transparent border-[#2C7E5B]"
+                                    ? "bg-white shadow-md border-transparent hover:cursor-default"
+                                    : "bg-transparent border-[#2C7E5B] opacity-50"
                             } text-center rounded-lg px-12 py-2 border-2  hover:cursor-pointer hover:opacity-90`}
                             onClick={clickClient}
                         >

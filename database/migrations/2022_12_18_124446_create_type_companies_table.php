@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('type_companies', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
-            $table->timestamps();
+            $table->string('code')->nullable();
         });
     }
 

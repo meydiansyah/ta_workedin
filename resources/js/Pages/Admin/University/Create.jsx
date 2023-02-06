@@ -7,6 +7,7 @@ import { Head, Link, useForm } from "@inertiajs/inertia-react";
 import axios from "axios";
 import { useState } from "react";
 import { DataUniversity } from "./data/Interface";
+import { FormAddress } from "@/Components/Forms/Form_Address";
 // import ImageUploading from "react-images-uploading";
 
 export default function UniversityCreate({ provinces }) {
@@ -24,7 +25,11 @@ export default function UniversityCreate({ provinces }) {
     };
 
     return (
-        <form onSubmit={submit} className="space-y-6">
+        <form
+            onSubmit={submit}
+            className="space-y-6"
+            encType="multipartform-data"
+        >
             <AuthenticatedLayout
                 header={
                     <div className="flex justify-between">
@@ -43,12 +48,12 @@ export default function UniversityCreate({ provinces }) {
                         <div className="flex">
                             <Link
                                 href={route("admin.university")}
-                                className="inline-flex items-center px-4 py-2 text-xs font-bold tracking-widest uppercase bg-white border border-gray-600 rounded-md hover:bg-gray-100 focus:bg-gray active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-gray focus:ring-offset-2 transition ease-in-out duration-150"
+                                className="inline-flex items-center px-4 py-2 text-xs font-bold tracking-widest uppercase text-gray-900 "
                             >
-                                Batal
+                                {"< "} Batal
                             </Link>
                             <PrimaryButton className="ml-4 bg-blue-600">
-                                Lanjut
+                                Simpan
                             </PrimaryButton>
                         </div>
                     </div>
@@ -57,8 +62,8 @@ export default function UniversityCreate({ provinces }) {
                 <Head title="Admin - Create University" />
 
                 <div className="py-10">
-                    <div className="mx-auto max-w-7xl md:flex md:space-x-6 sm:px-6 lg:px-8">
-                        <div className="p-4 md:grow bg-white shadow sm:p-8 sm:rounded-lg">
+                    <div className="mx-auto max-w-7xl grid md:grid-cols-7 md:space-x-6 space-y-6 md:space-y-0 sm:px-6 lg:px-8 ">
+                        <div className="p-4 md:col-span-4 bg-white shadow sm:p-8 sm:rounded-lg">
                             <header>
                                 <h2 className="text-lg font-medium text-gray-900">
                                     Informasi Universitas
@@ -179,8 +184,7 @@ export default function UniversityCreate({ provinces }) {
                                         message={errors.fax}
                                     />
                                 </div>
-                                {/* TODO: Next feature */}
-                                {/* <div>
+                                <div>
                                     <InputLabel for="logo">
                                         Logo{" "}
                                         <span className="inline-block text-sm text-gray-600">
@@ -203,7 +207,7 @@ export default function UniversityCreate({ provinces }) {
                                         className="mt-2"
                                         message={errors.logo}
                                     />
-                                </div> */}
+                                </div>
 
                                 <div>
                                     <InputLabel for="url" value="Url" />
@@ -227,292 +231,13 @@ export default function UniversityCreate({ provinces }) {
                                 </div>
                             </div>
                         </div>
-                        <div className=" p-4 md:grow-0 my-12 md:my-auto bg-white shadow sm:p-8 sm:rounded-lg">
-                            <header>
-                                <h2 className="text-lg font-medium text-gray-900">
-                                    Detail alamat
-                                </h2>
-
-                                <p className="mt-1 text-sm text-gray-600">
-                                    Pastikan alamat sesuai dengan data dari :{" "}
-                                    <Link
-                                        href="https://pddikti.kemdikbud.go.id"
-                                        className="text-blue-500 underline"
-                                    >
-                                        https://pddikti.kemdikbud.go.id
-                                    </Link>
-                                </p>
-                            </header>
-                            <div className="mt-6 space-y-6">
-                                <div>
-                                    <InputLabel
-                                        for="full_address"
-                                        value="Alamat Lengkap"
-                                    />
-
-                                    <textarea
-                                        id="full_address"
-                                        className="block w-full mt-1 border-gray-300 focus:border-[#2C7E5B] focus:ring-[#2C7E5B] rounded-md shadow-sm"
-                                        value={data.full_address}
-                                        onChange={(e) =>
-                                            setData(
-                                                "full_address",
-                                                e.target.value
-                                            )
-                                        }
-                                    />
-
-                                    <InputError
-                                        className="mt-2"
-                                        message={errors.full_address}
-                                    />
-                                </div>
-
-                                <div>
-                                    <InputLabel
-                                        for="province_id"
-                                        value="Provinsi"
-                                    />
-
-                                    <select
-                                        id="province_id"
-                                        className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                                        defaultValue="pilih"
-                                        onChange={(val) => {
-                                            if (val.target.value !== "pilih") {
-                                                setGetLocation(true);
-                                                setData(
-                                                    "province_id",
-                                                    val.target.value
-                                                );
-                                                axios
-                                                    .get(route("cities"), {
-                                                        params: {
-                                                            id: val.target
-                                                                .value,
-                                                        },
-                                                    })
-                                                    .then((res) => {
-                                                        setCity(res.data);
-                                                        if (district) {
-                                                            setDistrict(null);
-                                                        }
-                                                        if (village) {
-                                                            setVillage(null);
-                                                        }
-                                                        setGetLocation(false);
-                                                    });
-                                            } else {
-                                                setCity(null);
-                                                setDistrict(null);
-                                                setVillage(null);
-                                            }
-                                        }}
-                                    >
-                                        <option value="pilih">
-                                            Pilih provinsi
-                                        </option>
-
-                                        {provinces.map((item) => (
-                                            <option
-                                                key={item.id}
-                                                value={item.id}
-                                            >
-                                                {item.name}
-                                            </option>
-                                        ))}
-                                    </select>
-
-                                    <InputError
-                                        className="mt-2"
-                                        message={errors.province_id}
-                                    />
-                                </div>
-
-                                {city && (
-                                    <div>
-                                        <InputLabel
-                                            for="city_id"
-                                            value="Kabupaten / Kota"
-                                        />
-
-                                        <select
-                                            id="city_id"
-                                            className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                                            defaultValue={city[0].name}
-                                            onChange={(val) => {
-                                                if (
-                                                    val.target.value !== "pilih"
-                                                ) {
-                                                    setGetLocation(true);
-
-                                                    setData(
-                                                        "city_id",
-                                                        val.target.value
-                                                    );
-                                                    axios
-                                                        .get(
-                                                            route("districts"),
-                                                            {
-                                                                params: {
-                                                                    id: val
-                                                                        .target
-                                                                        .value,
-                                                                },
-                                                            }
-                                                        )
-                                                        .then((res) => {
-                                                            setDistrict(
-                                                                res.data
-                                                            );
-                                                            if (village) {
-                                                                setVillage(
-                                                                    null
-                                                                );
-                                                            }
-                                                            setGetLocation(
-                                                                false
-                                                            );
-                                                        });
-                                                } else {
-                                                    setDistrict(null);
-                                                    setVillage(null);
-                                                }
-                                            }}
-                                        >
-                                            {/* <option value="pilih">
-                                                Pilih kota
-                                            </option> */}
-                                            {city.map(({ name, id }) => (
-                                                <option value={id} key={id}>
-                                                    {name}
-                                                </option>
-                                            ))}
-                                        </select>
-
-                                        <InputError
-                                            className="mt-2"
-                                            message={errors.city_id}
-                                        />
-                                    </div>
-                                )}
-
-                                {district && (
-                                    <div>
-                                        <InputLabel
-                                            for="district_id"
-                                            value="Kecamatan"
-                                        />
-
-                                        <select
-                                            id="district_id"
-                                            className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                                            defaultValue={district[0].name}
-                                            onChange={(val) => {
-                                                if (
-                                                    val.target.value !== "pilih"
-                                                ) {
-                                                    setGetLocation(true);
-
-                                                    setData(
-                                                        "district_id",
-                                                        val.target.value
-                                                    );
-                                                    axios
-                                                        .get(
-                                                            route("villages"),
-                                                            {
-                                                                params: {
-                                                                    id: val
-                                                                        .target
-                                                                        .value,
-                                                                },
-                                                            }
-                                                        )
-                                                        .then((res) => {
-                                                            setVillage(
-                                                                res.data
-                                                            );
-                                                            setGetLocation(
-                                                                false
-                                                            );
-                                                        });
-                                                } else {
-                                                    setDistrict(null);
-                                                }
-                                            }}
-                                        >
-                                            {/* <option value="pilih">
-                                                Pilih Kecamatan
-                                            </option> */}
-                                            {district.map(({ name, id }) => (
-                                                <option
-                                                    id={id}
-                                                    value={id}
-                                                    key={id}
-                                                >
-                                                    {name}
-                                                </option>
-                                            ))}
-                                        </select>
-
-                                        <InputError
-                                            className="mt-2"
-                                            message={errors.city_id}
-                                        />
-                                    </div>
-                                )}
-
-                                {village && (
-                                    <div>
-                                        <InputLabel
-                                            for="village_id"
-                                            value="Desa"
-                                        />
-
-                                        <select
-                                            id="village_id"
-                                            className="mt-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-                                            defaultValue={village[0].name}
-                                            onChange={(val) => {
-                                                if (
-                                                    val.target.value !== "pilih"
-                                                ) {
-                                                    setData(
-                                                        "village_id",
-                                                        val.target.value
-                                                    );
-                                                } else {
-                                                    setVillage(null);
-                                                }
-                                            }}
-                                        >
-                                            {/* <option value="pilih">
-                                                Pilih Desa
-                                            </option> */}
-                                            {village.map(({ name, id }) => (
-                                                <option
-                                                    id={id}
-                                                    value={id}
-                                                    key={id}
-                                                >
-                                                    {name}
-                                                </option>
-                                            ))}
-                                        </select>
-
-                                        <InputError
-                                            className="mt-2"
-                                            message={errors.village_id}
-                                        />
-                                    </div>
-                                )}
-                                {getLocation && (
-                                    <h2 className="text-lg font-medium text-gray-900 opacity-80">
-                                        memuat ...
-                                    </h2>
-                                )}
-                            </div>
+                        <div className="md:col-span-3 mt-0">
+                            <FormAddress
+                                data={data}
+                                setData={setData}
+                                errors={errors}
+                                provinces={provinces}
+                            />
                         </div>
                     </div>
                 </div>

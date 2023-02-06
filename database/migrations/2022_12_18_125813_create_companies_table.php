@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('fax');
             $table->string('phone');
 			$table->unsignedBigInteger('type_company_id')->index();
+            // $table->unsignedBigInteger('pic_company_id')->index()->nullable()->unique();
             $table->float('rating')->default(0);
             $table->string('full_address')->unique();
             $table->unsignedBigInteger('village_id')->index();
@@ -58,6 +59,12 @@ return new class extends Migration
 					 ->on('indonesia_provinces')
 					 ->onUpdate('cascade')
 					 ->onDelete('cascade');
+            
+            // $table->foreign('pic_company_id')
+			// 		 ->references('id')
+			// 		 ->on('pic_companies')
+			// 		 ->onUpdate('cascade')
+			// 		 ->onDelete('cascade');
 
         });
     }

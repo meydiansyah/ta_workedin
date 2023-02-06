@@ -11,9 +11,11 @@ import { useState } from "react";
 import { AiFillCloseCircle } from "react-icons/ai";
 
 export default function SkillAdmin(props) {
-    // const { data } = usePage().props;
+    const { flash } = usePage().props;
     const [show, setShow] = useState(false);
+    const [showFlash, setShowFlash] = useState(false);
     const [edit, setEdit] = useState(false);
+    const [progress, setProgress] = useState(false);
     const [showError, setShowError] = useState(null);
     const { data, setData, patch, post, errors } = useForm({
         id: "",
@@ -24,10 +26,15 @@ export default function SkillAdmin(props) {
         e.preventDefault();
         if (edit) {
             patch(route("skill.update", data), {
-                onError: () => setShowError(true),
-
+                onError: () => {
+                    setShowError(true);
+                    setProgress(false);
+                },
+                onBefore: () => setProgress(true),
                 onSuccess: () => {
                     setShowError(true);
+                    setProgress(false);
+
                     setTimeout(
                         function () {
                             setData({});
@@ -40,10 +47,14 @@ export default function SkillAdmin(props) {
             });
         } else {
             post(route("skill.store"), {
-                onError: () => setShowError(true),
+                onError: () => {
+                    setShowError(true);
+                    setProgress(false);
+                },
+                onBefore: () => setProgress(true),
                 onSuccess: () => {
                     setShowError(true);
-
+                    setProgress(false);
                     setTimeout(
                         function () {
                             setData({});
@@ -79,7 +90,7 @@ export default function SkillAdmin(props) {
         >
             <Head title="Admin - University" />
 
-            {props.skills && (
+            {props.skills.data && (
                 <div className="py-12">
                     <div className="max-w-4xl mx-auto sm:px-6 lg:px-8">
                         <Transition
@@ -153,14 +164,27 @@ export default function SkillAdmin(props) {
                                                     message="update berhasil"
                                                 />
                                             ))}
+                                        {progress && (
+                                            <div className="text-sm text-gray-500 mt-2">
+                                                memuat ...
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </form>
                         </Transition>
 
                         <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                            <div className="p-6 text-gray-900">
-                                Daftar Skills
+                            <div className="flex justify-between">
+                                <div className="p-6 text-gray-900">
+                                    Daftar Skills
+                                </div>
+                                {props.skills.last_page >= 2 && (
+                                    <div className="p-6 text-gray-900">
+                                        {props.skills.current_page} dari{" "}
+                                        {props.skills.last_page} halaman
+                                    </div>
+                                )}
                             </div>
 
                             <div className="relative mx-4 mb-4 overflow-x-auto sm:rounded-lg">
@@ -171,7 +195,7 @@ export default function SkillAdmin(props) {
                                                 scope="col"
                                                 className="px-6 py-3"
                                             >
-                                                No
+                                                Kode
                                             </th>
                                             <th
                                                 scope="col"
@@ -190,68 +214,89 @@ export default function SkillAdmin(props) {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {props.skills.map(
-                                            (dataSkill, index) => (
-                                                <tr
-                                                    key={dataSkill.id}
-                                                    className={`border-b hover:cursor-pointer hover:bg-gray-100 hover:underline hover:underline-offset-4 ${
-                                                        data === dataSkill
-                                                            ? "bg-gray-100"
-                                                            : "bg-white"
-                                                    }`}
-                                                    onClick={(e) => {
-                                                        setShow(true);
-                                                        setEdit(true);
-                                                        setShowError(false);
-                                                        setData(dataSkill);
-                                                    }}
+                                        {props.skills.data.map((dataSkill) => (
+                                            <tr
+                                                key={dataSkill.id}
+                                                className={`border-b hover:cursor-pointer hover:bg-gray-100 hover:underline hover:underline-offset-4 ${
+                                                    data === dataSkill
+                                                        ? "bg-gray-100"
+                                                        : "bg-white"
+                                                }`}
+                                                onClick={(e) => {
+                                                    setShow(true);
+                                                    setEdit(true);
+                                                    setShowError(false);
+                                                    setData(dataSkill);
+                                                }}
+                                            >
+                                                <th
+                                                    scope="row"
+                                                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
                                                 >
-                                                    <th
-                                                        scope="row"
-                                                        className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
-                                                    >
-                                                        {index + 1}
-                                                    </th>
-                                                    <td className="px-6 py-4">
-                                                        {dataSkill.name}
-                                                    </td>
+                                                    {dataSkill.id}
+                                                </th>
+                                                <td className="px-6 py-4">
+                                                    {dataSkill.name}
+                                                </td>
 
-                                                    <td className="px-6 py-4 text-right">
-                                                        <button
-                                                            typeof="button"
-                                                            onClick={() => {
-                                                                if (
-                                                                    confirm(
-                                                                        "Are you sure you want to delete this user?"
-                                                                    )
-                                                                ) {
-                                                                    Inertia.delete(
-                                                                        route(
-                                                                            "skill.destroy",
-                                                                            dataSkill.id
-                                                                        ),
-                                                                        {
-                                                                            onSuccess:
-                                                                                () =>
-                                                                                    setShowError(
-                                                                                        false
-                                                                                    ),
-                                                                        }
-                                                                    );
-                                                                }
-                                                            }}
-                                                            className="font-medium ml-4 text-red-600  hover:underline"
-                                                        >
-                                                            Hapus
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            )
-                                        )}
+                                                <td className="px-6 py-4 text-right">
+                                                    <button
+                                                        typeof="button"
+                                                        onClick={() => {
+                                                            if (
+                                                                confirm(
+                                                                    "Are you sure you want to delete this user?"
+                                                                )
+                                                            ) {
+                                                                Inertia.delete(
+                                                                    route(
+                                                                        "skill.destroy",
+                                                                        dataSkill.id
+                                                                    ),
+                                                                    {
+                                                                        onSuccess:
+                                                                            () =>
+                                                                                setShowError(
+                                                                                    false
+                                                                                ),
+                                                                    }
+                                                                );
+                                                            }
+                                                        }}
+                                                        className="font-medium ml-4 text-red-600  hover:underline"
+                                                    >
+                                                        Hapus
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
                                     </tbody>
                                 </table>
                             </div>
                         </div>
+                        {props.skills.last_page !== 1 && (
+                            <div className="flex justify-between mt-6 text-sm">
+                                {props.skills.current_page !== 1 ? (
+                                    <Link
+                                        href={props.skills.prev_page_url}
+                                        className="py-2 px-4 rounded-md bg-white shadow-sm hover:underline"
+                                    >
+                                        {"< "} Sebelumnya
+                                    </Link>
+                                ) : (
+                                    <div></div>
+                                )}
+                                {props.skills.current_page !==
+                                    props.skills.last_page && (
+                                    <Link
+                                        href={props.skills.next_page_url}
+                                        className="py-2 px-4 rounded-md bg-white shadow-sm hover:underline"
+                                    >
+                                        {"> "} Selanjutnya
+                                    </Link>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </div>
             )}

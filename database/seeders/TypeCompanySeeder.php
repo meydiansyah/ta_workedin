@@ -15,17 +15,38 @@ class TypeCompanySeeder extends Seeder
     public function run()
     {
 		$listType = [
-			'Perseorangan',
-			'CV (Persekutuan Komanditer)',
-			'PT (Perseroan Terbatas)',
-			'Firma',
-			'Persero',
-			'Perum (Perusahaan Umum)',
-			'Yayasan'
+			[
+				'name'=> 'Perseorangan',
+				'code' => 'Perseorangan',
+			],
+			[
+				'name' => 'CV (Persekutuan Komanditer)',
+				'code' => 'CV'
+			],
+			[
+				'name' => 'PT (Perseroan Terbatas)',
+				'code' => 'PT'
+			],
+			[
+				'name' => 'Firma',
+				'code' => 'Firma'
+			],
+			[
+				'name' => 'Persero',
+				'code' => 'Persero'
+			],
+			[
+				'name' => 'Perum (Perusahaan Umum)',
+				'code' => 'Perum'
+			],
+			[
+				'name' => 'Yayasan',
+				'code' => 'Yayasan'
+			]
 		];
 
 		foreach($listType as $data) {
-			TypeCompany::create(['name' => $data]);
+			TypeCompany::create($data);
 		}
     }
 }

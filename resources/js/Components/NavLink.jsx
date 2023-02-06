@@ -1,9 +1,17 @@
 import { Link, usePage } from "@inertiajs/inertia-react";
 
-export default function NavLink({ href, active, children, className }) {
+export default function NavLink({
+    href,
+    active,
+    children,
+    onClick,
+    preserveState = true,
+}) {
     const { is_admin } = usePage().props;
     return (
         <Link
+            onClick={onClick}
+            preserveState={preserveState}
             href={href}
             className={
                 active

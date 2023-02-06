@@ -26,6 +26,8 @@ class DatabaseSeeder extends Seeder
 			TypeCompanySeeder::class,
 			SkillSeeder::class,
             UserSeeder::class,
+            UniversitySeeder::class,
+            MajorSeeder::class,
         ]);
 
     }

@@ -28,7 +28,8 @@ class Job extends Model
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($query) use ($search) {
-                $query->where('name', 'like', '%' . $search . '%');
+                $query->where('title', 'like', '%' . $search . '%')
+                    ->orWhere('company.name', '%' . $search. '%');
             });
         });
     }
@@ -43,7 +44,7 @@ class Job extends Model
 
     public function statuses()
     {
-        return $this->belongsToMany(Status::class);
+        return $this->belongsToMany(Status::class, 'job_status', 'job_id', 'id');
     }
 
     /**
@@ -56,6 +57,11 @@ class Job extends Model
 
     public function companies()
     {
-        return $this->belongsToMany(Company::class);
+        return $this->belongsToMany(Company::class, 'job_company', 'job_id', 'id');
+    }
+
+    public function skills()
+    {
+        return $this->belongsToMany(Skill::class, 'job_skills', 'job_id', 'skill_id');
     }
 }

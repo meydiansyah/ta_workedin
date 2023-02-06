@@ -34,6 +34,12 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request)
     {
         $request->authenticate();
+        if(auth()->user()->status_id === 7) {
+            auth()->logout();
+            return redirect()->route('login')->withErrors([
+                'email' => trans('auth.failed'),
+            ]);
+        }
 
         $request->session()->regenerate();
 

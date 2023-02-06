@@ -15,7 +15,7 @@ class SkillController extends Controller
      */
     public function index()
     {
-        $skill = Skill::all();
+        $skill = Skill::paginate(5);
         return Inertia::render('Admin/Skills/Index', [
             'skills' => $skill,
         ]);
@@ -44,7 +44,7 @@ class SkillController extends Controller
         ]);
 
         Skill::create($validate);
-        return redirect()->route('admin.skills');
+        return redirect()->route('admin.skills')->with('success', 'Skill berhasil ditambahkan');
         
     }
 
@@ -80,11 +80,11 @@ class SkillController extends Controller
     public function update(Request $request, Skill $skill)
     {
         $validate = $request->validate([
-            'name'=>'required|string|min:1|unique:skills',
+            'name'=>'required|string|min:1|unique:skills,id,'.$skill->id,
         ]);
 
         $skill->update($validate);
-        return redirect()->route('admin.skills');
+        return redirect()->route('admin.skills')->with('success', 'Skill berhasil diperbarui');
     }
 
     /**
