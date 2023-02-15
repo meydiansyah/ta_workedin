@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('reviews', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->float('rating')->default(0);
-            $table->text('content');
+            $table->float('rating')->nullable();
+            $table->text('content')->nullable();
             $table->timestamps();
         });
     }

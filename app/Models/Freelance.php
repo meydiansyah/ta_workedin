@@ -32,6 +32,7 @@ class Freelance extends Model
         'email',
         'phone',
         'nik',
+        'bio',
         'nim',
         'major_code',
         'pt_code',
@@ -149,5 +150,9 @@ class Freelance extends Model
 
     public function skills() {
         return $this->belongsToMany(Skill::class, 'freelance_skills', 'freelance_id', 'skill_id');
+    }
+
+    public function reviews() {
+        return $this->belongsToMany(Review::class, 'freelance_reviews', 'freelance_id', 'review_id');
     }
 }

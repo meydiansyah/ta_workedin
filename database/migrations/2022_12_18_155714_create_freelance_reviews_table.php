@@ -14,10 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('freelance_reviews', function (Blueprint $table) {
-            $table->bigIncrements('id');
             $table->unsignedBigInteger('freelance_id')->index();
             $table->unsignedBigInteger('review_id')->index();
-            $table->timestamps();
 			
 			$table->foreign('freelance_id')
 					->references('id')

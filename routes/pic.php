@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PICCompanyController;
+use App\Http\Controllers\ResumeController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'checkRole:Client'])->prefix('pic')->group(function () {
@@ -8,6 +9,8 @@ Route::middleware(['auth', 'checkRole:Client'])->prefix('pic')->group(function (
 	Route::post('/company/create', [PICCompanyController::class, 'storeCompany'])->name('client.store.company');
 	Route::get('/company/{company}/edit', [PICCompanyController::class, 'editCompany'])->name('client.edit.company');
 	Route::post('/company/{company}', [PICCompanyController::class, 'updateCompany'])->name('client.update.company');
+
+	Route::get('/resume/{resume}/detail', [ResumeController::class, 'show'])->name('client.detail.resume');
 	
     Route::get('/job', [PICCompanyController::class, 'indexJob'])->name('client.job');
     Route::get('/job/create', [PICCompanyController::class, 'createJob'])->name('client.create.job');

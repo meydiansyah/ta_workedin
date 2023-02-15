@@ -78,7 +78,7 @@ export default function JobCreate({ companies, skills }) {
                                     message="*perusahaan belum memiliki penanggung jawab"
                                 />
                             )}
-                            <div>
+                            {/* <div>
                                 <InputLabel for="photo">
                                     Photo{" "}
                                     <span className="inline-block text-sm text-gray-600">
@@ -101,7 +101,7 @@ export default function JobCreate({ companies, skills }) {
                                     className="mt-2"
                                     message={errors.image_url}
                                 />
-                            </div>
+                            </div> */}
 
                             <div className="md:grid md:grid-cols-6 md:space-x-4">
                                 <div className="md:col-span-3">
@@ -165,7 +165,6 @@ export default function JobCreate({ companies, skills }) {
                                 <textarea
                                     id="description"
                                     className="block w-full mt-1 border-gray-300 focus:border-[#2C7E5B] focus:ring-[#2C7E5B] rounded-md shadow-sm"
-                                    value={data.description}
                                     onChange={(e) =>
                                         setData("description", e.target.value)
                                     }

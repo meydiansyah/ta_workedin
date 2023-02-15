@@ -35,7 +35,15 @@ export default function Edit({
     const [active, setActive] = useState(0);
     const skill = data.skills ?? [];
     const listView = [
-        <HomeView data={data} />,
+        <HomeView
+            data={data}
+            updateStatus={() => {
+                setShowAlert(true);
+                setTimeout(() => {
+                    setShowAlert(false);
+                }, 2000);
+            }}
+        />,
         <ProfileView
             status={status}
             data={data}
@@ -55,11 +63,7 @@ export default function Edit({
                     universities={universities}
                     majors={majors}
                     toProfile={() => {
-                        setShowAlert(true);
                         setActive(1);
-                        setTimeout(() => {
-                            setShowAlert(false);
-                        }, 2000);
                     }}
                 />
             ) : (
@@ -69,11 +73,7 @@ export default function Edit({
                     companies={companies}
                     provinces={provinces}
                     toProfile={() => {
-                        setShowAlert(true);
-                        setActive(2);
-                        setTimeout(() => {
-                            setShowAlert(false);
-                        }, 2000);
+                        setActive(1);
                     }}
                 />
             )}
@@ -84,17 +84,23 @@ export default function Edit({
                     data={data}
                     skills={skills}
                     toProfile={() => {
-                        setShowAlert(true);
-                        setActive(2);
-                        setTimeout(() => {
-                            setShowAlert(false);
-                        }, 2000);
+                        setActive(1);
                     }}
                 />
             )}
         </>,
         <PrivacyView status={status} />,
     ];
+
+    useEffect(() => {
+        if (status) {
+            setShowAlert(true);
+        }
+        setTimeout(() => {
+            setShowAlert(false);
+        }, 2000);
+    }, [status]);
+
     return (
         <AuthenticatedLayout
             header={
@@ -102,25 +108,25 @@ export default function Edit({
                     <h2 className="font-semibold text-xl text-gray-800 leading-tight">
                         Profile
                     </h2>
-                    <Transition
-                        show={showAlert}
-                        enterFrom="opacity-0"
-                        leaveTo="opacity-0"
-                        className="transition ease-in-out duration-700"
-                    >
-                        <div className="font-medium text-sm text-green-600">
-                            {status}
-                        </div>
-                    </Transition>
 
-                    {!user.email_verified_at && (
-                        <div className="flex space-x-4">
-                            {status === "verification-link-sent" && (
-                                <div className="mt-2 font-medium text-sm text-green-600">
-                                    A new verification link has been sent to
-                                    your email address.
-                                </div>
-                            )}
+                    <div className="flex space-x-4 items-center">
+                        <Transition
+                            show={showAlert}
+                            enterFrom="opacity-0"
+                            leaveTo="opacity-0"
+                            className="transition ease-in-out duration-700"
+                        >
+                            <div className="font-medium text-sm text-green-600">
+                                {status}
+                            </div>
+                        </Transition>
+                        {status === "verification-link-sent" && (
+                            <div className="mt-2 font-medium text-sm text-green-600">
+                                A new verification link has been sent to your
+                                email address.
+                            </div>
+                        )}
+                        {!user.email_verified_at && (
                             <Dropdown>
                                 <Dropdown.Trigger>
                                     {status === "verification-link-sent" ? (
@@ -150,8 +156,8 @@ export default function Edit({
                                     </div>
                                 </Dropdown.Content>
                             </Dropdown>
-                        </div>
-                    )}
+                        )}
+                    </div>
                 </div>
             }
         >

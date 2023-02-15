@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AdminStoreCompanyRequest;
 use App\Http\Requests\AdminUpdateCompanyRequest;
 use App\Models\Company;
+use App\Models\Job;
 use App\Models\TypeCompany;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -20,12 +21,21 @@ class CompanyController extends Controller
      */
     public function index()
     {
-        $data = Company::with(['typeCompany', 'companyPic', 'province', 'city', 'district', 'village'])->paginate(7);
-        return Inertia::render('Admin/Company/Index', [
-            'companies' => $data,
-            'status' => session('status'),
-        ]);
-
+        $user = auth()->user();
+        if($user && $user->role_id === 1) {
+            $data = Company::with(['typeCompany', 'companyPic', 'province', 'city', 'district', 'village'])->paginate(7);
+            return Inertia::render('Admin/Company/Index', [
+                'companies' => $data,
+                'status' => session('status'),
+            ]);
+        } else {
+            $data = Company::with(['typeCompany', 'companyPic', 'province', 'city', 'district', 'village'])->get();
+            return Inertia::render('Company/Index', [
+                'companies' => $data,
+                'status' => session('status'),
+            ]);
+        }
+        
     }
 
     /**
@@ -68,9 +78,39 @@ class CompanyController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Company $company)
     {
-        //
+        if(auth()->user() && auth()->user()->role_id !== 3) {
+            $data = Job::where('company_id', '=', $company->id)
+                    ->with(['company', 'company.typeCompany', 'company.companyPic', 'company.companyPic.user', 'company.province', 'company.city', 'company.district', 'company.village'])
+                    ->get();
+        } else {
+            $data = Job::where('status_id', '=', 1)
+            ->where('company_id', '=', $company->id)
+            ->with(['company', 'company.typeCompany', 'company.companyPic', 'company.companyPic.user', 'company.province', 'company.city', 'company.district', 'company.village'])
+            ->get();
+            // $data = Company::where('id', $company->id)
+            //     ->with(['typeCompany', 'companyPic', 'province', 'city', 'district', 'village', 'jobs'])
+            //     ->orWhereRelation('jobs', 'status_id', 'like', 1)
+            //     ->get()
+            //     ->first();
+                // dd($data->first()->company);
+        }
+
+        if($data->isEmpty()) {
+            $data = Company::with(['typeCompany', 'companyPic', 'companyPic.user', 'province', 'city', 'district', 'village'])
+                    ->where('id', $company->id)
+                    ->get()
+                    ->first();
+            return Inertia::render('Company/Detail', [
+                'company' => $data,
+            ]);
+        }
+        // dd($data);
+        return Inertia::render('Company/Detail', [
+            'company' => $data->first()->company,
+            'jobs' => $data,
+        ]);
     }
 
     /**

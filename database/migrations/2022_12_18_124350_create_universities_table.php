@@ -21,6 +21,7 @@ return new class extends Migration
 			$table->string('fax')->unique();
 			$table->string('logo')->nullable();
 			$table->string('url')->unique();
+			$table->float('rating')->default(0);
 			$table->string('full_address');
 			$table->unsignedBigInteger('village_id')->index();
 			$table->unsignedBigInteger('district_id')->index();

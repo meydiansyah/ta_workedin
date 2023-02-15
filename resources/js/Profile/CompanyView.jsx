@@ -182,7 +182,6 @@ export default function CompanyView({
                         client={data}
                         tapBack={() => {
                             setEdit(false);
-                            toProfile();
                         }}
                     />
                 )}

@@ -17,7 +17,7 @@ return new class extends Migration
 			$table->bigIncrements('id');
 			$table->unsignedBigInteger('user_id')->index()->unique();
 			$table->string('first_name');
-			$table->string('last_name');
+			$table->string('last_name')->nullable();
 			$table->string('image_url', 2048)->nullable();
 			$table->string('email')->unique();
 			$table->string('phone')->unique();

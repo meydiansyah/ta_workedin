@@ -4,12 +4,21 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\FreelanceController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\PicController;
+use App\Http\Controllers\ResumeController;
 use App\Http\Controllers\SkillController;
 use App\Http\Controllers\UniversityController;
 use App\Http\Controllers\UsersController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+
+Route::middleware(['auth', 'checkRole:Admin,Client'])->group(function() {
+	Route::get('/{job}/jobs/restore', [JobController::class, 'restore'])->name('job.restore');
+	Route::get('/{job}/jobs', [JobController::class, 'forceDestroy'])->name('job.force.destroy');
+	Route::delete('/{job}/jobs', [JobController::class, 'destroy'])->name('job.destroy');
+
+	Route::get('/history/{resume}/detail', [ResumeController::class, 'show'])->name('apply.detail');
+});
 
 Route::middleware(['auth', 'checkRole:Admin'])->prefix('admin')->group(function () {
 	Route::get('/users', [UsersController::class, 'index'])->name('admin.user');
@@ -52,7 +61,7 @@ Route::middleware(['auth', 'checkRole:Admin'])->prefix('admin')->group(function 
 		Route::get('/company', [CompanyController::class, 'index'])->name('admin.company');
 		Route::get('/company/create', [CompanyController::class, 'create'])->name('company.create');
 		Route::post('/company/create', [CompanyController::class, 'store'])->name('company.store');
-		Route::get('/company/{company}/detail', [CompanyController::class, 'show'])->name('company.detail');
+		// Route::get('/company/{company}/detail', [CompanyController::class, 'show'])->name('company.detail');
 		Route::get('/company/{company}/edit', [CompanyController::class, 'edit'])->name('company.edit');
 		Route::post('/{company}/company', [CompanyController::class, 'update'])->name('company.update');
 		Route::delete('/{company}/company', [CompanyController::class, 'destroy'])->name('company.destroy');
@@ -63,7 +72,7 @@ Route::middleware(['auth', 'checkRole:Admin'])->prefix('admin')->group(function 
 		Route::get('/jobs/{job}/detail', [JobController::class, 'show'])->name('admin.job.detail');
 		Route::get('/jobs/{job}/edit', [JobController::class, 'edit'])->name('job.edit');
 		Route::patch('/{job}/jobs', [JobController::class, 'update'])->name('job.update');
-		Route::delete('/{job}/jobs', [JobController::class, 'destroy'])->name('job.destroy');
 	});
 
 });
+

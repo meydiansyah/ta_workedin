@@ -38,57 +38,6 @@ export default function PrivacyView({ status }) {
                         </Transition>
                     )}
                 </div>
-                <div className="flex-col my-4 pb-6 space-y-6">
-                    <label className="flex items-center cursor-pointer">
-                        <Checkbox
-                            isChecked={data.status_id === 1}
-                            name="public"
-                            value={data.status_id === 1}
-                            handleChange={(e) => {
-                                // if (e.target.checked) {
-                                //     setData("status_id", 1);
-                                // }
-                                // console.log(e.target.checked);
-                                // setData("status_id", 1);
-                                // patch(route("profile.status.update", user.id));
-                                // location.reload();
-                            }}
-                        />
-                        <div className="flex-col ml-6">
-                            <div className="text-xl text-gray-800">
-                                Tampilkan profil
-                            </div>
-                            <div className="text-gray-500">
-                                Memungkinkan perusahaan untuk mencari profil dan
-                                melihat nama dan rincian informasi saya.
-                            </div>
-                        </div>
-                    </label>
-                    <label className="flex items-center cursor-pointer">
-                        <Checkbox
-                            isChecked={data.status_id === 2}
-                            name="private"
-                            value={data.status_id === 2}
-                            handleChange={(e) => {
-                                // console.log(e.target.checked);
-                                // if (e.target.checked) {
-                                //     setData("status_id", 2);
-                                // }
-                                // setData("status_id", 2);
-                                // patch(route("profile.status.update", user.id));
-                                // location.reload();
-                            }}
-                        />
-                        <div className="flex-col ml-6">
-                            <div className="text-xl text-gray-800">
-                                Sembunyikan
-                            </div>
-                            <div className="text-gray-500">
-                                Perusahaan tidak dapat mencari profil saya.
-                            </div>
-                        </div>
-                    </label>
-                </div>
                 {showInformation ? (
                     <UpdateProfileInformation
                         show={showInformation}

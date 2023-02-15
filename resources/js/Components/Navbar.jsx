@@ -9,8 +9,8 @@ import { Inertia } from "@inertiajs/inertia";
 import { ConfirmationModal } from "./ConfirmationModal";
 
 const Navbar = () => {
-    const { user, is_admin, is_client, is_freelance, is_verified } =
-        usePage().props;
+    const user = usePage().props.auth.user;
+    const { is_admin, is_client, is_freelance, is_verified } = usePage().props;
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
     const [showModal, setShowModal] = useState(false);
@@ -22,7 +22,7 @@ const Navbar = () => {
                     <div className="flex justify-between h-16">
                         <div className="flex space-x-6">
                             <Link href={route("home")} className="my-auto">
-                                <ApplicationLogo className="block w-auto text-gray-800 fill-current h-9" />
+                                <ApplicationLogo className="block w-auto h-9" />
                             </Link>
                             {user && !is_freelance ? (
                                 <>
@@ -58,19 +58,29 @@ const Navbar = () => {
                                                 Freelance
                                             </NavLink>
                                             <NavLink
-                                                href={route("freelance")}
-                                                active={route().current(
-                                                    "freelance"
-                                                )}
+                                                href={route("history.apply")}
+                                                active={
+                                                    route().current(
+                                                        "history.apply"
+                                                    ) ||
+                                                    route().current(
+                                                        "client.detail.resume"
+                                                    )
+                                                }
                                             >
                                                 Resumes
                                             </NavLink>
                                             <div className="md:flex hidden">
                                                 <NavLink
                                                     href={route("client.job")}
-                                                    active={route().current(
-                                                        "client.*.job"
-                                                    )}
+                                                    active={
+                                                        route().current(
+                                                            "client.job"
+                                                        ) ||
+                                                        route().current(
+                                                            "client.*.job"
+                                                        )
+                                                    }
                                                 >
                                                     Jobs
                                                 </NavLink>
@@ -138,12 +148,14 @@ const Navbar = () => {
                                                 Skills
                                             </NavLink>
                                             <NavLink
-                                                href={route("admin.skills")}
+                                                href={route("history.apply")}
                                                 active={
                                                     route().current(
-                                                        "admin.skills"
+                                                        "history.apply"
                                                     ) ||
-                                                    route().current("skills.*")
+                                                    route().current(
+                                                        "client.detail.resume"
+                                                    )
                                                 }
                                             >
                                                 Resumes
@@ -164,9 +176,21 @@ const Navbar = () => {
                                     </NavLink>
                                     <NavLink
                                         href={route("company")}
-                                        active={route().current("company")}
+                                        active={
+                                            route().current("company") ||
+                                            route().current("company.*")
+                                        }
                                     >
                                         Company
+                                    </NavLink>
+                                    <NavLink
+                                        href={route("freelance")}
+                                        active={
+                                            route().current("freelance") ||
+                                            route().current("freelance.*")
+                                        }
+                                    >
+                                        Freelances
                                     </NavLink>
                                     <NavLink
                                         preserveState={
@@ -261,7 +285,9 @@ const Navbar = () => {
                                             )}
                                             {is_freelance && (
                                                 <Dropdown.Link
-                                                    href={route("dashboard")}
+                                                    href={route(
+                                                        "history.apply"
+                                                    )}
                                                     method="get"
                                                     as="button"
                                                 >
@@ -381,9 +407,12 @@ const Navbar = () => {
                                             </ResponsiveNavLink>
                                             <ResponsiveNavLink
                                                 href={route("company")}
-                                                active={route().current(
-                                                    "company"
-                                                )}
+                                                active={
+                                                    route().current(
+                                                        "company"
+                                                    ) ||
+                                                    route().current("company.*")
+                                                }
                                             >
                                                 Company
                                             </ResponsiveNavLink>
@@ -394,9 +423,9 @@ const Navbar = () => {
                                                 Jobs
                                             </ResponsiveNavLink>
                                             <ResponsiveNavLink
-                                                href={route("dashboard")}
+                                                href={route("history.apply")}
                                                 active={route().current(
-                                                    "dashboard"
+                                                    "history.apply"
                                                 )}
                                             >
                                                 History
@@ -430,18 +459,28 @@ const Navbar = () => {
                                                 Freelance
                                             </ResponsiveNavLink>
                                             <ResponsiveNavLink
-                                                href={route("dashboard")}
-                                                active={route().current(
-                                                    "dashboard"
-                                                )}
+                                                href={route("history.apply")}
+                                                active={
+                                                    route().current(
+                                                        "history.apply"
+                                                    ) ||
+                                                    route().current(
+                                                        "client.detail.resume"
+                                                    )
+                                                }
                                             >
                                                 Resumes
                                             </ResponsiveNavLink>
                                             <ResponsiveNavLink
                                                 href={route("client.job")}
-                                                active={route().current(
-                                                    "client.*.job"
-                                                )}
+                                                active={
+                                                    route().current(
+                                                        "client.job"
+                                                    ) ||
+                                                    route().current(
+                                                        "client.*.job"
+                                                    )
+                                                }
                                             >
                                                 Jobs
                                             </ResponsiveNavLink>
@@ -520,10 +559,15 @@ const Navbar = () => {
                                                 Skills
                                             </ResponsiveNavLink>
                                             <ResponsiveNavLink
-                                                href={route("dashboard")}
-                                                active={route().current(
-                                                    "dashboard"
-                                                )}
+                                                href={route("history.apply")}
+                                                active={
+                                                    route().current(
+                                                        "history.apply"
+                                                    ) ||
+                                                    route().current(
+                                                        "client.detail.resume"
+                                                    )
+                                                }
                                             >
                                                 Resumes
                                             </ResponsiveNavLink>
@@ -555,7 +599,10 @@ const Navbar = () => {
                                     </ResponsiveNavLink>
                                     <ResponsiveNavLink
                                         href={route("company")}
-                                        active={route().current("company")}
+                                        active={
+                                            route().current("company") ||
+                                            route().current("company.*")
+                                        }
                                     >
                                         Company
                                     </ResponsiveNavLink>

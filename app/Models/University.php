@@ -27,6 +27,7 @@ class University extends Model
 		'fax',
 		'logo',
 		'url',
+		'rating',
 		'full_address',
 		'village_id',
 		'district_id',

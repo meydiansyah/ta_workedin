@@ -185,7 +185,6 @@ export default function UsersAdmin(props) {
                                 ) : (
                                     <div></div>
                                 )}
-                                x
                                 {props.users.current_page !==
                                     props.users.last_page && (
                                     <Link

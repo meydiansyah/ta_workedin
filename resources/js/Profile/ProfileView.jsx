@@ -45,6 +45,7 @@ export default function ProfileView({
                             <Link
                                 href={route("verification.send")}
                                 method="post"
+                                as="button"
                                 className="font-bold"
                             >
                                 Perbarui
@@ -162,10 +163,7 @@ export default function ProfileView({
                                     data={data.phone}
                                 />
                                 {data.bio && (
-                                    <Information
-                                        title="Nama Lengkap"
-                                        data={data.bio}
-                                    />
+                                    <Information title="Bio" data={data.bio} />
                                 )}
                                 <Information
                                     title="Alamat Lengkap"

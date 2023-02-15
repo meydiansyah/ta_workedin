@@ -59,6 +59,16 @@ class Company extends Model
         return $this->belongsToMany(PicCompany::class, 'company_pic', 'company_id', 'pic_company_id');
     }
 
+    public function jobs()
+    {
+        return $this->belongsToMany(Job::class, 'job_company', 'company_id', 'job_id');
+    }
+
+    public function reviews()
+    {
+        return $this->belongsToMany(Review::class, 'company_reviews', 'company_id', 'review_id');
+    }
+
      /**
      * Get Location Data
      */

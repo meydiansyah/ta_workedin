@@ -6,7 +6,7 @@ import { Head } from "@inertiajs/inertia-react";
 
 export default function JobAdmin(props) {
     return (
-        <AuthenticatedLayout header={<HeaderClient />}>
+        <AuthenticatedLayout header={<HeaderClient status={props.status} />}>
             <Head title="Admin - Freelance" />
 
             <CardJob jobs={props.job} />

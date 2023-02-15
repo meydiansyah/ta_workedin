@@ -28,11 +28,13 @@
         "vite": "^4.0.0"
     },
     "dependencies": {
+        "@tailwindcss/line-clamp": "^0.4.2",
         "date-fns": "^2.29.3",
         "moment": "^2.29.4",
         "nik-parser": "^1.0.1",
         "react-date-picker": "^9.1.0",
         "react-icons": "^4.7.1",
+        "react-rating": "^2.0.5",
         "react-select": "^5.7.0"
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdatePicRequest;
 use App\Models\Company;
 use App\Models\PicCompany;
 use App\Models\Status;
@@ -128,60 +129,69 @@ class PicController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, PicCompany $pic)
+    public function update(UpdatePicRequest $request, PicCompany $pic)
     {
+        $validate = $request->validated();
+        User::find($request->user_id)->update([
+            'status_id' => $request->status_id
+        ]);
+
+        $pic->update($validate);
+        $pic->companyPic()->sync($pic->company_id);
+
+        return redirect()->route('admin.pic');
         // dd($pic);
-        $rule = $request->validate([
-            'phone' => [
-				'required',
-				'string',
-				Rule::unique('pic_companies')->ignore($pic->phone, 'phone')
-			],
-			'nik' => [
-				'required',
-				'string',
-				Rule::unique('pic_companies')->ignore($pic->nik, 'nik')
-			],
-			'nip' => [
-				'required',
-				'string',
-				Rule::unique('pic_companies')->ignore($pic->nip, 'nip')
-			],
-            'company_id' => [
-				'required',
-				'numeric',
-				Rule::unique('pic_companies')->ignore($pic->company_id, 'company_id')
-			],
+        // $rule = $request->validate([
+        //     'phone' => [
+		// 		'required',
+		// 		'string',
+		// 		Rule::unique('pic_companies')->ignore($pic->id, 'phone')
+		// 	],
+		// 	'nik' => [
+		// 		'required',
+		// 		'string',
+		// 		Rule::unique('pic_companies')->ignore($pic->id, 'nik')
+		// 	],
+		// 	'nip' => [
+		// 		'required',
+		// 		'string',
+		// 		Rule::unique('pic_companies')->ignore($pic->id, 'nip')
+		// 	],
+        //     'company_id' => [
+		// 		'required',
+		// 		'numeric',
+		// 		Rule::unique('pic_companies')->ignore($pic->id, 'company_id')
+		// 	],
             
-		]);
+		// ]);
 
-		if($rule) {
-			$validatePic = $request->validate([
-                'first_name' => 'required|string|max:255|min:1',
-                'last_name' => 'required|string|max:255|min:1',
-                'phone' => 'required|string|max:255|min:1',
-                // 'bio' => 'string|max:255|min:1',
-                'nik' => 'required|string|max:255|min:1',
-                'nip' => 'string|max:255|min:1',
-                'title' => 'string',
-                'company_id' => 'required|numeric',
-                'full_address' => 'required|string',
-                'province_id' => 'required|numeric',
-                'city_id' => 'required|numeric',
-                'district_id' => 'required|numeric',
-                'village_id' => 'required|numeric',
-			]);
+		// if($rule) {
+		// 	$validatePic = $request->validate([
+        //         'first_name' => 'required|string|max:255|min:1',
+        //         'last_name' => 'required|string|max:255|min:1',
+        //         'phone' => 'required|string|max:255|min:1',
+        //         // 'bio' => 'string|max:255|min:1',
+        //         'nik' => 'required|string|max:255|min:1',
+        //         'nip' => 'string|max:255|min:1',
+        //         'title' => 'string',
+        //         'company_id' => 'required|numeric',
+        //         'full_address' => 'required|string',
+        //         'province_id' => 'required|numeric',
+        //         'city_id' => 'required|numeric',
+        //         'district_id' => 'required|numeric',
+        //         'village_id' => 'required|numeric',
+		// 	]);
 
-			User::find($request->user_id)->update([
-				'status_id' => $request->status_id
-			]);
+		// 	User::find($request->user_id)->update([
+		// 		'status_id' => $request->status_id
+		// 	]);
 
-			$pic->update($validatePic);
-            $pic->companyPic()->sync($pic->company_id);
+		// 	$pic->update($validatePic);
+        //     $pic->companyPic()->sync($pic->company_id);
 
-			return redirect()->route('admin.pic');
+		// 	return redirect()->route('admin.pic');
 
-		}
+		// }
 
     }
 

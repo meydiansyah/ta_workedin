@@ -1,6 +1,7 @@
 import { useState, createContext, useContext, Fragment } from "react";
 import { Link } from "@inertiajs/inertia-react";
 import { Transition } from "@headlessui/react";
+import { MdExpandLess, MdExpandMore } from "react-icons/md";
 
 const DropDownContext = createContext();
 
@@ -18,12 +19,23 @@ const Dropdown = ({ children }) => {
     );
 };
 
-const Trigger = ({ children }) => {
+const Trigger = ({ children, withIcon = false, className }) => {
     const { open, setOpen, toggleOpen } = useContext(DropDownContext);
 
     return (
-        <>
-            <div onClick={toggleOpen}>{children}</div>
+        <div className={className}>
+            <div className="flex space-x-2 items-center" onClick={toggleOpen}>
+                <>{children}</>
+                {withIcon && (
+                    <>
+                        {open ? (
+                            <MdExpandLess size={20} />
+                        ) : (
+                            <MdExpandMore size={20} />
+                        )}
+                    </>
+                )}
+            </div>
 
             {open && (
                 <div
@@ -31,7 +43,7 @@ const Trigger = ({ children }) => {
                     onClick={() => setOpen(false)}
                 ></div>
             )}
-        </>
+        </div>
     );
 };
 

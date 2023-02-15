@@ -1,17 +1,15 @@
 import Footer from "@/Components/Footer";
 import Navbar from "@/Components/Navbar";
 import { Link, Head } from "@inertiajs/inertia-react";
+import { AiFillStar } from "react-icons/ai";
 import { FiExternalLink } from "react-icons/fi";
 
-export default function Company(props) {
+export default function University(props) {
     return (
         <>
-            <Head title="workedin - universitas" />
+            <Navbar />
+
             <div className="relative flex-col items-top justify-center min-h-screen bg-white sm:items-center sm:pt-0">
-                <Navbar />
-
-                <Head title="Admin - Create University" />
-
                 <div className="py-10 pt-16">
                     <div className="mx-auto my-12 max-w-6xl md:grid md:grid-cols-6 md:gap-6 px-16 items-center">
                         <div className="md:col-span-1">
@@ -29,16 +27,29 @@ export default function Company(props) {
                             </h2>
                         </div>
                         <div className="md:col-span-1">
-                            {props.university.url && (
-                                <a
-                                    className="flex space-x-2 mt-4 hover:text-blue-500 md:mt-0 justify-start md:justify-end"
-                                    href={props.university.url}
-                                    target="_blank"
-                                >
-                                    <div className="text-sm">Buka tautan</div>
-                                    <FiExternalLink />
-                                </a>
-                            )}
+                            <div className="space-y-2 md:block flex justify-between items-center">
+                                {props.university.url && (
+                                    <a
+                                        className="flex space-x-2 mt-4 hover:text-blue-500 md:mt-0 justify-start md:justify-end"
+                                        href={props.university.url}
+                                        target="_blank"
+                                    >
+                                        <div className="text-sm">
+                                            Buka tautan
+                                        </div>
+                                        <FiExternalLink />
+                                    </a>
+                                )}
+                                <div className="flex items-center justify-end space-x-1">
+                                    <AiFillStar
+                                        size={20}
+                                        className="text-yellow-400"
+                                    />
+                                    <div className="text-md text-gray-500">
+                                        {props.university.rating}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div className="mx-auto mt-6 max-w-6xl md:grid md:grid-cols-6 md:gap-6 px-16 ">
@@ -173,9 +184,8 @@ export default function Company(props) {
                         </div>
                     </div>
                 )}
-
-                <Footer />
             </div>
+            <Footer />
         </>
     );
 }

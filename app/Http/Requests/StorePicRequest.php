@@ -13,7 +13,7 @@ class StorePicRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,8 +23,25 @@ class StorePicRequest extends FormRequest
      */
     public function rules()
     {
+        if($this->hasFile('photo')) {
+            $photo = ['nullable', 'mimes:jpg,jpeg,png', 'max:1024'];
+        } else {
+            $photo = ['string'];
+        }
+
         return [
-            //
+            'email' => 'email|max:255',
+			'first_name' => 'required|string|max:255|min:1',
+			'last_name' => 'required|string|max:255|min:1',
+			'phone' => 'required|string|max:255|min:1|unique:pic_companies',
+			'nik' => 'required|string|max:255|min:1|unique:pic_companies',
+			'full_address' => 'required|string',
+			'province_id' => 'required|numeric',
+			'city_id' => 'required|numeric',
+			'district_id' => 'required|numeric',
+			'village_id' => 'required|numeric',
+            'user_id' => 'numeric',
+            'photo' => $photo
         ];
     }
 }

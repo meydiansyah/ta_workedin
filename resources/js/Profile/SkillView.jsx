@@ -8,7 +8,7 @@ import InputLabel from "@/Components/InputLabel";
 import { useForm } from "@inertiajs/inertia-react";
 
 export default function SkillView({ data, skills, toProfile }) {
-    const { setData, patch, recentlySuccessful } = useForm({
+    const { setData, patch, wasSuccessful } = useForm({
         freelance_id: data.id,
         skill: data.skills && data.skills.map((e) => e.id),
     });
@@ -20,11 +20,17 @@ export default function SkillView({ data, skills, toProfile }) {
         };
     });
 
+    useEffect(() => {
+        if (wasSuccessful) {
+            setEdit(false);
+        }
+    }, [wasSuccessful]);
+
     const submit = (e) => {
         e.preventDefault();
 
         patch(route("freelance.update.skills"));
-        setEdit(false);
+        // setEdit(false);
     };
 
     return (

@@ -8,7 +8,7 @@ export default function StatusData({ isActive, setData }) {
             {!access ? (
                 <>
                     <div className="text-base text-gray-500 my-auto">
-                        Perbarui akses pengguna WorkedIn
+                        Perbarui status
                     </div>
                     <button
                         type="button"

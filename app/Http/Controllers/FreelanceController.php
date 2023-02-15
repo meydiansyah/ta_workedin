@@ -24,10 +24,23 @@ class FreelanceController extends Controller
 	 */
 	public function index()
 	{
-			$freelances = Freelance::with(['major', 'university', 'user', 'user.status'])->paginate(7);
-			return Inertia::render('Admin/Freelance/Index', [
-				'freelance'=> $freelances,
-			]);
+			if(auth()->user() && auth()->user()->role_id === 1) {
+				$freelances = Freelance::with(['major', 'university', 'user', 'user.status'])->paginate(7);
+				return Inertia::render('Admin/Freelance/Index', [
+					'freelance'=> $freelances,
+				]);
+			} else {
+				$skills = Skill::all();
+				$university = University::all();
+				$freelances = Freelance::with(['major', 'university', 'user', 'reviews', 'skills', 'province', 'city'])
+							->whereRelation('user', 'is_verified', true)
+							->get();
+				return Inertia::render('Freelance/Index', [
+					'freelance'=> $freelances,
+					'skills' => $skills,
+					'universities' => $university,
+				]);
+			}
 	
 	}
 
@@ -94,6 +107,7 @@ class FreelanceController extends Controller
 				$imageName = time() . '.' . $request['profile_photo_url']->extension(); 
 				$path = $request->file('profile_photo_url')->storeAs('freelance', $imageName, 'public');
 				$validateData['profile_photo_url'] = '/storage/'.$path;
+				$user->updateProfilePhoto($validateData['profile_photo_url']);
 			}
 
 			$freelance = Freelance::create($validateFreelance);

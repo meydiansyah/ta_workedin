@@ -106,17 +106,7 @@ export default function StudyView({ data, universities, majors, toProfile }) {
                                         </button>
                                     )}
                                 </div>
-                                {edit ? (
-                                    <StudyEdit
-                                        freelance={data}
-                                        universities={universities}
-                                        majors={majors}
-                                        tapBack={() => {
-                                            setEdit(false);
-                                            toProfile();
-                                        }}
-                                    />
-                                ) : (
+                                {!edit && (
                                     <>
                                         <div className="px-4">
                                             <div className="my-12 md:grid md:grid-cols-6 md:gap-6 items-center">
@@ -205,6 +195,16 @@ export default function StudyView({ data, universities, majors, toProfile }) {
                                     </>
                                 )}
                             </>
+                        )}
+                        {edit && (
+                            <StudyEdit
+                                freelance={data}
+                                universities={universities}
+                                majors={majors}
+                                tapBack={() => {
+                                    setEdit(false);
+                                }}
+                            />
                         )}
                     </>
                 )}

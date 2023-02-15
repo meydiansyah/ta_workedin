@@ -57,11 +57,16 @@ class Job extends Model
 
     public function companies()
     {
-        return $this->belongsToMany(Company::class, 'job_company', 'job_id', 'id');
+        return $this->belongsToMany(Company::class, 'job_company', 'job_id', 'company_id');
     }
 
     public function skills()
     {
         return $this->belongsToMany(Skill::class, 'job_skills', 'job_id', 'skill_id');
+    }
+
+    public function resumes()
+    {
+        return $this->belongsToMany(Resume::class, 'job_resume', 'job_id', 'resume_id');
     }
 }

@@ -7,15 +7,14 @@ export default function Job(props) {
     return (
         <>
             <Head title="workedin - pekerjaan" />
-            <div className="relative flex-col items-top justify-center bg-white sm:items-center sm:pt-0">
-                <Navbar />
+            <Navbar />
 
+            <div className="relative flex-col min-h-screen items-top justify-center bg-white sm:items-center sm:pt-0">
                 <div className="py-12">
-                    <CardJob jobs={props.job} />
+                    <CardJob status={props.status} jobs={props.job} />
                 </div>
-
-                <Footer />
             </div>
+            <Footer />
         </>
     );
 }

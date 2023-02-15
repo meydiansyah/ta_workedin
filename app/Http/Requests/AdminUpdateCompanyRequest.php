@@ -34,6 +34,7 @@ class AdminUpdateCompanyRequest extends FormRequest
             'name' => ['required', 'string', 'min:3', 'unique:companies,name,' . $this->id],
             'email' => ['required', 'email', 'unique:companies,email,' . $this->id],
             'fax' => ['required', 'string', 'unique:companies,fax,' . $this->id],
+            'nip' => 'string|unique:pic_companies,nip,' . $this->client_id,
             'phone' => ['required', 'string', 'unique:companies,phone,' . $this->id],
             'type_company_id' => 'required',
             'full_address' => 'required|min:10|max:255',

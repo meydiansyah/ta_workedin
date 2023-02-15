@@ -13,7 +13,7 @@ class StoreFreelanceRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,18 @@ class StoreFreelanceRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'first_name' => 'required|string|max:255|min:1',
+			'last_name' => 'string|max:255',
+			'phone' => 'required|string|max:255|min:1|unique:freelances',
+			'bio' => 'string|max:255',
+			'nik' => 'required|string|max:255|min:1|unique:freelances',
+			'full_address' => 'required|string',
+			'province_id' => 'required|numeric',
+			'city_id' => 'required|numeric',
+			'district_id' => 'required|numeric',
+			'village_id' => 'required|numeric',
+            'email' => 'string',
+            'user_id' => 'numeric'
         ];
     }
 }

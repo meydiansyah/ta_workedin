@@ -23,54 +23,69 @@ class JobController extends Controller
     {
         if(Auth::user()) {
             if (Auth::user()->role_id === 1) {
-                $jobs = Job::with(['status', 'company', 'skills', 'company.city', 'company.typeCompany'])
+                $jobs = Job::with(['status', 'company', 'skills', 'company.city', 'company.typeCompany', 'resumes'])
+                    ->withTrashed()
                     ->when($request->input('search'),function($query, $search) {
                         $query->where('title','like','%'.$search.'%')
                         ->OrWhereRelation('company', 'name', 'like','%'.$search.'%');
                     })
+                    ->latest()
                     ->get();
                     return Inertia::render('Admin/Jobs/Index', [
                         'job' => $jobs,
+                        'status' => session('status')
                     ]);
             } else {
                 $freelance = Freelance::with('skills')->where('user_id', '=', auth()->user()->id)->get()->first();
 
                 if($freelance){
-                $idFreelance = $freelance->skills->pluck('id');
+                    $idFreelance = $freelance->skills->pluck('id');
 
                     $jobs = Job::whereHas('skills', function($q) use ($idFreelance) {
                             $q->whereIn('skill_id', $idFreelance);
                         })
-                        ->with(['status', 'company', 'skills', 'company.city', 'company.typeCompany'])
+                        ->with(['status', 'company', 'skills', 'company.city', 'company.typeCompany', 'resumes'])
                         ->when($request->input('search'),function($query, $search) {
                             $query->where('title','like','%'.$search.'%')
                                     ->OrWhereRelation('company', 'name', 'like','%'.$search.'%')
                                     ->OrWhereRelation('skills', 'name', 'like','%'.$search.'%')
                             ;
                         })
-                        ->where('status_id', 1)
+                        ->where('status_id', '!=', 2)
+                        ->where('status_id', '!=', 8)
+                        ->latest()
                         ->get();
+
+                        // dd($jobs);
                     } else {
-                        $jobs = Job::with(['status', 'company', 'skills', 'company.city', 'company.typeCompany'])->where('status_id', 1)->when($request->input('search'),function($query, $search) {
+                        $jobs = Job::with(['status', 'company', 'skills', 'company.city', 'company.typeCompany', 'resumes'])->where('status_id', 1)->when($request->input('search'),function($query, $search) {
                             $query->where('title','like','%'.$search.'%')
                                     ->OrWhereRelation('company', 'name', 'like','%'.$search.'%');
-                        })->get();
+                        })
+                        ->latest()
+                        ->get();
                     }
                 // select js.job_id, j.title from `job_skills` js INNER JOIN `jobs` j ON js.job_id = j.id INNER JOIN `skills` s ON js.skill_id = s.id WHERE js.skill_id IN(1, 5) GROUP BY js.job_id ORDER BY js.job_id
             }
         } else {
-            $jobs = Job::with(['status', 'company', 'skills', 'company.city', 'company.typeCompany'])->where('status_id', 1)->when($request->input('search'),function($query, $search) {
-                $query->where('title','like','%'.$search.'%')
-                        ->OrWhereRelation('company', 'name', 'like','%'.$search.'%');
-            })->get();
+            $jobs = Job::with(['status', 'company', 'skills', 'company.city', 'company.typeCompany', 'resumes'])
+                    ->where('status_id', 1)
+                    ->when($request->input('search'),function($query, $search) {
+                        $query->where('title','like','%'.$search.'%')
+                            ->OrWhereRelation('company', 'name', 'like','%'.$search.'%');
+                    })
+                    ->latest()
+                    ->get();
         }
 
         if(!is_null($request->filter)) {
-            $jobs = Job::with(['status', 'company', 'skills', 'company.city', 'company.typeCompany'])
-            ->where('status_id', 1)->when($request->input('search'),function($query, $search) {
+            $jobs = Job::with(['status', 'company', 'skills', 'company.city', 'company.typeCompany', 'resumes'])
+            ->where('status_id', 1)
+            ->when($request->input('search'),function($query, $search) {
                 $query->where('title','like','%'.$search.'%')
                         ->OrWhereRelation('company', 'name','like','%'.$search.'%');
             })
+            ->latest()
             ->get();
         }
         // dd(is_null($request->filter));
@@ -78,6 +93,7 @@ class JobController extends Controller
         
         return Inertia::render('Jobs/Index', [
             'job' => $jobs,
+            'status' => session('status')
         ]);
     }
 
@@ -104,7 +120,7 @@ class JobController extends Controller
      */
     public function store(Request $request)
     {
-        $pic = Company::with('companyPic')->find($request->company_id);
+        $pic = Company::with('companyPic')->where('id', '=', $request->company_id);
         $pic = $pic->companyPic;
         if($pic->isNotEmpty()) {
             $request['pic_company_id'] = $pic->first()->id;
@@ -122,6 +138,8 @@ class JobController extends Controller
         $validate['image_url'] = 'empty';
         $validate['status_id'] = $request->status_id;
         $job = Job::create($validate);
+
+        $job->companies()->attach($pic->company_id);
 
         foreach($request->skill as $skill) {
 			$job->skills()->attach($skill);
@@ -151,7 +169,7 @@ class JobController extends Controller
     {   
         $company = Company::all();
         $skill = Skill::all();
-        $data = Job::with(['status', 'company', 'skills', 'company.city', 'company.companyPic'])->where('id', '=', $job->id)->get()->first();
+        $data = Job::with(['status', 'company', 'skills', 'company.city', 'company.companyPic'])->withTrashed()->where('id', '=', $job->id)->get()->first();
         return Inertia::render('Admin/Jobs/Edit', [
             'job' => $data,
             'skills' => $skill,
@@ -201,7 +219,35 @@ class JobController extends Controller
      */
     public function destroy(Job $job)
     {
+        $job->update([
+            'status_id' => 7
+        ]);
         $job->delete();
-        return redirect()->route('admin.jobs');
+
+        if(auth()->user()->role_id === 1) {
+            return redirect()->route('admin.jobs')->with('status', 'Pekerjaan berhasil dihapus');
+        } else {
+            return redirect()->route('client.job')->with('status', 'Pekerjaan berhasil dihapus');
+        }
+    }
+
+    public function restore(Job $job)
+    {
+        $job->restore();
+        if(auth()->user()->role_id === 1) {
+            return redirect()->route('admin.jobs')->with('status', 'Pekerjaan berhasil dikembalikan.');
+        } else {
+            return redirect()->route('client.job')->with('status', 'Pekerjaan berhasil dikembalikan.');
+        }
+    }
+
+    public function forceDestroy(Job $job)
+    {
+        $job->forceDelete();
+        if(auth()->user()->role_id === 1) {
+            return redirect()->route('admin.jobs')->with('status', 'Pekerjaan berhasil dikembalikan.');
+        } else {
+            return redirect()->route('client.job')->with('status', 'Pekerjaan berhasil dikembalikan.');
+        }
     }
 }

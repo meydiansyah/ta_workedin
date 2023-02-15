@@ -3,7 +3,7 @@ import InputLabel from "@/Components/InputLabel";
 import PrimaryButton from "@/Components/PrimaryButton";
 import TextInput from "@/Components/TextInput";
 import { DataFreelancer } from "@/Pages/Admin/Freelance/data/Interface";
-import { useForm } from "@inertiajs/inertia-react";
+import { useForm, usePage } from "@inertiajs/inertia-react";
 import { useEffect, useState } from "react";
 import Select from "react-select";
 
@@ -14,13 +14,14 @@ export default function ProfileViewEdit({
     user,
     tapBack,
 }) {
-    const { data, setData, patch, errors } = useForm({
+    const { data, setData, post, errors, wasSuccessful } = useForm({
+        id: user ? user.id : String,
         first_name: user ? user.first_name : String,
         last_name: user ? user.last_name : String,
-        image_url: user ? user.image_url : null,
         phone: user ? user.phone : String,
         bio: user ? user.bio : String,
         nik: user ? user.nik : String,
+        photo: user ? user.profile_photo_url : null,
         full_address: user ? user.full_address : String,
         village_id: user ? user.village_id : String,
         district_id: user ? user.district_id : String,
@@ -29,36 +30,45 @@ export default function ProfileViewEdit({
         user_id: userId,
         email: email,
     });
+    const { is_freelance } = usePage().props;
     const [city, setCity] = useState(null);
     const [district, setDistrict] = useState(null);
     const [village, setVillage] = useState(null);
     const [getLocation, setGetLocation] = useState(false);
+    const [changeImage, setChangeImage] = useState(false);
 
     const submit = (e) => {
         e.preventDefault();
+        // console.log(data);
         if (user.user) {
             if (user.user.role_id === 2) {
-                patch(route("profile.client.update", user.id));
+                post(route("profile.client.update", user.id));
             } else {
-                patch(route("profile.freelance.update", user.id));
+                post(route("profile.freelance.update", user.id));
             }
         } else {
             if (user.role_id === 2) {
-                patch(route("profile.client.store"));
+                post(route("profile.client.store"));
             } else {
-                patch(route("profile.freelance.store"));
+                post(route("profile.freelance.store"));
             }
         }
-        tapBack();
+        if (wasSuccessful) {
+            tapBack();
+        }
     };
 
     useEffect(() => {
+        // console.log(user.getProfilePhoto);
         if (user.province) {
             getCity(user.province_id);
             getDistrict(user.city_id);
             getVillages(user.district_id);
         }
-    }, []);
+        if (wasSuccessful) {
+            tapBack();
+        }
+    }, [wasSuccessful]);
 
     const getCity = (id) => {
         setGetLocation(true);
@@ -118,10 +128,66 @@ export default function ProfileViewEdit({
     };
 
     return (
-        <form onSubmit={submit} className="flex-col space-y-6 p-4">
+        <form
+            onSubmit={submit}
+            encType="multipartform-data"
+            className="flex-col space-y-6 p-4"
+        >
             <p className="mt-1 text-sm text-gray-600">
                 Masukkan data anda dengan benar
             </p>
+
+            {!changeImage && data.photo ? (
+                <div className="mx-auto flex-col space-y-4 text-center">
+                    <div className="rounded-md  bg-gray-200 p-4">
+                        <img src={data.photo} className="mx-auto" />
+                    </div>
+                    <PrimaryButton
+                        type="button"
+                        onClick={(e) => setChangeImage(true)}
+                        className="bg-transparent text-green-500 border border-green-500 hover:bg-green-100"
+                    >
+                        Ubah
+                    </PrimaryButton>
+                </div>
+            ) : (
+                <div>
+                    <InputLabel for="photo">
+                        Photo{" "}
+                        <span className="inline-block text-sm text-gray-600">
+                            (optional)
+                        </span>{" "}
+                    </InputLabel>
+
+                    <div className="flex space-x-4">
+                        <input
+                            id="photo"
+                            type="file"
+                            accept="image/png, image/jpg, image/jpeg"
+                            className="mt-1 form-control block w-full px-3 py-1.5 text-base file:cursor-pointer font-normal bg-gray-100 rounded-full text-gray-700  bg-clip-padding transition ease-in-out m-0 focus:text-gray-700  focus:border-green-600 focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
+                            onChange={(e) => {
+                                setData("photo", e.target.files[0]);
+                            }}
+                            autoComplete="photo"
+                        />
+
+                        {data.photo && (
+                            <PrimaryButton
+                                type="button"
+                                onClick={(e) => {
+                                    setChangeImage(false);
+                                }}
+                                className="bg-transparent text-red-500  hover:bg-red-100 my-2"
+                            >
+                                Batal
+                            </PrimaryButton>
+                        )}
+                    </div>
+
+                    <InputError className="mt-2" message={errors.photo} />
+                </div>
+            )}
+
             <div className="grid md:grid-cols-6 md:space-x-6 space-y-4 md:space-y-0">
                 <div className="md:col-span-3">
                     <div className="md:flex-col space-y-6">
@@ -164,6 +230,25 @@ export default function ProfileViewEdit({
 
                             <InputError className="mt-2" message={errors.nik} />
                         </div>
+                        {is_freelance && (
+                            <div>
+                                <InputLabel for="bio" value="Bio" />
+
+                                <textarea
+                                    id="bio"
+                                    className="block w-full mt-1 border-gray-300 focus:border-[#2C7E5B] focus:ring-[#2C7E5B] rounded-md shadow-sm"
+                                    value={user && user.bio}
+                                    onChange={(e) =>
+                                        setData("bio", e.target.value)
+                                    }
+                                />
+
+                                <InputError
+                                    className="mt-2"
+                                    message={errors.bio}
+                                />
+                            </div>
+                        )}
                         <div>
                             <InputLabel
                                 for="full_address"
@@ -198,7 +283,6 @@ export default function ProfileViewEdit({
                                 handleChange={(e) =>
                                     setData("last_name", e.target.value)
                                 }
-                                required
                                 autofocus
                                 autoComplete="last_name"
                             />

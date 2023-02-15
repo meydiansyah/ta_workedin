@@ -31,6 +31,7 @@ class AdminStoreCompanyRequest extends FormRequest
         return [
             'name' => 'required|string|min:3|unique:companies',
             'email' => 'required|string|min:3|unique:companies',
+            'nip' => 'string|unique:pic_companies',
             'phone' => 'required|string|min:3|unique:companies',
             'fax' => 'required|string|min:3|unique:companies',
             'type_company_id' => 'required',

@@ -20,8 +20,10 @@ class StatusSeeder extends Seeder
 			'onreview',
 			'ongoing',
 			'accepted',
+			'canceled',
+			'finished',
 			'rejected',
-			'suspend'
+			'suspend',
 		];
 
 		foreach($listStatus as $data) {

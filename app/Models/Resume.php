@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Resume extends Model
 {
@@ -27,7 +28,12 @@ class Resume extends Model
 
     public function jobs()
     {
-        return $this->belongsToMany(Job::class);
+        return $this->belongsToMany(Job::class, 'job_resume', 'resume_id', 'job_id');
+    }
+
+    public function statuses()
+    {
+        return $this->belongsToMany(Status::class, 'resume_status', 'resume_id', 'status_id');
     }
 
     /**

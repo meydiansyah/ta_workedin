@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Job;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
@@ -27,6 +28,10 @@ class RouteServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->configureRateLimiting();
+
+        Route::bind('job', function ($id) {
+            return Job::withTrashed()->findOrFail($id);
+        });
 
         $this->routes(function () {
             Route::middleware('api')
