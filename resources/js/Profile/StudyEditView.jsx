@@ -12,9 +12,9 @@ export default function StudyEdit({
     freelance,
     tapBack,
 }) {
-    const { data, setData, patch, errors } = useForm({
+    const { data, setData, patch, errors, wasSuccessful } = useForm({
         pt_code: freelance.pt_code ?? Number,
-        major_code: freelance.major_code ?? Number,
+        major_id: freelance.major_id ?? Number,
         nim: freelance.nim ?? String,
     });
 
@@ -31,7 +31,7 @@ export default function StudyEdit({
         .filter((items) => items.pt_code.includes(data.pt_code))
         .map((item) => {
             return {
-                value: item.code,
+                value: item.id,
                 label: item.code + " - " + item.name,
             };
         });
@@ -40,14 +40,17 @@ export default function StudyEdit({
         if (freelance.university) {
             setSelectedPt(true);
         }
-    });
+        if (wasSuccessful) {
+            tapBack();
+        }
+    }, [wasSuccessful]);
 
     const submit = (e) => {
         e.preventDefault();
         // console.log(data);
         patch(route("profile.university.update", freelance.id));
 
-        tapBack();
+        // tapBack();
     };
 
     return (
@@ -115,7 +118,7 @@ export default function StudyEdit({
                                 className="mt-2 basic-single"
                                 classNamePrefix="select"
                                 onChange={(e) => {
-                                    setData("major_code", e.value);
+                                    setData("major_id", e.value);
                                     setSelectedPt(true);
                                 }}
                             />

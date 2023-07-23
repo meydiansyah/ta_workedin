@@ -18,6 +18,11 @@ class Resume extends Model
         'freelance_id',
     ];
 
+    protected $casts = [
+        'job_id' => 'integer',
+        'freelance_id' => 'integer',
+    ];
+
     /**
      * Get Job Data
      */
@@ -44,8 +49,4 @@ class Resume extends Model
         return $this->belongsTo(Freelance::class, 'freelance_id');
     }
 
-    public function freelances()
-    {
-        return $this->belongsToMany(Freelance::class);
-    }
 }

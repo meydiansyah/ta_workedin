@@ -24,197 +24,243 @@ const Navbar = () => {
                             <Link href={route("home")} className="my-auto">
                                 <ApplicationLogo className="block w-auto h-9" />
                             </Link>
-                            {user && !is_freelance ? (
-                                <>
-                                    {is_client && (
-                                        <div className="space-x-8 sm:-my-px sm:ml-10 sm:flex hidden">
-                                            <NavLink
+                            <div className="space-x-8 sm:-my-px sm:ml-10 sm:flex hidden">
+                                <NavLink
+                                    href={route("about")}
+                                    active={route().current("about")}
+                                >
+                                    About
+                                </NavLink>
+                                {user && !is_freelance ? (
+                                    <>
+                                        {is_client && (
+                                            <>
+                                                {/* <NavLink
                                                 href={route("admin.company")}
                                                 active={route().current(
                                                     "admin.company"
                                                 )}
                                             >
                                                 Dashboard
-                                            </NavLink>
-                                            <NavLink
-                                                href={route("university")}
-                                                active={
-                                                    route().current(
-                                                        "university"
-                                                    ) ||
-                                                    route().current(
-                                                        "detail.university"
-                                                    )
-                                                }
-                                            >
-                                                University
-                                            </NavLink>
-                                            <NavLink
-                                                href={route("freelance")}
-                                                active={route().current(
-                                                    "freelance"
-                                                )}
-                                            >
-                                                Freelance
-                                            </NavLink>
-                                            <NavLink
-                                                href={route("history.apply")}
-                                                active={
-                                                    route().current(
-                                                        "history.apply"
-                                                    ) ||
-                                                    route().current(
-                                                        "client.detail.resume"
-                                                    )
-                                                }
-                                            >
-                                                Resumes
-                                            </NavLink>
-                                            <div className="md:flex hidden">
+                                            </NavLink> */}
                                                 <NavLink
-                                                    href={route("client.job")}
+                                                    href={route("university")}
                                                     active={
                                                         route().current(
-                                                            "client.job"
+                                                            "university"
                                                         ) ||
                                                         route().current(
-                                                            "client.*.job"
+                                                            "detail.university"
                                                         )
                                                     }
                                                 >
-                                                    Jobs
+                                                    University
                                                 </NavLink>
-                                            </div>
-                                        </div>
-                                    )}
-                                    {is_admin && (
-                                        <div className="space-x-8 sm:-my-px sm:ml-10 sm:flex hidden">
-                                            <NavLink
-                                                href={route("admin.university")}
-                                                active={
-                                                    route().current(
-                                                        "admin.university"
-                                                    ) ||
-                                                    route().current(
-                                                        "university.*"
-                                                    )
-                                                }
-                                            >
-                                                University
-                                            </NavLink>
-                                            <NavLink
-                                                href={route("admin.freelance")}
-                                                active={
-                                                    route().current(
-                                                        "admin.freelance"
-                                                    ) ||
-                                                    route().current(
-                                                        "freelance.*"
-                                                    )
-                                                }
-                                            >
-                                                Freelances
-                                            </NavLink>
-                                            <NavLink
-                                                href={route("admin.company")}
-                                                active={
-                                                    route().current(
-                                                        "admin.pic"
-                                                    ) ||
-                                                    route().current(
-                                                        "admin.company"
-                                                    ) ||
-                                                    route().current(
-                                                        "admin.jobs"
-                                                    ) ||
-                                                    route().current("pic.*") ||
-                                                    route().current(
-                                                        "company.*"
-                                                    ) ||
-                                                    route().current("job.*")
-                                                }
-                                            >
-                                                Client
-                                            </NavLink>
-                                            <NavLink
-                                                href={route("admin.skills")}
-                                                active={
-                                                    route().current(
-                                                        "admin.skills"
-                                                    ) ||
-                                                    route().current("skills.*")
-                                                }
-                                            >
-                                                Skills
-                                            </NavLink>
-                                            <NavLink
-                                                href={route("history.apply")}
-                                                active={
-                                                    route().current(
+                                                <NavLink
+                                                    href={route("freelance")}
+                                                    active={
+                                                        route().current(
+                                                            "freelance"
+                                                        ) ||
+                                                        route().current(
+                                                            "freelance.*"
+                                                        )
+                                                    }
+                                                >
+                                                    Freelance
+                                                </NavLink>
+                                                <NavLink
+                                                    href={route(
                                                         "history.apply"
-                                                    ) ||
-                                                    route().current(
-                                                        "client.detail.resume"
-                                                    )
-                                                }
-                                            >
-                                                Resumes
-                                            </NavLink>
-                                        </div>
-                                    )}
-                                </>
-                            ) : (
-                                <div className="space-x-8 sm:-my-px sm:ml-10 sm:flex hidden">
-                                    <NavLink
-                                        href={route("university")}
-                                        active={
-                                            route().current("university") ||
-                                            route().current("detail.university")
-                                        }
-                                    >
-                                        University
-                                    </NavLink>
-                                    <NavLink
-                                        href={route("company")}
-                                        active={
-                                            route().current("company") ||
-                                            route().current("company.*")
-                                        }
-                                    >
-                                        Company
-                                    </NavLink>
-                                    <NavLink
-                                        href={route("freelance")}
-                                        active={
-                                            route().current("freelance") ||
-                                            route().current("freelance.*")
-                                        }
-                                    >
-                                        Freelances
-                                    </NavLink>
-                                    <NavLink
-                                        preserveState={
-                                            route().current("profile.edit") &&
-                                            !is_verified
-                                        }
-                                        onClick={
-                                            route().current("profile.edit") &&
-                                            !is_verified
-                                                ? () => setShowModal(true)
-                                                : null
-                                        }
-                                        href={
-                                            route().current("profile.edit") &&
-                                            !is_verified
-                                                ? null
-                                                : route("jobs")
-                                        }
-                                        active={route().current("jobs")}
-                                    >
-                                        Jobs
-                                    </NavLink>
-                                </div>
-                            )}
+                                                    )}
+                                                    active={
+                                                        route().current(
+                                                            "history.apply"
+                                                        ) ||
+                                                        route().current(
+                                                            "client.detail.resume"
+                                                        )
+                                                    }
+                                                >
+                                                    Resumes
+                                                </NavLink>
+                                                <div className="md:flex hidden">
+                                                    <NavLink
+                                                        href={route(
+                                                            "client.job"
+                                                        )}
+                                                        active={
+                                                            route().current(
+                                                                "client.job"
+                                                            ) ||
+                                                            route().current(
+                                                                "client.*.job"
+                                                            ) ||
+                                                            route().current(
+                                                                "job.detail"
+                                                            )
+                                                        }
+                                                    >
+                                                        Jobs
+                                                    </NavLink>
+                                                </div>
+                                            </>
+                                        )}
+                                        {is_admin && (
+                                            <>
+                                                <NavLink
+                                                    href={route(
+                                                        "admin.university"
+                                                    )}
+                                                    active={
+                                                        route().current(
+                                                            "admin.university"
+                                                        ) ||
+                                                        route().current(
+                                                            "university.*"
+                                                        )
+                                                    }
+                                                >
+                                                    University
+                                                </NavLink>
+                                                <NavLink
+                                                    href={route(
+                                                        "admin.freelance"
+                                                    )}
+                                                    active={
+                                                        route().current(
+                                                            "admin.freelance"
+                                                        ) ||
+                                                        route().current(
+                                                            "freelance.*"
+                                                        )
+                                                    }
+                                                >
+                                                    Freelances
+                                                </NavLink>
+                                                <NavLink
+                                                    href={route(
+                                                        "admin.company"
+                                                    )}
+                                                    active={
+                                                        route().current(
+                                                            "admin.pic"
+                                                        ) ||
+                                                        route().current(
+                                                            "admin.company"
+                                                        ) ||
+                                                        route().current(
+                                                            "admin.jobs"
+                                                        ) ||
+                                                        route().current(
+                                                            "pic.*"
+                                                        ) ||
+                                                        route().current(
+                                                            "company.*"
+                                                        ) ||
+                                                        route().current("job.*")
+                                                    }
+                                                >
+                                                    Client
+                                                </NavLink>
+                                                <NavLink
+                                                    href={route("admin.skills")}
+                                                    active={
+                                                        route().current(
+                                                            "admin.skills"
+                                                        ) ||
+                                                        route().current(
+                                                            "skills.*"
+                                                        )
+                                                    }
+                                                >
+                                                    Skills
+                                                </NavLink>
+                                                <NavLink
+                                                    href={route(
+                                                        "history.apply"
+                                                    )}
+                                                    active={
+                                                        route().current(
+                                                            "history.apply"
+                                                        ) ||
+                                                        route().current(
+                                                            "client.detail.resume"
+                                                        )
+                                                    }
+                                                >
+                                                    Resumes
+                                                </NavLink>
+                                            </>
+                                        )}
+                                    </>
+                                ) : (
+                                    <>
+                                        <NavLink
+                                            href={route("university")}
+                                            active={
+                                                route().current("university") ||
+                                                route().current(
+                                                    "detail.university"
+                                                )
+                                            }
+                                        >
+                                            University
+                                        </NavLink>
+                                        <NavLink
+                                            href={route("company")}
+                                            active={
+                                                route().current("company") ||
+                                                route().current("company.*")
+                                            }
+                                        >
+                                            Company
+                                        </NavLink>
+                                        <NavLink
+                                            href={route("freelance")}
+                                            active={
+                                                route().current("freelance") ||
+                                                route().current("freelance.*")
+                                            }
+                                        >
+                                            Freelances
+                                        </NavLink>
+                                        <NavLink
+                                            preserveState={
+                                                route().current(
+                                                    "profile.edit"
+                                                ) && !is_verified
+                                            }
+                                            onClick={
+                                                route().current(
+                                                    "profile.edit"
+                                                ) && !is_verified
+                                                    ? () => setShowModal(true)
+                                                    : null
+                                            }
+                                            href={
+                                                route().current(
+                                                    "profile.edit"
+                                                ) && !is_verified
+                                                    ? null
+                                                    : route("jobs")
+                                            }
+                                            active={
+                                                route().current("jobs") ||
+                                                route().current("job.detail")
+                                            }
+                                        >
+                                            Jobs
+                                        </NavLink>
+                                    </>
+                                )}
+                                <NavLink
+                                    href={route("contact_us")}
+                                    active={route().current("contact_us")}
+                                >
+                                    Contact Us
+                                </NavLink>
+                            </div>
                         </div>
 
                         {user === null ? (
@@ -388,6 +434,13 @@ const Navbar = () => {
                         )}
 
                         <div className="mt-3 space-y-1">
+                            <ResponsiveNavLink
+                                method="post"
+                                href={route("about")}
+                                as="button"
+                            >
+                                About
+                            </ResponsiveNavLink>
                             {user ? (
                                 <>
                                     {is_freelance && (
@@ -418,7 +471,12 @@ const Navbar = () => {
                                             </ResponsiveNavLink>
                                             <ResponsiveNavLink
                                                 href={route("jobs")}
-                                                active={route().current("jobs")}
+                                                active={
+                                                    route().current("jobs") ||
+                                                    route().current(
+                                                        "job.detail"
+                                                    )
+                                                }
                                             >
                                                 Jobs
                                             </ResponsiveNavLink>
@@ -434,29 +492,39 @@ const Navbar = () => {
                                     )}
                                     {is_client && (
                                         <>
-                                            <ResponsiveNavLink
+                                            {/* <ResponsiveNavLink
                                                 href={route("dashboard")}
                                                 active={route().current(
                                                     "dashboard"
                                                 )}
                                             >
                                                 Dashboard
-                                            </ResponsiveNavLink>
+                                            </ResponsiveNavLink> */}
                                             <ResponsiveNavLink
-                                                href={route("dashboard")}
-                                                active={route().current(
-                                                    "dashboard"
-                                                )}
+                                                href={route("university")}
+                                                active={
+                                                    route().current(
+                                                        "university"
+                                                    ) ||
+                                                    route().current(
+                                                        "detail.university"
+                                                    )
+                                                }
                                             >
                                                 University
                                             </ResponsiveNavLink>
                                             <ResponsiveNavLink
-                                                href={route("dashboard")}
-                                                active={route().current(
-                                                    "dashboard"
-                                                )}
+                                                href={route("freelance")}
+                                                active={
+                                                    route().current(
+                                                        "freelance"
+                                                    ) ||
+                                                    route().current(
+                                                        "freelance.*"
+                                                    )
+                                                }
                                             >
-                                                Freelance
+                                                Freelances
                                             </ResponsiveNavLink>
                                             <ResponsiveNavLink
                                                 href={route("history.apply")}
@@ -479,6 +547,9 @@ const Navbar = () => {
                                                     ) ||
                                                     route().current(
                                                         "client.*.job"
+                                                    ) ||
+                                                    route().current(
+                                                        "job.detail"
                                                     )
                                                 }
                                             >
@@ -544,7 +615,7 @@ const Navbar = () => {
                                                     )
                                                 }
                                             >
-                                                Freelances
+                                                Freelance
                                             </ResponsiveNavLink>
 
                                             <ResponsiveNavLink
@@ -570,6 +641,15 @@ const Navbar = () => {
                                                 }
                                             >
                                                 Resumes
+                                            </ResponsiveNavLink>
+                                            <ResponsiveNavLink
+                                                href={route("admin.user")}
+                                                method="get"
+                                                active={route().current(
+                                                    "admin.user"
+                                                )}
+                                            >
+                                                Users
                                             </ResponsiveNavLink>
                                         </>
                                     )}
@@ -607,15 +687,20 @@ const Navbar = () => {
                                         Company
                                     </ResponsiveNavLink>
                                     <ResponsiveNavLink
-                                        href={route("dashboard")}
-                                        active={route().current("dashboard")}
+                                        href={route("jobs")}
+                                        active={
+                                            route().current("jobs") ||
+                                            route().current("job.detail")
+                                        }
                                     >
                                         Jobs
                                     </ResponsiveNavLink>
-
                                     <ResponsiveNavLink
                                         href={route("freelance")}
-                                        active={route().current("freelances")}
+                                        active={
+                                            route().current("freelance") ||
+                                            route().current("freelance.*")
+                                        }
                                     >
                                         Freelances
                                     </ResponsiveNavLink>
@@ -625,24 +710,15 @@ const Navbar = () => {
                                     >
                                         Masuk
                                     </ResponsiveNavLink>
-                                    {/* {user && (
-                                    <>
-                                        <ResponsiveNavLink
-                                            href={route("profile.edit")}
-                                        >
-                                            Profile
-                                        </ResponsiveNavLink>
-                                        <ResponsiveNavLink
-                                            method="post"
-                                            href={route("logout")}
-                                            as="button"
-                                        >
-                                            Log Out
-                                        </ResponsiveNavLink>
-                                    </>
-                                )} */}
                                 </>
                             )}
+                            <ResponsiveNavLink
+                                method="post"
+                                href={route("contact_us")}
+                                as="button"
+                            >
+                                Contact Us
+                            </ResponsiveNavLink>
                         </div>
                     </div>
                 </div>

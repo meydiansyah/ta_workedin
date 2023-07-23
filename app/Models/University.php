@@ -19,6 +19,14 @@ class University extends Model
 
 	protected $primaryKey = 'codept';
 
+	protected $casts = [
+        'rating' => 'double',
+        'village_id' => 'integer',
+        'district_id' => 'integer',
+        'city_id' => 'integer',
+        'province_id' => 'integer',
+	];
+
 	protected $fillable = [
 		'codept',
 		'name',
@@ -56,22 +64,17 @@ class University extends Model
         return $this->belongsTo(Province::class, 'province_id');
     }
 
-	public function freelance()
-	{
-		return $this->belongsTo(Freelance::class, 'codept', 'pt_code');
-	}
+	// public function freelance()
+	// {
+	// 	return $this->belongsTo(Freelance::class, 'codept', 'pt_code');
+	// }
 
 	public function freelances()
 	{
 		return $this->belongsToMany(Freelance::class, 'freelance_universities', 'pt_code', 'freelance_id');
 	}
 
-	public function major()
-	{
-		return $this->belongsTo(Major::class, 'codept', 'pt_code');
-	}
-
 	public function majors() {
-		return $this->belongsToMany(Major::class, 'major_university', 'pt_code', 'major_code',);
+		return $this->belongsToMany(Major::class, 'major_university', 'pt_code', 'major_id',);
 	}
 }

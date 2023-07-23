@@ -1,6 +1,8 @@
 import Footer from "@/Components/Footer";
 import Navbar from "@/Components/Navbar";
+import { Inertia } from "@inertiajs/inertia";
 import { Link, Head } from "@inertiajs/inertia-react";
+import { AiFillStar } from "react-icons/ai";
 import { FiExternalLink } from "react-icons/fi";
 
 export default function Company(props) {
@@ -21,7 +23,7 @@ export default function Company(props) {
                                 />
                             </div>
                         </div>
-                        <div className="md:col-span-5 flex-col space-y-4">
+                        <div className="md:col-span-4 flex-col space-y-4">
                             <h2 className="lg:text-5xl md:text-3xl text-2xl font-semibold text-gray-900 mt-2 md:mt-0">
                                 {props.company.type_company.code}{" "}
                                 {props.company.name}
@@ -36,6 +38,24 @@ export default function Company(props) {
                                 {props.company.company_pic[0].title}{" "}
                                 {props.company.company_pic[0].full_name}
                             </Link>
+                        </div>
+                        <div className="md:col-span-1">
+                            <div className="flex-col space-y-2">
+                                <div className="flex justify-end space-x-1 items-center">
+                                    <AiFillStar
+                                        size={20}
+                                        className="text-yellow-400"
+                                    />
+                                    <div className="text-md text-gray-500">
+                                        {props.company.rating}
+                                    </div>
+                                </div>
+                                {props.company.reviews.length > 0 && (
+                                    <div className="text-sm flex justify-end space-x-2  hover:opacity-80">
+                                        ({props.company.reviews.length} ulasan)
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
                     <div className="mx-auto mt-6 max-w-6xl md:grid md:grid-cols-6 md:gap-6 px-16 ">
@@ -97,14 +117,14 @@ export default function Company(props) {
                                                 <div
                                                     key={e.id}
                                                     className="col-span-2 flex-col space-y-1 items-start p-2 cursor-pointer rounded-md hover:bg-gray-50"
-                                                    // onClick={() => {
-                                                    //     Inertia.get(
-                                                    //         route(
-                                                    //             "company.detail",
-                                                    //             e.id
-                                                    //         )
-                                                    //     );
-                                                    // }}
+                                                    onClick={() => {
+                                                        Inertia.get(
+                                                            route(
+                                                                "job.detail",
+                                                                e.id
+                                                            )
+                                                        );
+                                                    }}
                                                 >
                                                     <div className="font-bold">
                                                         {e.title}

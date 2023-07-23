@@ -4,9 +4,12 @@ namespace App\Http\Middleware;
 
 use App\Models\Freelance;
 use App\Models\PicCompany;
+use App\Models\Student;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
 use Tightenco\Ziggy\Ziggy;
 
 class HandleInertiaRequests extends Middleware
@@ -42,11 +45,14 @@ class HandleInertiaRequests extends Middleware
 				'user' => $request->user(),
 				'dataUser' => function () use ($request) {
 						$user = $request->user();
-						if($user) {
+						if($user && $user->role_id !== 1) {
 							if($user->role_id === 2) {
-								$data = PicCompany::where('user_id', $user->id)->get()->first();
+								$data = PicCompany::with('company')->where('user_id', $user->id)->get()->first();
 							} else {
-								$data = Freelance::with(['major', 'university', 'province', 'city'])->where('user_id', $user->id)->get()->first();
+								$data = Freelance::with(['major', 'university', 'province', 'city', 'user'])
+										->where('user_id', $user->id)
+										->get()
+										->first();
 							}
 							return $data;
 						}
@@ -54,23 +60,44 @@ class HandleInertiaRequests extends Middleware
 			],
 			'is_verified' => function() use ($request) {
 				$request = auth()->user();
-				if($request) {
+				if($request && $request->role_id !== 1) {
 					$user = User::where('id', $request->id)->get()->first();
 
 					if($request->role_id === 3) {
-						if(!$request->is_verified) {
-							$freelance = Freelance::with(['skills', 'university'])->where('user_id', '=', $request->id)->get()->first();
+							$freelance = Freelance::with(['skills', 'university', 'major'])->where('user_id', '=', $request->id)->get()->first();
+							$process = new Process(['python3', app_path().'/PythonScript/Validate.py', $freelance->full_name]);
+							$process->run();
 
-							$v = $freelance && $freelance->skills->isNotEmpty() && $freelance->university && $request->email_verified_at;
-							if($v) {
+							if ($process->isSuccessful()) {
+								$data = $process->getOutput();
+								$data = str_replace("\n", '', $data);
+								$data = explode(',', $data);
+
+								$name_verified = strtolower($data[0]) === strtolower($freelance->full_name);
+								$nim_verified = str_replace(" ", '', $data[1]) === $freelance->nim;
+								$university_verified = str_replace(" ", '', strtolower($data[2])) === str_replace(" ", "", strtolower($freelance->university->name));
+								$prodi_verified = str_replace(" ", '', strtolower($data[3])) === str_replace(" ", "", strtolower($freelance->major->name));
+								
+								$v = $freelance 
+									&& $freelance->skills->isNotEmpty() 
+									&& $freelance->university 
+									&& $request->email_verified_at 
+									&& $name_verified 
+									&& $nim_verified 
+									&& $prodi_verified 
+									&& $university_verified;
+
 								$user->update([
 									'is_verified' => $v,
 								]);
+
+							} else {
+								$user->update([
+									'is_verified' => false,
+								]);
 							}
-							return $request->is_verified;
-						} else {
-							return $request->is_verified;
-						}
+
+							return $user->is_verified;
 					} else {
 						$client = PicCompany::with('company')->where('user_id', '=', $request->id)->get()->first();
 						if(!$request->is_verified) {

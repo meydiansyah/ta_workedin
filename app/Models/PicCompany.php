@@ -17,6 +17,16 @@ class PicCompany extends Model
     protected $appends = [
         'full_name'
     ];
+    
+    protected $casts = [
+        'user_id' => 'integer',
+        'company_id' => 'integer',
+        'rating' => 'double',
+        'village_id' => 'integer',
+        'district_id' => 'integer',
+        'city_id' => 'integer',
+        'province_id' => 'integer',
+    ];
 
 	protected $fillable = [
         'user_id',

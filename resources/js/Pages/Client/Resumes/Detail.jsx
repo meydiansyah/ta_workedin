@@ -5,8 +5,13 @@ import Navbar from "@/Components/Navbar";
 import PrimaryButton from "@/Components/PrimaryButton";
 import { Inertia } from "@inertiajs/inertia";
 import { Link, Head } from "@inertiajs/inertia-react";
+import moment from "moment";
 import { useState } from "react";
-import { AiFillStar, AiOutlineStar } from "react-icons/ai";
+import {
+    AiFillStar,
+    AiOutlineClockCircle,
+    AiOutlineStar,
+} from "react-icons/ai";
 import { MdVerified } from "react-icons/md";
 import Rating from "react-rating";
 
@@ -31,9 +36,9 @@ export default function DetailUser(props) {
             <Head title="workedin - Detail Freelance" />
             <Navbar />
 
-            <div className="relative flex-col items-top justify-center min-h-screen bg-white sm:items-center sm:pt-0">
+            <div className="relative flex-col items-top justify-center bg-white sm:items-center sm:pt-0">
                 <div className="py-10 pt-16">
-                    {props.status.id === 7 && (
+                    {props.status.id === 8 && (
                         <div className="bg-red-100 py-4">
                             <div className="mx-auto max-w-6xl px-16 text-red-800">
                                 Mahasiswa ditolak
@@ -83,7 +88,13 @@ export default function DetailUser(props) {
                             </div>
                             <div className="md:col-span-5">
                                 <div className="flex justify-between items-center">
-                                    <div className="md:flex md:space-x-4 space-y-2 md:space-y-0 items-center">
+                                    <Link
+                                        href={route(
+                                            "freelance.detail",
+                                            props.freelance.id
+                                        )}
+                                        className="md:flex md:space-x-4 space-y-2 md:space-y-0 items-center"
+                                    >
                                         <h2 className="lg:text-5xl md:text-3xl text-2xl font-semibold text-gray-900 md:mt-0">
                                             {props.freelance.full_name}
                                         </h2>
@@ -97,7 +108,7 @@ export default function DetailUser(props) {
                                                 - Belum terverifikasi
                                             </div>
                                         )}
-                                    </div>
+                                    </Link>
                                     <div className="space-x-4 items-center hidden sm:flex">
                                         <a
                                             href={props.data.file}
@@ -200,6 +211,30 @@ export default function DetailUser(props) {
                                 )}
                             </div>
                         </div>
+                        {props.status.id === 8 && (
+                            <div className="border-t ">
+                                <div className="bg-red-100 m-6 rounded-md py-8 px-6">
+                                    <div className="md:grid md:grid-cols-6 md:gap-6 ">
+                                        <div className="md:col-span-1">
+                                            <div className="font-semibold text-red-500">
+                                                Alasan penolakan
+                                            </div>
+                                        </div>
+                                        <div className="md:col-span-4">
+                                            <h2 className="font-semibold text-gray-900 mt-2 md:mt-0">
+                                                {
+                                                    props.reviews.filter(
+                                                        (e) =>
+                                                            e.job_id ===
+                                                            props.data.job_id
+                                                    )[0].content
+                                                }
+                                            </h2>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                         {props.status.id === 3 && (
                             <div className="flex justify-end space-x-4 items-center">
                                 <button
@@ -221,6 +256,215 @@ export default function DetailUser(props) {
                     </div>
                 </div>
             </div>
+            {props.reviews && (
+                <>
+                    {props.reviews.length > 0 && (
+                        <div className="bg-gray-100">
+                            <div className="mx-auto max-w-5xl py-12">
+                                <div className="rounded-md bg-white flex-col shadow-md space-y-2">
+                                    <div className="p-4 border-b flex justify-between items-center">
+                                        <div className="font-semibold text-lg">
+                                            Ulasan
+                                        </div>
+                                        <div className="text-sm text-gray-500">
+                                            Menampilkan {props.reviews.length}{" "}
+                                            ulasan
+                                        </div>
+                                    </div>
+                                    <div className="p-4 flex-col space-y-4">
+                                        {props.reviews
+                                            .filter(
+                                                (e) =>
+                                                    e.job_id !==
+                                                    props.data.job_id
+                                            )
+                                            .map((item, index) => {
+                                                return (
+                                                    <div
+                                                        key={index}
+                                                        className={`${
+                                                            props.reviews
+                                                                .length -
+                                                                1 !==
+                                                                index &&
+                                                            "border-b"
+                                                        } pb-2`}
+                                                    >
+                                                        {item.rating ? (
+                                                            <div className="flex space-x-4">
+                                                                <Rating
+                                                                    readonly
+                                                                    initialRating={
+                                                                        item.rating
+                                                                    }
+                                                                    emptySymbol={
+                                                                        <AiOutlineStar
+                                                                            size={
+                                                                                20
+                                                                            }
+                                                                            className="text-gray-400 text-4xl"
+                                                                        />
+                                                                    }
+                                                                    fullSymbol={
+                                                                        <AiFillStar
+                                                                            size={
+                                                                                20
+                                                                            }
+                                                                            className="text-yellow-400 text-4xl"
+                                                                        />
+                                                                    }
+                                                                />
+                                                                <div className="text-sm">
+                                                                    {
+                                                                        item.rating
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                        ) : (
+                                                            <div className="flex justify-end text-red-500">
+                                                                Dibatalkan
+                                                            </div>
+                                                        )}
+                                                        <div className="my-2 mt-4 flex-col space-y-2">
+                                                            <div className="font-bold">
+                                                                {item.job.title}
+                                                            </div>
+                                                            <div className="text-sm">
+                                                                {item.content}
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex flex-wrap py-4 gap-2">
+                                                            {item.job.skills.map(
+                                                                (
+                                                                    data,
+                                                                    index
+                                                                ) => {
+                                                                    return (
+                                                                        <div
+                                                                            key={
+                                                                                index
+                                                                            }
+                                                                            className="flex items-center"
+                                                                        >
+                                                                            <div className="cursor-pointer text-sm px-2 text-blue-500 hover:opacity-90 hover:underline hover:underline-offset-4 decoration-blue-500">
+                                                                                {
+                                                                                    data.name
+                                                                                }
+                                                                            </div>
+                                                                            {item
+                                                                                .job
+                                                                                .skills
+                                                                                .length -
+                                                                                1 !==
+                                                                                index && (
+                                                                                <div className="text-gray-500">
+                                                                                    •
+                                                                                </div>
+                                                                            )}
+                                                                        </div>
+                                                                    );
+                                                                }
+                                                            )}
+                                                        </div>
+                                                        <div className="py-4 flex justify-between">
+                                                            <div className="flex space-x-4 items-center">
+                                                                <Link
+                                                                    href={route(
+                                                                        "detail.user",
+                                                                        item.job
+                                                                            .company
+                                                                            .company_pic[0]
+                                                                            .user
+                                                                            .id
+                                                                    )}
+                                                                >
+                                                                    <img
+                                                                        className="h-10 w-10 rounded-md object-cover"
+                                                                        src={
+                                                                            item
+                                                                                .job
+                                                                                .company
+                                                                                .company_pic[0]
+                                                                                .user
+                                                                                .profile_photo_url
+                                                                        }
+                                                                        alt={
+                                                                            item
+                                                                                .job
+                                                                                .company
+                                                                                .company_pic[0]
+                                                                                .full_name
+                                                                        }
+                                                                    />
+                                                                </Link>
+
+                                                                <Link
+                                                                    href={route(
+                                                                        "detail.user",
+                                                                        item.job
+                                                                            .company
+                                                                            .company_pic[0]
+                                                                            .user
+                                                                            .id
+                                                                    )}
+                                                                    className="flex-col space-y-1"
+                                                                >
+                                                                    <div className="text-sm font-semibold">
+                                                                        {
+                                                                            item
+                                                                                .job
+                                                                                .company
+                                                                                .company_pic[0]
+                                                                                .title
+                                                                        }
+                                                                        ,{" "}
+                                                                        {
+                                                                            item
+                                                                                .job
+                                                                                .company
+                                                                                .company_pic[0]
+                                                                                .full_name
+                                                                        }
+                                                                    </div>
+                                                                    <div className="text-xs">
+                                                                        {
+                                                                            item
+                                                                                .job
+                                                                                .company
+                                                                                .type_company
+                                                                                .code
+                                                                        }{" "}
+                                                                        {
+                                                                            item
+                                                                                .job
+                                                                                .company
+                                                                                .name
+                                                                        }
+                                                                    </div>
+                                                                </Link>
+                                                            </div>
+                                                            <div className="flex space-x-2 items-center">
+                                                                <div className="text-gray-500 text-xs">
+                                                                    {moment(
+                                                                        item.created_at
+                                                                    ).fromNow()}
+                                                                </div>
+                                                                <AiOutlineClockCircle
+                                                                    size={16}
+                                                                    className="text-gray-500"
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </>
+            )}
             <Footer />
 
             {/* {bodyRejection && ( */}
@@ -240,8 +484,9 @@ export default function DetailUser(props) {
                             Inertia.post(
                                 route("update.resume", props.data.id),
                                 {
-                                    status: 7,
+                                    status: 8,
                                     content: bodyRejection,
+                                    job_id: props.data.job.id,
                                     freelance_id: props.freelance.id,
                                 }
                             );
@@ -282,9 +527,10 @@ export default function DetailUser(props) {
                             Inertia.post(
                                 route("update.resume", props.data.id),
                                 {
-                                    status: 6,
+                                    status: 7,
                                     rating: ratingFinished,
                                     content: bodyFinished,
+                                    job_id: props.data.job.id,
                                     freelance_id: props.freelance.id,
                                 }
                             );
@@ -336,6 +582,7 @@ export default function DetailUser(props) {
                                 route("update.resume", props.data.id),
                                 {
                                     status: 5,
+                                    job_id: props.data.job.id,
                                 }
                             );
                         }}

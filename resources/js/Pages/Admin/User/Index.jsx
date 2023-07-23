@@ -4,6 +4,7 @@ import { Head, Link } from "@inertiajs/inertia-react";
 import HeaderClient from "@/Components/HeaderClient";
 import { MdOutlineMarkEmailRead } from "react-icons/md";
 import { Inertia } from "@inertiajs/inertia";
+import SubNavLink from "@/Components/SubNavLink";
 
 export default function UsersAdmin(props) {
     const getStatus = (status) => {
@@ -25,10 +26,22 @@ export default function UsersAdmin(props) {
     return (
         <AuthenticatedLayout
             header={
-                <div className="flex">
-                    <h2 className="font-semibold text-xl text-gray-800 leading-tight">
+                <div className="flex space-x-4">
+                    <SubNavLink
+                        href={route("admin.user")}
+                        active={route().current("admin.user")}
+                    >
                         Users
-                    </h2>
+                    </SubNavLink>
+                    <SubNavLink
+                        href={route("admin.students")}
+                        active={
+                            route().current("admin.students") ||
+                            route().current("student.*")
+                        }
+                    >
+                        Students
+                    </SubNavLink>
                 </div>
             }
         >

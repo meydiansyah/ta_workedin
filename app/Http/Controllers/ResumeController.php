@@ -27,18 +27,18 @@ class ResumeController extends Controller
                 $resume = Resume::with(['job', 'job.company', 'job.company.reviews', 'freelance', 'freelance.reviews', 'statuses'])->paginate(7);
                 // dd($resume);
             } else if($user->role_id === 2) {
-                $resume = Resume::with(['job', 'job.company', 'job.company.reviews', 'job.company.companyPic', 'freelance', 'freelance.user', 'freelance.reviews', 'statuses'])
-                        ->whereRelation('job.company.companyPic', 'user_id', 'like', '%'.$user->id.'%')
+                $resume = Resume::with(['job', 'job.company', 'job.company.reviews', 'job.company.companyPic', 'job.company.companyPic.user', 'job.company.typeCompany', 'freelance', 'freelance.user', 'freelance.reviews', 'statuses'])
+                        ->whereRelation('job.company.companyPic', 'user_id', '=', $user->id)
                         ->latest()
                         ->paginate(7);
             } else {
                 $freelance = Freelance::where('user_id', $user->id)->get()->first();
-                $resume = Resume::with(['job', 'job.company', 'job.company.companyPic', 'job.company.companyPic.user', 'job.company.typeCompany', 'freelance', 'freelance.user', 'freelance.reviews', 'statuses'])
-                        ->whereRelation('freelance', 'freelance_id', 'like', '%'.$freelance->id.'%')
+                $resume = Resume::with(['job', 'job.company', 'job.company.reviews', 'job.company.companyPic', 'job.company.companyPic.user', 'job.company.typeCompany', 'freelance', 'freelance.user', 'freelance.reviews', 'statuses'])
+                        ->whereRelation('freelance', 'freelance_id', '=', $freelance->id)
                         ->latest()
                         ->paginate(7);
+                        // return response()->json($resume);
             }
-            // dd($resume);
             return Inertia::render('Jobs/History', [
                 'resume' => $resume,
             ]);
@@ -82,7 +82,7 @@ class ResumeController extends Controller
         $resume->jobs()->sync($request->job_id);
         $resume->statuses()->sync(3);
 
-        return redirect()->route('jobs')->with('status', 'Berhasil mendaftarkan pekerjaan');
+        return redirect()->route('history.apply')->with('status', 'Berhasil mendaftarkan pekerjaan');
     }
 
     /**
@@ -93,7 +93,11 @@ class ResumeController extends Controller
      */
     public function show(Resume $resume)
     {
-        $resume = Resume::with(['statuses', 'freelance', 'job', 'job.company', 'job.company.companyPic', 'job.company.typeCompany', 'freelance.user', 'freelance.university', 'freelance.major', 'freelance.province', 'freelance.city', 'freelance.skills', 'freelance.reviews'])
+        $resume = Resume::with(['statuses', 'freelance', 'job', 'job.company', 'job.company.companyPic', 'job.company.typeCompany', 'freelance.user', 'freelance.university', 'freelance.major', 'freelance.province', 'freelance.city', 'freelance.skills',
+         'freelance.reviews' => function($q) {
+            $q->latest();
+         }, 
+         'freelance.reviews.job', 'freelance.reviews.job.skills', 'freelance.reviews.job.company', 'freelance.reviews.job.company.typeCompany', 'freelance.reviews.job.company.companyPic', 'freelance.reviews.job.company.companyPic.user'])
                 ->where('id', $resume->id)
                 ->get()
                 ->first();
@@ -114,6 +118,7 @@ class ResumeController extends Controller
             'skills' => $resume->freelance->skills,
             'company' => $resume->job->company,
             'pic' => $resume->job->company->companyPic->first(),
+            'reviews' => $resume->freelance->reviews
         ]);
     }
 
@@ -141,15 +146,16 @@ class ResumeController extends Controller
         $resume->statuses()->sync($request->status);
         $freelance = Freelance::where('id', $request->freelance_id)->get()->first();
 
-        if($request->status === 6) {
+        if($request->status === 7) {
             if(isset($request->freelance_id)){
                 $review = Review::create([
                     'rating' => $request->rating,
                     'content' => $request->content,
+                    'job_id' => $request->job_id,
                 ]);
                 $job = Job::where('id', $resume->job_id)->get()->first();
                 $job->update([
-                    'status_id' => 8
+                    'status_id' => 9
                 ]);
                 $freelance->reviews()->attach($review->id);
                 $f = Freelance::with('reviews')
@@ -175,10 +181,11 @@ class ResumeController extends Controller
                 $review = Review::create([
                     'rating' => $request->rating,
                     'content' => $request->content,
+                    'job_id' => $request->job_id,
                 ]);
                 $job = Job::where('id', $resume->job_id)->get()->first();
                 $job->update([
-                    'status_id' => 8
+                    'status_id' => 9
                 ]);
                 $company = Company::where('id', $request->company_id)->get()->first();
                 $company->reviews()->attach($review->id);                
@@ -196,9 +203,19 @@ class ResumeController extends Controller
             }
         }
 
-        if($request->status === 7) {
+        if($request->status === 6) {
             $review = Review::create([
                 'content' => $request->content,
+                'job_id' => $request->job_id
+            ]);
+            $company = Company::where('id', $request->company_id)->get()->first();
+            $company->reviews()->attach($review->id); 
+        }
+
+        if($request->status === 8) {
+            $review = Review::create([
+                'content' => $request->content,
+                'job_id' => $request->job_id
             ]);
             $freelance->reviews()->attach($review->id);
         }

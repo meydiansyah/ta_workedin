@@ -8,6 +8,7 @@ use App\Models\Freelance;
 use App\Models\Major;
 use App\Models\MajorUniversity;
 use App\Models\University;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -72,7 +73,8 @@ class UniversityController extends Controller
 	public function storeMajor(Request $request)
 	{
 		$un = University::find($request->validateData['codept']);
-		Major::create([
+		
+		$major = Major::create([
 			'code' => $request['code'],
 			'name' => $request['name'],
 			'level' => $request['level'],
@@ -82,7 +84,7 @@ class UniversityController extends Controller
 			'date_standing' => $request['dateStanding'],
 			'pt_code' => $request->validateData['codept']
 		]);
-		$un->majors()->attach($request['code']);
+		$un->majors()->attach($major->id);
 	}
 
 
@@ -94,19 +96,20 @@ class UniversityController extends Controller
 	 */
 	public function show($id)
 	{
-		$un = University::with(['majors', 'freelances', 'province', 'city', 'district','village'])->where('codept', $id)->get()->first();
+		$un = University::with(['majors', 'freelances', 'majors.freelances', 'province', 'city', 'district','village'])
+			->where('codept', $id)
+			->get()
+			->first();
 
 		if (Auth::user() && Auth::user()->role_id === 1) {
-			$mj = Major::with('freelances')->where('pt_code', $id)->paginate(7);
 			return Inertia::render('Admin/University/Detail', [
 				'university' => $un,
-				'majors' => $mj
+				'majors' => $un->majors
 			]);
 		} else {
-			$mj = Major::with('freelances')->where('pt_code', $id)->get();
 			return Inertia::render('University/Detail', [
 				'university' => $un,
-				'majors' => $mj
+				'majors' => $un->majors
 			]);
 		}
 
@@ -154,24 +157,18 @@ class UniversityController extends Controller
 
 	public function updateMajor(Request $request, Major $major)
 	{
-		// dd($major);
-		$validate = $request->validate([
-			'code' => [
-				'required',
-				'numeric',
-				'min:3',
-				Rule::unique('majors')->ignore($major->code, 'code')
-			],
-			'name' => [
-				'required',
-				'string',
-				'max:255',
-				'min:3',
-				Rule::unique('majors')->ignore($major->name, 'name')
-			],
-        ]);
 
-		$major->update($validate);
+		$major->update([
+			'code' => $request['code'],
+			'name' => $request['name'],
+			'level' => $request['level'],
+			'accredity' => $request['accredity'],
+			'sk' => $request['sk'],
+			'website' => $request['website'],
+			'date_standing' => $request['dateStanding'],
+			'pt_code' => $request->validateData['codept']
+		]);
+		
         return redirect()->back();
 	}
 
@@ -184,6 +181,12 @@ class UniversityController extends Controller
 	public function destroy(University $university)
 	{
 		$university->delete();
+        return redirect()->route('admin.university');
+	}
+
+	public function destroyMajor(Major $major)
+	{
+		$major->delete();
         return redirect()->route('admin.university');
 	}
 }

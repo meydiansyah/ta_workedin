@@ -17,6 +17,12 @@ class Review extends Model
 	protected $fillable = [
 		'rating',
 		'content',
+		'job_id',
+	];
+
+	protected $casts = [
+        'rating' => 'double',
+        'job_id' => 'integer',
 	];
 
 	// protected function fullName(): Attribute
@@ -25,6 +31,11 @@ class Review extends Model
     //         get: fn ($value, $attributes) => ucfirst($attributes['first_name']). " ". ucfirst($attributes['last_name']),
     //     );
     // }
+
+	public function job()
+	{
+		return $this->belongsTo(Job::class, 'job_id');
+	}
 
 	public function freelances()
 	{

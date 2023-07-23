@@ -43,7 +43,7 @@ class ProfileController extends Controller
         $provinces = Province::all();
         $companies = Company::all();
         if($request->user()->role_id === 2) {
-            $data = PicCompany::with(['user', 'user.status', 'user.role', 'company', 'company.typeCompany', 'company.province', 'company.city', 'company.district', 'company.village', 'province', 'city', 'district', 'village'])->where('user_id', '=', $request->user()->id)->get()->first();
+            $data = PicCompany::with(['user', 'user.status', 'user.role', 'company', 'company.typeCompany', 'company.province', 'company.city', 'company.district', 'company.village', 'province', 'city', 'district', 'village', 'company.reviews'])->where('user_id', '=', $request->user()->id)->get()->first();
         } else  {
             $data = Freelance::with(['user', 'user.status', 'user.role', 'university', 'university.majors', 'university.freelances', 'province', 'city', 'district', 'village', 'major', 'skills', 'reviews'])->where('user_id', '=', $request->user()->id)->get()->first();
         }
@@ -156,13 +156,20 @@ class ProfileController extends Controller
 			$validateFreelance = $request->validate([
                 'nim' => 'required|string|max:255|min:1',
                 'pt_code' => 'required',
-				'major_code' => 'required',
+				'major_id' => 'required',
 			]);
 
-            $freelance->universities()->sync($request->pt_code);
-            $freelance->majors()->sync($request->major_code);
+            // $user = User::find('id', $freelance->user_id)->get()->first();
 
-			$freelance->update($validateFreelance);
+            // if($user->is_verified) {
+			$freelance->universities()->sync($request->pt_code);
+            $freelance->majors()->sync($request->major_id);
+			// }
+
+            // $freelance->universities()->sync($request->pt_code);
+            // $freelance->majors()->sync($request->major_id);
+            $freelance->update($validateFreelance);
+
             return redirect()->route('profile.edit')->with('status', 'Pendidikan berhasil diperbarui.');
 		}
     }
@@ -206,6 +213,7 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request)
     {
+        // dd($request);
         $request->user()->fill($request->validated());
 
         if ($request->user()->isDirty('email')) {
@@ -217,7 +225,9 @@ class ProfileController extends Controller
             $user = Freelance::where('user_id', '=', $request->user_id)->get()->first();
         }
 
-        $user->update(['email' => $request->email]);
+        if(isset($user)) {
+            $user->update(['email' => $request->email]);
+        }
 
         $request->user()->save();
 

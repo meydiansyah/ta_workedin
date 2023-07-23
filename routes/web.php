@@ -7,6 +7,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResumeController;
 use App\Http\Controllers\UniversityController;
 use App\Models\Company;
+use App\Models\Freelance;
+use App\Models\PicCompany;
 use App\Models\University;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -29,6 +31,7 @@ Route::get('/', function () {
 		'canRegister' => Route::has('register'),
 		'laravelVersion' => Application::VERSION,
 		'phpVersion' => PHP_VERSION,
+		'status' => session('verification-success')
 	]);
 })->name('home');
 
@@ -56,18 +59,26 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/freelances', [FreelanceController::class, 'index'])->name('freelance');
-Route::get('/freelances/{freelance}/detail', [FreelanceController::class, 'index'])->name('freelance.detail');
+Route::get('/freelance/{freelance}/detail', [FreelanceController::class, 'show'])->name('freelance.detail');
 Route::get('/detail/{user}', [ProfileController::class, 'showUser'])->name('detail.user');
 Route::get('/jobs', [JobController::class, 'index'])->name('jobs');
 Route::get('/jobs/{job}', [JobController::class, 'show'])->name('job.detail');
 Route::get('/university', [UniversityController::class, 'index'])->name('university');
 Route::get('/university/{university}/detail', [UniversityController::class, 'show'])->name('detail.university');
-// Route::get('/university', function() {
-// 	$university = University::all();
-// 	return Inertia::render('University/Index', [
-// 		'universities' => $university
-// 	]);
-// })->name('university');
+
+Route::get('/about', function() {
+	$universities = University::all();
+	$pic = PicCompany::all();
+	$freelances = Freelance::with('user')->whereRelation('user', 'is_verified', '=', true)->get();
+	return Inertia::render('About/Index', [
+		'universities' => $universities,
+		'freelances' => $freelances,
+		'picCompanies' => $pic,
+	]);
+})->name('about');
+Route::get('/contact-us', function() {
+	return Inertia::render('Contact/Index');
+})->name('contact_us');
 Route::get('/company', [CompanyController::class, 'index'])->name('company');
 Route::get('/company/{company}/detail', [CompanyController::class, 'show'])->name('company.detail');
 

@@ -32,7 +32,7 @@ class StorePicRequest extends FormRequest
         return [
             'email' => 'email|max:255',
 			'first_name' => 'required|string|max:255|min:1',
-			'last_name' => 'required|string|max:255|min:1',
+			'last_name' => 'nullable',
 			'phone' => 'required|string|max:255|min:1|unique:pic_companies',
 			'nik' => 'required|string|max:255|min:1|unique:pic_companies',
 			'full_address' => 'required|string',

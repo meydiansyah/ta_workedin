@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('freelance_majors', function (Blueprint $table) {
             $table->unsignedBigInteger('freelance_id')->index();
-			$table->string('major_code');
+            $table->unsignedBigInteger('major_id')->index();
 
             $table->foreign('freelance_id')
 				->references('id')
@@ -23,8 +23,8 @@ return new class extends Migration
 				->onUpdate('cascade')
 				->onDelete('cascade');
                 
-            $table->foreign('major_code')
-				->references('code')
+            $table->foreign('major_id')
+				->references('id')
 				->on('majors')
 				->onUpdate('cascade')
 				->onDelete('cascade');

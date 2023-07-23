@@ -117,15 +117,13 @@ export default function Edit({
                             className="transition ease-in-out duration-700"
                         >
                             <div className="font-medium text-sm text-green-600">
-                                {status}
+                                <div className="mt-2 font-medium text-sm text-green-600">
+                                    {status === "verification-link-sent"
+                                        ? "Verifikasi email berhasil dikirm, silahkan periksa."
+                                        : status}
+                                </div>
                             </div>
                         </Transition>
-                        {status === "verification-link-sent" && (
-                            <div className="mt-2 font-medium text-sm text-green-600">
-                                A new verification link has been sent to your
-                                email address.
-                            </div>
-                        )}
                         {!user.email_verified_at && (
                             <Dropdown>
                                 <Dropdown.Trigger>

@@ -58,7 +58,11 @@ class JobController extends Controller
 
                         // dd($jobs);
                     } else {
-                        $jobs = Job::with(['status', 'company', 'skills', 'company.city', 'company.typeCompany', 'resumes'])->where('status_id', 1)->when($request->input('search'),function($query, $search) {
+                        $jobs = Job::with(['status', 'company', 'skills', 'company.city', 'company.typeCompany', 'resumes'])
+                        ->where('status_id', '!=', 2)
+                        ->where('status_id', '!=', 8)
+                        ->when($request
+                        ->input('search'),function($query, $search) {
                             $query->where('title','like','%'.$search.'%')
                                     ->OrWhereRelation('company', 'name', 'like','%'.$search.'%');
                         })
@@ -69,7 +73,8 @@ class JobController extends Controller
             }
         } else {
             $jobs = Job::with(['status', 'company', 'skills', 'company.city', 'company.typeCompany', 'resumes'])
-                    ->where('status_id', 1)
+                    ->where('status_id', '!=', 2)
+                    ->where('status_id', '!=', 8)
                     ->when($request->input('search'),function($query, $search) {
                         $query->where('title','like','%'.$search.'%')
                             ->OrWhereRelation('company', 'name', 'like','%'.$search.'%');
@@ -80,7 +85,8 @@ class JobController extends Controller
 
         if(!is_null($request->filter)) {
             $jobs = Job::with(['status', 'company', 'skills', 'company.city', 'company.typeCompany', 'resumes'])
-            ->where('status_id', 1)
+            ->where('status_id', '!=', 2)
+            ->where('status_id', '!=', 8)
             ->when($request->input('search'),function($query, $search) {
                 $query->where('title','like','%'.$search.'%')
                         ->OrWhereRelation('company', 'name','like','%'.$search.'%');
@@ -120,7 +126,8 @@ class JobController extends Controller
      */
     public function store(Request $request)
     {
-        $pic = Company::with('companyPic')->where('id', '=', $request->company_id);
+        
+        $pic = Company::with('companyPic')->where('id', '=', $request->company_id)->get()->first();
         $pic = $pic->companyPic;
         if($pic->isNotEmpty()) {
             $request['pic_company_id'] = $pic->first()->id;
@@ -139,7 +146,7 @@ class JobController extends Controller
         $validate['status_id'] = $request->status_id;
         $job = Job::create($validate);
 
-        $job->companies()->attach($pic->company_id);
+        $job->companies()->attach($pic->first()->company_id);
 
         foreach($request->skill as $skill) {
 			$job->skills()->attach($skill);
@@ -156,7 +163,18 @@ class JobController extends Controller
      */
     public function show(Job $job)
     {
-        dd($job);
+        $job = Job::with(['status', 'company', 'skills', 'company.city', 'company.typeCompany', 'resumes', 'resumes.freelance', 'resumes.statuses', 'company.reviews', 'company.companyPic', 'company.companyPic.user'])
+                ->where('id', $job->id)
+                ->get()
+                ->first();
+
+        return Inertia::render('Jobs/Detail', [
+            'data' => $job,
+            'company' => $job->company,
+            'pic' => $job->company->companyPic->first(),
+            'user' => $job->company->companyPic->first()->user,
+            'reviews' => $job->company->reviews,
+        ]);
     }
 
     /**

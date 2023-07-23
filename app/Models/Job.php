@@ -20,6 +20,11 @@ class Job extends Model
 		'status_id',
 		'company_id',
     ];
+    
+    protected $casts = [
+        'status_id' => 'integer',
+        'company_id' => 'integer',
+	];
 
     /**
      * Search Job

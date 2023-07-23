@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('major_university', function (Blueprint $table) {
             
             $table->string('pt_code');
-			$table->string('major_code');
+            $table->bigIncrements('major_id');
             
             $table->foreign('pt_code')
 				->references('codept')
@@ -24,8 +24,8 @@ return new class extends Migration
 				->onUpdate('cascade')
 				->onDelete('cascade');
                 
-            $table->foreign('major_code')
-				->references('code')
+            $table->foreign('major_id')
+				->references('id')
 				->on('majors')
 				->onUpdate('cascade')
 				->onDelete('cascade');

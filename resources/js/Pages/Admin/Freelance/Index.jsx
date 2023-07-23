@@ -42,8 +42,16 @@ export default function FreelanceAdmin(props) {
                 <div className="py-12">
                     <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                         <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                            <div className="p-6 text-gray-900">
-                                Daftar Freelancer (mahasiswa)
+                            <div className="flex justify-between">
+                                <div className="p-6 text-gray-900">
+                                    Daftar Freelance (Mahasiswa)
+                                </div>
+                                {props.freelance.last_page >= 2 && (
+                                    <div className="p-6 text-gray-900">
+                                        {props.freelance.current_page} dari{" "}
+                                        {props.freelance.last_page} halaman
+                                    </div>
+                                )}
                             </div>
 
                             <div className="relative mx-4 mb-4 overflow-x-auto sm:rounded-lg">
@@ -142,6 +150,29 @@ export default function FreelanceAdmin(props) {
                                 </table>
                             </div>
                         </div>
+                        {props.freelance.last_page !== 1 && (
+                            <div className="flex justify-between mt-6 text-sm">
+                                {props.freelance.current_page !== 1 ? (
+                                    <Link
+                                        href={props.freelance.prev_page_url}
+                                        className="py-2 px-4 rounded-md bg-white shadow-sm hover:underline"
+                                    >
+                                        {"< "} Sebelumnya
+                                    </Link>
+                                ) : (
+                                    <div></div>
+                                )}
+                                {props.freelance.current_page !==
+                                    props.freelance.last_page && (
+                                    <Link
+                                        href={props.freelance.next_page_url}
+                                        className="py-2 px-4 rounded-md bg-white shadow-sm hover:underline"
+                                    >
+                                        {"> "} Selanjutnya
+                                    </Link>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </div>
             ) : (

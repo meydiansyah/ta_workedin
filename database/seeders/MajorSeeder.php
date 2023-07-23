@@ -18,6 +18,7 @@ class MajorSeeder extends Seeder
     {
         $listMajors = [
             [
+                'id' => 1,
                 'code'=> 73201,
                 'name' => 'Psikologi',
                 'level'=> 'S1',
@@ -28,6 +29,7 @@ class MajorSeeder extends Seeder
                 "pt_code" => "31033",
             ],
             [
+                'id' => 2,
                 'code'=> 74201,
                 'name' => 'Ilmu Hukum',
                 'level'=> 'S1',
@@ -38,6 +40,7 @@ class MajorSeeder extends Seeder
                 "pt_code" => "31033",
             ],
             [
+                'id' => 3,
                 'code'=> 14201,
                 'name' => 'Ilmu Keperawatan',
                 'level'=> 'S1',
@@ -54,7 +57,7 @@ class MajorSeeder extends Seeder
         foreach ($listMajors as $data) {
             Major::create($data);
             
-            $university->majors()->attach($data['code']);
+            $university->majors()->attach($data['id']);
         }
     }
 }

@@ -24,6 +24,16 @@ class Freelance extends Model
         'full_name'
     ];
 
+    protected $casts = [
+        'user_id' => 'integer',
+        'rating' => 'double',
+        'village_id' => 'integer',
+        'major_id' => 'integer',
+        'district_id' => 'integer',
+        'city_id' => 'integer',
+        'province_id' => 'integer',
+    ];
+
     protected $fillable = [
         'user_id',
         'first_name',
@@ -34,7 +44,7 @@ class Freelance extends Model
         'nik',
         'bio',
         'nim',
-        'major_code',
+        'major_id',
         'pt_code',
         'rating',
         'full_address',
@@ -127,12 +137,12 @@ class Freelance extends Model
      */
     public function major()
     {
-        return $this->belongsTo(Major::class, 'major_code', 'code');
+        return $this->belongsTo(Major::class, 'major_id');
     }
 
     public function majors()
     {
-        return $this->belongsToMany(Major::class, 'freelance_majors', 'freelance_id', 'major_code');
+        return $this->belongsToMany(Major::class, 'freelance_majors', 'freelance_id', 'major_id');
     }
 
 	/**

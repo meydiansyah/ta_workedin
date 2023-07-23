@@ -27,7 +27,7 @@ export function FormUniversity({
         .filter((items) => items.pt_code.includes(data.pt_code))
         .map((item) => {
             return {
-                value: item.code,
+                value: item.id,
                 label: item.code + " - " + item.name,
             };
         });
@@ -87,7 +87,7 @@ export function FormUniversity({
                                 freelance &&
                                 freelance.major && [
                                     {
-                                        value: freelance.major.code,
+                                        value: freelance.major.id,
                                         label: freelance.major.name,
                                     },
                                 ]
@@ -95,7 +95,7 @@ export function FormUniversity({
                             className="mt-2 basic-single"
                             classNamePrefix="select"
                             onChange={(e) => {
-                                setData("major_code", e.value);
+                                setData("major_id", e.value);
                                 setSelectedPt(true);
                             }}
                         />

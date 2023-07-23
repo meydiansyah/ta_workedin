@@ -12,6 +12,7 @@ import { FormAddress } from "@/Components/Forms/Form_Address";
 import StatusData from "@/Components/StatusData";
 import { BiInfoCircle } from "react-icons/bi";
 import Dropdown from "@/Components/Dropdown";
+import { Inertia } from "@inertiajs/inertia";
 
 export default function FreelanceEdit({
     freelance,

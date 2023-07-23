@@ -82,12 +82,12 @@ class CompanyController extends Controller
     {
         if(auth()->user() && auth()->user()->role_id !== 3) {
             $data = Job::where('company_id', '=', $company->id)
-                    ->with(['company', 'company.typeCompany', 'company.companyPic', 'company.companyPic.user', 'company.province', 'company.city', 'company.district', 'company.village'])
+                    ->with(['company', 'company.typeCompany', 'company.companyPic', 'company.reviews', 'company.companyPic.user', 'company.province', 'company.city', 'company.district', 'company.village'])
                     ->get();
         } else {
             $data = Job::where('status_id', '=', 1)
             ->where('company_id', '=', $company->id)
-            ->with(['company', 'company.typeCompany', 'company.companyPic', 'company.companyPic.user', 'company.province', 'company.city', 'company.district', 'company.village'])
+            ->with(['company', 'company.typeCompany', 'company.companyPic', 'company.reviews', 'company.companyPic.user', 'company.province', 'company.city', 'company.district', 'company.village'])
             ->get();
             // $data = Company::where('id', $company->id)
             //     ->with(['typeCompany', 'companyPic', 'province', 'city', 'district', 'village', 'jobs'])
@@ -98,7 +98,7 @@ class CompanyController extends Controller
         }
 
         if($data->isEmpty()) {
-            $data = Company::with(['typeCompany', 'companyPic', 'companyPic.user', 'province', 'city', 'district', 'village'])
+            $data = Company::with(['typeCompany', 'companyPic', 'companyPic.user', 'province', 'city', 'district', 'village', 'reviews'])
                     ->where('id', $company->id)
                     ->get()
                     ->first();
@@ -123,7 +123,10 @@ class CompanyController extends Controller
     {
         $provinces = Province::all();
         $type = TypeCompany::all();
-        $company = Company::with(['typeCompany', 'companyPic', 'province', 'city', 'district', 'village'])->find($company)->first();
+        $company = Company::with(['typeCompany', 'companyPic', 'province', 'city', 'district', 'village'])
+                            ->where('id', $company->id)
+                            ->get()
+                            ->first();
 
         return Inertia::render('Admin/Company/Edit', [
             'company' => $company,

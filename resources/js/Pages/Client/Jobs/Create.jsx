@@ -26,7 +26,7 @@ export default function JobCreate({ skills }) {
                     <div className="flex justify-between">
                         <div className="flex text-xl text-gray-800">
                             <Link
-                                href={route("admin.jobs")}
+                                href={route("client.job")}
                                 className="leading-tight hover:underline underline-offset-4"
                             >
                                 Job
@@ -38,7 +38,7 @@ export default function JobCreate({ skills }) {
                         </div>
                         <div className="flex">
                             <Link
-                                href={route("admin.jobs")}
+                                href={route("client.job")}
                                 className="inline-flex items-center px-4 py-2 text-xs font-bold tracking-widest uppercase text-gray-900 "
                             >
                                 {"< "} Batal

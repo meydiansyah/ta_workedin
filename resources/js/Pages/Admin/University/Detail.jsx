@@ -96,14 +96,16 @@ export default function UniversityDetail(props) {
 
                 <div className="py-10">
                     <div className="mx-auto my-12 max-w-6xl md:grid md:grid-cols-6 md:gap-6 px-16 items-center">
-                        <div className="md:col-span-1">
-                            <div className="rounded-md  bg-gray-200 p-4">
-                                <img
-                                    src={props.university.logo}
-                                    className="mx-auto"
-                                />
+                        {props.university.logo && (
+                            <div className="md:col-span-1">
+                                <div className="rounded-md  bg-gray-200 p-4">
+                                    <img
+                                        src={props.university.logo}
+                                        className="mx-auto"
+                                    />
+                                </div>
                             </div>
-                        </div>
+                        )}
                         <div className="md:col-span-4">
                             <h2 className="lg:text-5xl md:text-3xl text-2xl font-semibold text-gray-900 mt-2 md:mt-0">
                                 {props.university.name}{" "}
@@ -170,7 +172,7 @@ export default function UniversityDetail(props) {
                         </div>
                     )}
                 </div>
-                {props.majors.data.length > 0 && (
+                {props.majors.length > 0 && (
                     <div className="py-12">
                         <div className="max-w-6xl mx-auto sm:px-6 lg:px-8">
                             <div className="bg-white overflow-hidden shadow-md sm:rounded-lg border border-gray-200">
@@ -178,29 +180,13 @@ export default function UniversityDetail(props) {
                                     <div className="p-6 text-gray-900">
                                         Daftar Program Studi
                                     </div>
-                                    <div className="flex">
-                                        {props.majors.last_page >= 2 && (
-                                            <div className="p-6 text-gray-900">
-                                                {props.majors.current_page} dari{" "}
-                                                {props.majors.last_page} halaman
-                                            </div>
-                                        )}
-                                        <button
-                                            type="button"
-                                            className="font-medium mx-6 text-green-600  hover:underline focus:border-0"
-                                            onClick={() => {
-                                                setModalMajor(true);
-                                                // Inertia.post(
-                                                //     route(
-                                                //         "university.createMajor",
-                                                //         props.university.codept
-                                                //     )
-                                                // );
-                                            }}
-                                        >
-                                            Tambah
-                                        </button>
-                                    </div>
+                                    <button
+                                        type="button"
+                                        className="font-medium mx-6 text-green-600  hover:underline focus:border-0"
+                                        onClick={() => setModalMajor(true)}
+                                    >
+                                        Tambah
+                                    </button>
                                 </div>
 
                                 <div className="relative mx-4 mb-4 overflow-x-auto sm:rounded-lg">
@@ -240,7 +226,7 @@ export default function UniversityDetail(props) {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {props.majors.data.map((data) => (
+                                            {props.majors.map((data) => (
                                                 <tr
                                                     key={data.code}
                                                     className="bg-white border-b hover:bg-gray-100 hover:underline hover:underline-offset-4 hover:cursor-pointer"
@@ -269,11 +255,12 @@ export default function UniversityDetail(props) {
                                                                   .length}
                                                     </td>
                                                     <td className="px-6 py-4 hover:text-blue-400 hover:underline hover:decoration-sky-500">
-                                                        <Link
+                                                        <a
                                                             href={data.website}
+                                                            target="_blank"
                                                         >
                                                             {data.website}
-                                                        </Link>
+                                                        </a>
                                                     </td>
                                                 </tr>
                                             ))}
@@ -281,38 +268,45 @@ export default function UniversityDetail(props) {
                                     </table>
                                 </div>
                             </div>
-                            {props.majors.last_page !== 1 && (
-                                <div className="flex justify-between mt-6 text-sm">
-                                    {props.majors.current_page !== 1 ? (
-                                        <Link
-                                            href={props.majors.prev_page_url}
-                                            className="py-2 px-4 rounded-md bg-white shadow-sm hover:underline"
-                                        >
-                                            {"< "} Sebelumnya
-                                        </Link>
-                                    ) : (
-                                        <div></div>
-                                    )}
-                                    x
-                                    {props.majors.current_page !==
-                                        props.majors.last_page && (
-                                        <Link
-                                            href={props.majors.next_page_url}
-                                            className="py-2 px-4 rounded-md bg-white shadow-sm hover:underline"
-                                        >
-                                            {"> "} Selanjutnya
-                                        </Link>
-                                    )}
-                                </div>
-                            )}
+                            {/* {props.majors.last_page !== 1 && (
+                                    <div className="flex justify-between mt-6 text-sm">
+                                        {props.majors.current_page !== 1 ? (
+                                            <Link
+                                                href={
+                                                    props.majors.prev_page_url
+                                                }
+                                                className="py-2 px-4 rounded-md bg-white shadow-sm hover:underline"
+                                            >
+                                                {"< "} Sebelumnya
+                                            </Link>
+                                        ) : (
+                                            <div></div>
+                                        )}
+                                        x
+                                        {props.majors.current_page !==
+                                            props.majors.last_page && (
+                                            <Link
+                                                href={
+                                                    props.majors.next_page_url
+                                                }
+                                                className="py-2 px-4 rounded-md bg-white shadow-sm hover:underline"
+                                            >
+                                                {"> "} Selanjutnya
+                                            </Link>
+                                        )}
+                                    </div>
+                                )} */}
                         </div>
                     </div>
                 )}
             </AuthenticatedLayout>
-            {props.majors.data.length === 0 && (
+            {props.majors.length === 0 && (
                 <div className="fixed bottom-0 items-center p-2 w-full text-white">
                     <div className="flex">
-                        <div className="bg-gray-500 mx-auto rounded-md p-2 cursor-pointer hover:bg-gray-600 transition ease-in-out duration-500" onClick={(e) => setModalMajor(true)}>
+                        <div
+                            className="bg-gray-500 mx-auto rounded-md p-2 cursor-pointer hover:bg-gray-600 transition ease-in-out duration-500"
+                            onClick={(e) => setModalMajor(true)}
+                        >
                             Tambah Jurusan
                         </div>
                     </div>
@@ -360,7 +354,8 @@ export default function UniversityDetail(props) {
 }
 
 const FormModalMajor = ({ university, closeModal, major }) => {
-    const { data, setData, post, patch, errors } = useForm(DataMajor);
+    const { data, setData, post, patch, errors, wasSuccessful } =
+        useForm(DataMajor);
     const accredity = ["A", "B", "C", "Tidak terakreditasi"];
 
     const level = ["D3", "D4", "S1", "S2", "S3"];
@@ -372,9 +367,9 @@ const FormModalMajor = ({ university, closeModal, major }) => {
             codept: university.codept,
         });
         if (Object.keys(major).length > 0) {
-            console.log("Update data");
+            // console.log("Update data");
             setData({
-                code: major.code,
+                code: Number(major.code),
                 name: major.name,
                 level: major.level,
                 accredity: major.accredity,
@@ -386,17 +381,19 @@ const FormModalMajor = ({ university, closeModal, major }) => {
                 },
             });
         }
-    }, []);
+        if (wasSuccessful) {
+            closeModal();
+        }
+    }, [wasSuccessful]);
 
     const addMajor = (e) => {
         e.preventDefault();
         // console.log(data);
         if (Object.keys(major).length > 0) {
-            patch(route("university.updateMajor", major.code));
+            post(route("university.updateMajor", major.id));
         } else {
             post(route("university.storeMajor"));
         }
-        closeModal();
     };
     return (
         // <form>
@@ -444,7 +441,7 @@ const FormModalMajor = ({ university, closeModal, major }) => {
                             type="number"
                             value={data.code}
                             handleChange={(e) =>
-                                setData("code", e.target.value)
+                                setData("code", Number(e.target.value))
                             }
                             autofocus
                             autoComplete="code"
@@ -571,12 +568,9 @@ const FormModalMajor = ({ university, closeModal, major }) => {
                     {Object.keys(major).length > 0 && (
                         <DangerButton
                             onClick={() => {
-                                setShowModal(false);
+                                closeModal();
                                 Inertia.delete(
-                                    route(
-                                        "university.destroy",
-                                        props.university.codept
-                                    )
+                                    route("university.destroyMajor", major.id)
                                 );
                             }}
                         >

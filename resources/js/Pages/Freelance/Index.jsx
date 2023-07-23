@@ -9,7 +9,13 @@ import { MdVerified } from "react-icons/md";
 import Rating from "react-rating";
 import Select from "react-select";
 
-export default function Company(props) {
+export default function Freelance(props) {
+    const listSkill = props.skills.map((item) => {
+        return {
+            value: item.id,
+            label: item.name,
+        };
+    });
     return (
         <>
             <Head title="workedin - freelance" />
@@ -33,7 +39,7 @@ export default function Company(props) {
                                 id="search"
                                 className="block w-full !rounded-full py-1 text-sm"
                                 value=""
-                                placeholder="Temukan pekerjaan ..."
+                                placeholder="Temukan mahasiswa ..."
                                 handleChange={(e) =>
                                     // Inertia.get(
                                     //     user && is_admin
@@ -59,12 +65,7 @@ export default function Company(props) {
                                 <Select
                                     isMulti
                                     id="skill"
-                                    options={props.skills.map((item) => {
-                                        return {
-                                            value: item.id,
-                                            label: item.name,
-                                        };
-                                    })}
+                                    options={listSkill}
                                     // defaultValue={
                                     //     data.user &&
                                     //     data.skills.map((e) => {
@@ -75,13 +76,23 @@ export default function Company(props) {
                                     //     })
                                     // }
                                     className="mt-2"
-                                    // onChange={(e) => {
-                                    //     const __list = [];
-                                    //     e.map(({ value }) =>
-                                    //         __list.push(value)
-                                    //     );
-                                    //     setData("skill", __list);
-                                    // }}
+                                    onChange={(e) => {
+                                        const __list = [];
+                                        e.map(({ value }) =>
+                                            __list.push(value)
+                                        );
+
+                                        Inertia.get(
+                                            route("freelance"),
+                                            {
+                                                skill: __list,
+                                            },
+                                            {
+                                                preserveState: true,
+                                                replace: true,
+                                            }
+                                        );
+                                    }}
                                 />
                             </div>
                             <div className="border-t py-2">
@@ -141,170 +152,170 @@ export default function Company(props) {
                                     Menampilkan {props.freelance.length} pekerja
                                 </div>
                             </div>
-                            {props.freelance.length > 0 && (
-                                <>
-                                    {props.freelance.map((freelance) => {
-                                        return (
-                                            <div className="flex-col px-8 py-6 hover:bg-gray-100 border-b">
-                                                <div className="sm:hidden block mb-4">
-                                                    <Link
-                                                        href={route(
-                                                            "detail.user",
-                                                            freelance.user_id
-                                                        )}
-                                                    >
-                                                        <img
-                                                            className="h-12 w-12 rounded-md object-cover"
-                                                            src={
-                                                                freelance.user
-                                                                    .profile_photo_url
-                                                            }
-                                                            alt={
-                                                                freelance.full_name
-                                                            }
-                                                        />
-                                                    </Link>
-                                                </div>
-                                                <div className="grid grid-cols-8 ">
-                                                    <div className="sm:col-span-1 sm:block hidden">
-                                                        <Link
-                                                            href={route(
-                                                                "detail.user",
-                                                                freelance.user_id
-                                                            )}
-                                                        >
-                                                            <img
-                                                                className="h-12 w-12 rounded-md object-cover"
-                                                                src={
-                                                                    freelance
-                                                                        .user
-                                                                        .profile_photo_url
-                                                                }
-                                                                alt={
+
+                            {props.freelance.map((freelance) => {
+                                return (
+                                    <div
+                                        key={freelance.id}
+                                        className="flex-col px-8 py-6 hover:bg-gray-100 border-b"
+                                    >
+                                        <div className="sm:hidden block mb-4">
+                                            <Link
+                                                href={route(
+                                                    "freelance.detail",
+                                                    freelance.id
+                                                )}
+                                            >
+                                                <img
+                                                    className="h-12 w-12 rounded-md object-cover"
+                                                    src={
+                                                        freelance.user
+                                                            .profile_photo_url
+                                                    }
+                                                    alt={freelance.full_name}
+                                                />
+                                            </Link>
+                                        </div>
+                                        <div className="grid grid-cols-8 ">
+                                            <div className="sm:col-span-1 sm:block hidden">
+                                                <Link
+                                                    href={route(
+                                                        "freelance.detail",
+                                                        freelance.id
+                                                    )}
+                                                >
+                                                    <img
+                                                        className="h-12 w-12 rounded-md object-cover"
+                                                        src={
+                                                            freelance.user
+                                                                .profile_photo_url
+                                                        }
+                                                        alt={
+                                                            freelance.full_name
+                                                        }
+                                                    />
+                                                </Link>
+                                            </div>
+                                            <div className="sm:col-span-7 col-span-8 flex-col">
+                                                <div className="flex justify-between">
+                                                    <div>
+                                                        <div className="flex space-x-2 font-bold items-center">
+                                                            <Link
+                                                                href={route(
+                                                                    "freelance.detail",
+                                                                    freelance.id
+                                                                )}
+                                                                className="hover:underline hover:underline-offset-4"
+                                                            >
+                                                                {
                                                                     freelance.full_name
                                                                 }
-                                                            />
-                                                        </Link>
-                                                    </div>
-                                                    <div className="sm:col-span-7 col-span-8 flex-col">
-                                                        <div className="flex justify-between">
-                                                            <div>
-                                                                <div className="flex space-x-2 font-bold items-center">
-                                                                    <Link
-                                                                        href={route(
-                                                                            "detail.user",
-                                                                            freelance.user_id
-                                                                        )}
-                                                                        className="hover:underline hover:underline-offset-4"
-                                                                    >
-                                                                        {
-                                                                            freelance.full_name
-                                                                        }
-                                                                    </Link>
+                                                            </Link>
 
-                                                                    <MdVerified color="#2C7E5B" />
+                                                            {freelance.user
+                                                                .is_verified ? (
+                                                                <MdVerified
+                                                                    size={24}
+                                                                    color="#2C7E5B"
+                                                                />
+                                                            ) : (
+                                                                <div className="text-sm text-gray-500 font-semibold">
+                                                                    - Belum
+                                                                    terverifikasi
                                                                 </div>
-                                                                <div className="text-sm text-gray-400 flex space-x-2 items-center">
-                                                                    <Link
-                                                                        href={route(
-                                                                            "detail.university",
-                                                                            freelance
-                                                                                .university
-                                                                                .codept
-                                                                        )}
-                                                                    >
-                                                                        {
-                                                                            freelance
-                                                                                .major
-                                                                                .name
-                                                                        }
-                                                                        ,{" "}
-                                                                        {
-                                                                            freelance
-                                                                                .university
-                                                                                .name
-                                                                        }
-                                                                    </Link>
-                                                                </div>
-                                                            </div>
-                                                            <div className="flex-col">
-                                                                <div className="flex justify-end pr-1 items-center space-x-1">
-                                                                    <AiFillStar
-                                                                        size={
-                                                                            18
-                                                                        }
-                                                                        className="text-yellow-400"
-                                                                    />
-                                                                    <div className="text-sm flex space-x-2 text-gray-500">
-                                                                        {
-                                                                            freelance.rating
-                                                                        }
-                                                                    </div>
-                                                                </div>
-                                                                <div className="text-sm flex justify-end space-x-2 text-gray-500">
-                                                                    {freelance
-                                                                        .reviews
-                                                                        .length >
-                                                                    0 ? (
-                                                                        <>
-                                                                            (
-                                                                            {
-                                                                                freelance
-                                                                                    .reviews
-                                                                                    .length
-                                                                            }{" "}
-                                                                            ulasan
-                                                                            )
-                                                                        </>
-                                                                    ) : (
-                                                                        "belum ada penilaian"
-                                                                    )}
-                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        <div className="text-sm text-gray-400 flex space-x-2 items-center">
+                                                            <Link
+                                                                href={route(
+                                                                    "detail.university",
+                                                                    freelance
+                                                                        .university
+                                                                        .codept
+                                                                )}
+                                                            >
+                                                                {
+                                                                    freelance
+                                                                        .major
+                                                                        .name
+                                                                }
+                                                                ,{" "}
+                                                                {
+                                                                    freelance
+                                                                        .university
+                                                                        .name
+                                                                }
+                                                            </Link>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex-col">
+                                                        <div className="flex justify-end pr-1 items-center space-x-1">
+                                                            <AiFillStar
+                                                                size={18}
+                                                                className="text-yellow-400"
+                                                            />
+                                                            <div className="text-sm flex space-x-2 text-gray-500">
+                                                                {
+                                                                    freelance.rating
+                                                                }
                                                             </div>
                                                         </div>
-                                                        {freelance.skills
-                                                            .length > 0 && (
-                                                            <div className="text-md space-x-2 my-2">
-                                                                {freelance.skills.map(
+                                                        <div className="text-sm flex justify-end space-x-2 text-gray-500">
+                                                            {freelance.reviews
+                                                                .length > 0 ? (
+                                                                <>
                                                                     (
-                                                                        skill,
-                                                                        index
-                                                                    ) => {
-                                                                        return (
-                                                                            <>
-                                                                                <Link
-                                                                                    href=""
-                                                                                    className="hover:underline hover:underline-offset-4"
-                                                                                    key={
-                                                                                        index
-                                                                                    }
-                                                                                >
-                                                                                    {
-                                                                                        skill.name
-                                                                                    }
-                                                                                </Link>
-                                                                                {index +
-                                                                                    1 !==
-                                                                                    freelance
-                                                                                        .skills
-                                                                                        .length &&
-                                                                                    ","}
-                                                                            </>
-                                                                        );
-                                                                    }
-                                                                )}
-                                                            </div>
-                                                        )}
-                                                        <div className="text-sm line-clamp-2">
-                                                            {freelance.bio}
+                                                                    {
+                                                                        freelance
+                                                                            .reviews
+                                                                            .length
+                                                                    }{" "}
+                                                                    ulasan )
+                                                                </>
+                                                            ) : (
+                                                                "belum ada penilaian"
+                                                            )}
                                                         </div>
                                                     </div>
                                                 </div>
+                                                {freelance.skills.length >
+                                                    0 && (
+                                                    <div className="text-md space-x-2 my-2">
+                                                        {freelance.skills.map(
+                                                            (skill, index) => {
+                                                                return (
+                                                                    <>
+                                                                        <Link
+                                                                            href=""
+                                                                            className="hover:underline hover:underline-offset-4"
+                                                                            key={
+                                                                                index
+                                                                            }
+                                                                        >
+                                                                            {
+                                                                                skill.name
+                                                                            }
+                                                                        </Link>
+                                                                        {index +
+                                                                            1 !==
+                                                                            freelance
+                                                                                .skills
+                                                                                .length &&
+                                                                            ","}
+                                                                    </>
+                                                                );
+                                                            }
+                                                        )}
+                                                    </div>
+                                                )}
+                                                <div className="text-sm line-clamp-2">
+                                                    {freelance.bio}
+                                                </div>
                                             </div>
-                                        );
-                                    })}
-                                </>
-                            )}
+                                        </div>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
                 </div>

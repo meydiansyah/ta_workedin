@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('name')->unique();
             $table->string('email');
             $table->string('logo', 2048)->nullable();
-            $table->string('fax');
+            $table->string('fax')->nullable();
             $table->string('phone');
 			$table->unsignedBigInteger('type_company_id')->index();
             // $table->unsignedBigInteger('pic_company_id')->index()->nullable()->unique();

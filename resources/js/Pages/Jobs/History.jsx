@@ -1,6 +1,8 @@
 import { ConfirmationModal } from "@/Components/ConfirmationModal";
+import DangerButton from "@/Components/DangerButton";
 import EmptyContent from "@/Components/Empty";
 import PrimaryButton from "@/Components/PrimaryButton";
+import SecondaryButton from "@/Components/SecondaryButton";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Inertia } from "@inertiajs/inertia";
 import { Head, Link, usePage } from "@inertiajs/inertia-react";
@@ -14,7 +16,9 @@ export default function HistoryApply(props) {
     const [showModal, setShowModal] = useState(false);
     const [showModalRejection, setShowModalRejection] = useState(false);
     const [showModalFinished, setShowModalFinished] = useState(false);
+    const [showModalCanceled, setShowModalCanceled] = useState(false);
     const [contentFinished, setContentFinished] = useState(null);
+    const [contentCanceled, setContentCanceled] = useState(null);
     const [ratingFinished, setRatingFinished] = useState(0);
 
     const [selected, setSelected] = useState(null);
@@ -29,6 +33,7 @@ export default function HistoryApply(props) {
             case "ongoing":
             case "deactive":
                 return "bg-orange-500 text-white";
+            case "canceled":
             case "rejected":
                 return "bg-red-500 text-white";
             default:
@@ -99,6 +104,8 @@ export default function HistoryApply(props) {
                                                 className="bg-white border-b hover:cursor-pointer hover:bg-gray-100 "
                                                 onClick={(e) => {
                                                     is_client &&
+                                                        data.statuses[0].id !==
+                                                            6 &&
                                                         Inertia.get(
                                                             route(
                                                                 "client.detail.resume",
@@ -109,6 +116,16 @@ export default function HistoryApply(props) {
                                                         is_freelance &&
                                                         data.statuses[0].id ===
                                                             7
+                                                    ) {
+                                                        setSelected(data);
+                                                        setShowModalFinished(
+                                                            true
+                                                        );
+                                                    }
+                                                    if (
+                                                        is_freelance &&
+                                                        data.statuses[0].id ===
+                                                            8
                                                     ) {
                                                         setSelected(data);
                                                         setShowModalRejection(
@@ -126,12 +143,11 @@ export default function HistoryApply(props) {
                                                     }
 
                                                     if (
-                                                        is_freelance &&
                                                         data.statuses[0].id ===
-                                                            6
+                                                        6
                                                     ) {
                                                         setSelected(data);
-                                                        setShowModalFinished(
+                                                        setShowModalCanceled(
                                                             true
                                                         );
                                                     }
@@ -208,21 +224,32 @@ export default function HistoryApply(props) {
                         setShow={setShowModal}
                         // border={false}
                         action={
-                            <button
-                                type="button"
-                                className="ml-3 inline-flex items-center px-4 py-2 bg-[#2C7E5B] border border-transparent rounded-md font-bold text-sm text-white tracking-widest hover:bg-opacity-90 focus:bg-green active:bg-green-900 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 transition ease-in-out duration-150"
-                                onClick={() => {
-                                    setShowModal(false);
-                                    Inertia.post(
-                                        route("update.resume", selected.id),
-                                        {
-                                            status: 4,
-                                        }
-                                    );
-                                }}
-                            >
-                                Lanjutkan
-                            </button>
+                            <div className="flex space-x-4">
+                                <SecondaryButton
+                                    className="border-0 text-red-500 shadow-transparent hover:bg-transparent hover:opacity-80"
+                                    onClick={() => {
+                                        setShowModal(false);
+                                        setShowModalCanceled(true);
+                                    }}
+                                >
+                                    Tolak
+                                </SecondaryButton>
+                                <button
+                                    type="button"
+                                    className="ml-3 inline-flex items-center px-4 py-2 bg-[#2C7E5B] border border-transparent rounded-md font-bold text-sm text-white tracking-widest hover:bg-opacity-90 focus:bg-green active:bg-green-900 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 transition ease-in-out duration-150"
+                                    onClick={() => {
+                                        setShowModal(false);
+                                        Inertia.post(
+                                            route("update.resume", selected.id),
+                                            {
+                                                status: 4,
+                                            }
+                                        );
+                                    }}
+                                >
+                                    Lanjutkan
+                                </button>
+                            </div>
                         }
                     >
                         <div className="flex-col space-y-4 my-2 mt-12">
@@ -250,7 +277,8 @@ export default function HistoryApply(props) {
                                             }
                                         </span>
 
-                                        {props.freelance.user.is_verified ? (
+                                        {selected.job.company.company_pic[0]
+                                            .user.is_verified ? (
                                             <MdVerified color="#2C7E5B" />
                                         ) : (
                                             <div className="text-sm text-gray-500 font-semibold">
@@ -275,7 +303,140 @@ export default function HistoryApply(props) {
                             </div>
                         </div>
                     </ConfirmationModal>
-                    {is_freelance && selected.statuses[0].id === 7 && (
+                    {selected.statuses[0].id === 6 ? (
+                        <ConfirmationModal
+                            title={
+                                <div className="inline-flex space-x-1">
+                                    <span>Kerja sama </span>
+                                    <span className="text-red-800 font-semibold">
+                                        dibatalkan.
+                                    </span>
+                                </div>
+                            }
+                            show={showModalCanceled}
+                            setShow={setShowModalCanceled}
+                            // border={false}
+                            cancelButton={false}
+                            action={
+                                <button
+                                    type="button"
+                                    className="inline-flex items-center px-4 py-2 border border-gray-500 rounded-md font-bold text-sm text-gray-700 tracking-widest hover:bg-opacity-90 focus:bg-green focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 transition ease-in-out duration-150"
+                                    onClick={() => {
+                                        setShowModalCanceled(false);
+                                    }}
+                                >
+                                    Tutup
+                                </button>
+                            }
+                        >
+                            <div className="flex-col space-y-4 my-2">
+                                <p className="text-md text-gray-600 font-bold">
+                                    Alasan penolakan
+                                </p>
+                                <div className="flex space-x-4 items-center">
+                                    <div className="text-sm text-gray-500 font-semibold">
+                                        {
+                                            selected.job.company.reviews.filter(
+                                                (e) =>
+                                                    selected.job_id === e.job_id
+                                            )[0].content
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </ConfirmationModal>
+                    ) : (
+                        <ConfirmationModal
+                            title="Konfirmasi pembatalan kerja sama."
+                            description="Apakah kamu yakin ingin membatalkan kerja sama ini ?"
+                            show={showModalCanceled}
+                            setShow={setShowModalCanceled}
+                            // border={false}
+
+                            action={
+                                <DangerButton
+                                    type="button"
+                                    onClick={() => {
+                                        setShowModal(false);
+                                        setShowModalCanceled(true);
+                                        Inertia.post(
+                                            route("update.resume", selected.id),
+                                            {
+                                                status: 6,
+                                                content: contentCanceled,
+                                                company_id:
+                                                    selected.job.company_id,
+                                                job_id: selected.job.id,
+                                            }
+                                        );
+                                    }}
+                                >
+                                    Kirim
+                                </DangerButton>
+                            }
+                        >
+                            <div className="flex-col space-y-4 my-2 mt-12">
+                                <p className="text-md text-gray-600 font-bold">
+                                    Informasi penanggung jawab
+                                </p>
+                                <div className="flex space-x-4 items-center">
+                                    <img
+                                        className="h-16 w-16 rounded-full object-cover"
+                                        src={
+                                            selected.job.company.company_pic[0]
+                                                .user.profile_photo_url
+                                        }
+                                        alt={
+                                            selected.job.company.company_pic[0]
+                                                .full_name
+                                        }
+                                    />
+                                    <div className="flex-col space-y-4">
+                                        <div className="flex space-x-2 text-xl font-bold items-center">
+                                            <span>
+                                                {
+                                                    selected.job.company
+                                                        .company_pic[0].user
+                                                        .name
+                                                }
+                                            </span>
+
+                                            {selected.job.company.company_pic[0]
+                                                .user.is_verified ? (
+                                                <MdVerified color="#2C7E5B" />
+                                            ) : (
+                                                <div className="text-sm text-gray-500 font-semibold">
+                                                    - Belum terverifikasi
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="text-sm font-semibold text-gray-500 flex space-x-2 items-center">
+                                            <span>
+                                                {
+                                                    selected.job.company
+                                                        .type_company.code
+                                                }
+                                                ,{" "}
+                                                {
+                                                    selected.job.company
+                                                        .type_company.name
+                                                }
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <textarea
+                                    id="content"
+                                    className="block w-full mt-1 border-gray-300 focus:border-[#2C7E5B] focus:ring-[#2C7E5B] rounded-md shadow-sm"
+                                    onChange={(e) =>
+                                        setContentCanceled(e.target.value)
+                                    }
+                                />
+                            </div>
+                        </ConfirmationModal>
+                    )}
+
+                    {is_freelance && selected.statuses[0].id === 8 && (
                         <ConfirmationModal
                             title={
                                 <div className="inline-flex space-x-1">
@@ -307,46 +468,37 @@ export default function HistoryApply(props) {
                                 </p>
                                 <div className="flex space-x-4 items-center">
                                     <div className="text-sm text-gray-500 font-semibold">
-                                        {selected.freelance.reviews[0].content}
+                                        {
+                                            selected.freelance.reviews.filter(
+                                                (e) =>
+                                                    e.job_id === selected.job_id
+                                            )[0].content
+                                        }
                                     </div>
                                 </div>
                             </div>
                         </ConfirmationModal>
                     )}
 
-                    {is_freelance && selected.statuses[0].id === 6 && (
-                        <ConfirmationModal
-                            title="Penilaian pekerjaan."
-                            description="Tanggapi pekerjaan yang sudah diselesaikan akan mempengaruhi penilaian terhadap perusahaan yang bersangkutan."
-                            show={showModalFinished}
-                            setShow={setShowModalFinished}
-                            border={false}
-                            action={
-                                <PrimaryButton
-                                    processing={
-                                        contentFinished && ratingFinished === 0
-                                    }
-                                    type="button"
-                                    className="ml-3"
-                                    onClick={() => {
-                                        setShowModalFinished(false);
-                                        Inertia.post(
-                                            route("update.resume", selected.id),
-                                            {
-                                                status: 6,
-                                                rating: ratingFinished,
-                                                content: contentFinished,
-                                                company_id:
-                                                    selected.job.company_id,
-                                            }
-                                        );
-                                    }}
+                    {is_freelance && selected.statuses[0].id === 7 && (
+                        <>
+                            {selected.job.company.reviews.find((element) => {
+                                return element.job_id === selected.job_id;
+                            }) ? (
+                                <ConfirmationModal
+                                    title="Penilaian pekerjaan berhasil dikirim."
+                                    description={selected.job.company.reviews
+                                        .filter((e) => {
+                                            return e.job_id === selected.job_id;
+                                        })
+                                        .map((data) => {
+                                            return data.content;
+                                        })}
+                                    show={showModalFinished}
+                                    setShow={setShowModalFinished}
+                                    border={false}
                                 >
-                                    Selesai
-                                </PrimaryButton>
-                            }
-                        >
-                            <div className="flex-col space-y-4 my-2 mt-12">
+                                    {/* <div className="flex-col space-y-4 my-2 mt-12">
                                 <p className="text-md text-gray-600 font-bold">
                                     Berikan penilaian
                                 </p>
@@ -373,8 +525,83 @@ export default function HistoryApply(props) {
                                         }
                                     />
                                 </div>
-                            </div>
-                        </ConfirmationModal>
+                            </div> */}
+                                </ConfirmationModal>
+                            ) : (
+                                <ConfirmationModal
+                                    title="Penilaian pekerjaan."
+                                    description="Tanggapi pekerjaan yang sudah diselesaikan akan mempengaruhi penilaian terhadap perusahaan yang bersangkutan."
+                                    show={showModalFinished}
+                                    setShow={setShowModalFinished}
+                                    border={false}
+                                    action={
+                                        <PrimaryButton
+                                            processing={
+                                                contentFinished &&
+                                                ratingFinished === 0
+                                            }
+                                            type="button"
+                                            className="ml-3"
+                                            onClick={() => {
+                                                setShowModalFinished(false);
+                                                Inertia.post(
+                                                    route(
+                                                        "update.resume",
+                                                        selected.id
+                                                    ),
+                                                    {
+                                                        status: 7,
+                                                        rating: ratingFinished,
+                                                        content:
+                                                            contentFinished,
+                                                        company_id:
+                                                            selected.job
+                                                                .company_id,
+                                                        job_id: selected.id,
+                                                    }
+                                                );
+                                                setRatingFinished(0);
+                                            }}
+                                        >
+                                            Selesai
+                                        </PrimaryButton>
+                                    }
+                                >
+                                    <div className="flex-col space-y-4 my-2 mt-12">
+                                        <p className="text-md text-gray-600 font-bold">
+                                            Berikan penilaian
+                                        </p>
+                                        <div className="flex-col space-y-4">
+                                            <div className="flex justify-center">
+                                                <Rating
+                                                    initialRating={
+                                                        ratingFinished
+                                                    }
+                                                    onChange={(rate) =>
+                                                        setRatingFinished(rate)
+                                                    }
+                                                    emptySymbol={
+                                                        <AiOutlineStar className="text-gray-400 text-4xl" />
+                                                    }
+                                                    fullSymbol={
+                                                        <AiFillStar className="text-yellow-400 text-4xl" />
+                                                    }
+                                                />
+                                            </div>
+                                            <textarea
+                                                id="content"
+                                                className="block w-full mt-1 border-gray-300 focus:border-[#2C7E5B] focus:ring-[#2C7E5B] rounded-md shadow-sm"
+                                                onChange={(e) =>
+                                                    setContentFinished(
+                                                        e.target.value
+                                                    )
+                                                }
+                                            />
+                                        </div>
+                                    </div>
+                                </ConfirmationModal>
+                            )}
+                        </>
                     )}
                 </>
             )}

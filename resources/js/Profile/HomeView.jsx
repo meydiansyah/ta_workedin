@@ -59,6 +59,10 @@ export default function HomeView({ data, updateStatus }) {
         return info === false;
     }
 
+    // useEffect(() => {
+    //     console.log(is_verified);
+    // });
+
     return (
         <div className="flex-col space-y-4">
             <div className=" bg-white rounded-lg p-6">
@@ -99,7 +103,7 @@ export default function HomeView({ data, updateStatus }) {
                                             : data.role.name}
                                     </span>
                                 </div>
-                                {data.university && (
+                                {data.university && data.major && (
                                     <div className="text-sm text-gray-500 flex space-x-2 items-center">
                                         <MdSchool />
                                         <span>

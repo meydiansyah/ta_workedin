@@ -6,6 +6,7 @@ use App\Http\Controllers\JobController;
 use App\Http\Controllers\PicController;
 use App\Http\Controllers\ResumeController;
 use App\Http\Controllers\SkillController;
+use App\Http\Controllers\StudentController;
 use App\Http\Controllers\UniversityController;
 use App\Http\Controllers\UsersController;
 use App\Models\User;
@@ -40,12 +41,20 @@ Route::middleware(['auth', 'checkRole:Admin'])->prefix('admin')->group(function 
 	Route::get('/university/{university}/edit', [UniversityController::class, 'edit'])->name('university.edit');
 	Route::post('/{university}/university', [UniversityController::class, 'update'])->name('university.update');
 	Route::post('/{major}/major', [UniversityController::class, 'updateMajor'])->name('university.updateMajor');
+	Route::delete('/{major}/major', [UniversityController::class, 'destroyMajor'])->name('university.destroyMajor');
 	Route::delete('/{university}/university', [UniversityController::class, 'destroy'])->name('university.destroy');
 
 	Route::get('/skills', [SkillController::class, 'index'])->name('admin.skills');
 	Route::post('/skills', [SkillController::class, 'store'])->name('skill.store');
 	Route::patch('/{skill}/skills', [SkillController::class, 'update'])->name('skill.update');
 	Route::delete('/{skill}/skills', [SkillController::class, 'destroy'])->name('skill.destroy');
+	
+	Route::get('/students', [StudentController::class, 'index'])->name('admin.students');
+	Route::post('/students', [StudentController::class, 'store'])->name('student.store');
+	Route::patch('/{student}/students', [StudentController::class, 'update'])->name('student.update');
+	Route::delete('/{student}/students', [StudentController::class, 'destroy'])->name('student.destroy');
+
+	// Route::resource('/student', StudentController::class);
 
 	// Route::resource('client', PicController::class);
 	Route::prefix('client')->group(function() {

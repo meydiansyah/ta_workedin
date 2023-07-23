@@ -1,7 +1,22 @@
+import { ConfirmationModal } from "@/Components/ConfirmationModal";
+import DangerButton from "@/Components/DangerButton";
 import Navbar from "@/Components/Navbar";
-import { Link, Head } from "@inertiajs/inertia-react";
+import { Link, Head, usePage } from "@inertiajs/inertia-react";
+import { useEffect } from "react";
+import { useState } from "react";
+import { MdOutlineMarkEmailRead, MdVerified } from "react-icons/md";
 
 export default function Welcome(props) {
+    const { user, dataUser } = usePage().props.auth;
+    const [showModal, setShowModal] = useState(false);
+    const { is_admin, is_freelance } = usePage().props;
+
+    useEffect(() => {
+        if (props.status) {
+            setShowModal(true);
+        }
+    }, [props.status]);
+
     return (
         <>
             <Head title="workedin" />
@@ -37,6 +52,92 @@ export default function Welcome(props) {
                     </div>
                 </section>
             </div>
+
+            {user && !is_admin && (
+                <ConfirmationModal
+                    title={
+                        <div className="flex justify-between items-center">
+                            <div className="font-bold">
+                                Konfirmasi verifikasi
+                            </div>
+                            <MdOutlineMarkEmailRead size={26} color="#2C7E5B" />
+                        </div>
+                    }
+                    description={
+                        <div>
+                            <span>Yeayy !!! Selamat email anda sudah</span>{" "}
+                            <span className="font-bold text-green-700 underline underline-offset-4 decoration-green-700">
+                                terverifikasi
+                            </span>
+                            .{" "}
+                            <span>
+                                Nikmati fitur - fitur workedin dengan nyaman.
+                            </span>
+                        </div>
+                    }
+                    show={showModal}
+                    setShow={setShowModal}
+                    action={
+                        !dataUser && (
+                            <Link
+                                className="inline-flex items-center px-4 py-2 font-bold text-sm text-green-700 hover:text-opacity-60 focus:bg-green focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 transition ease-in-out duration-150"
+                                href={route("profile.edit")}
+                            >
+                                Lengkapi profile
+                            </Link>
+                        )
+                    }
+                >
+                    <div className="flex-col space-y-4 my-2 mt-12">
+                        <p className="text-md text-gray-600 font-bold">
+                            Informasi pengguna
+                        </p>
+                        <div className="flex space-x-4 items-center">
+                            <img
+                                className="h-16 w-16 rounded-full object-cover"
+                                src={user.profile_photo_url}
+                                alt={user.name}
+                            />
+                            <div className="flex-col space-y-2">
+                                <div className="flex space-x-2 text-xl font-bold items-center">
+                                    <span>{user.name}</span>
+
+                                    {user.is_verified ? (
+                                        <MdVerified color="#2C7E5B" />
+                                    ) : (
+                                        <div className="text-sm text-gray-500 font-semibold">
+                                            - Belum terverifikasi
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="text-sm font-semibold text-gray-500 flex space-x-2 items-center">
+                                    {dataUser ? (
+                                        is_freelance ? (
+                                            <span>
+                                                {dataUser.major
+                                                    ? dataUser.major.name
+                                                    : ""}
+                                                ,{" "}
+                                                {dataUser.university
+                                                    ? dataUser.university.name
+                                                    : ""}
+                                            </span>
+                                        ) : (
+                                            <span>
+                                                {dataUser.title ?? ""},{" "}
+                                                {dataUser.company.name ?? ""}
+                                            </span>
+                                        )
+                                    ) : (
+                                        "Belum terdaftar di unversitas"
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ConfirmationModal>
+            )}
         </>
     );
 }

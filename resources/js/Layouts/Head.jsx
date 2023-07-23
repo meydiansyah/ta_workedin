@@ -1,4 +1,9 @@
-export default function HeadComponent({ title, description }) {
+export default function HeadComponent({
+    title,
+    subTitle = true,
+    description,
+    children,
+}) {
     return (
         <section>
             <div className="w-full px-3 mt-20 py-16 antialiased bg-white lg:px-6 flex items-center justify-center ">
@@ -10,11 +15,14 @@ export default function HeadComponent({ title, description }) {
                                     {title}
                                 </span>
                             </div>
-                            <span className="inline-block relative">
-                                Portal Kerja Lepas Mahasiswa
-                            </span>
+                            {subTitle && (
+                                <span className="inline-block relative">
+                                    Portal Kerja Lepas Mahasiswa
+                                </span>
+                            )}
                         </h1>
                         <div className="max-w-lg mx-auto mt-6 text-sm text-center text-black md:mt-12 sm:text-base md:max-w-xl md:text-lg xl:text-xl">
+                            {children}
                             <span className="block">{description}</span>{" "}
                             <span className="font-extrabold">Worked</span>{" "}
                             <span className="font-extrabold text-[#3C7E5B]">

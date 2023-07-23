@@ -12,7 +12,7 @@ export const DataFreelancer = {
     nik: String,
     nim: String,
     skill: [],
-    major_code: String,
+    major_id: Number,
     pt_code: String,
     full_address: String,
     village_id: String,

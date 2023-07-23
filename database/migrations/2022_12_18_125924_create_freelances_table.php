@@ -24,7 +24,7 @@ return new class extends Migration
 			$table->text('bio')->nullable();
 			$table->string('nik')->unique()->nullable();
 			$table->string('nim')->unique()->nullable();
-			$table->string('major_code')->nullable();
+			$table->unsignedBigInteger('major_id')->index()->nullable();
 			$table->string('pt_code')->nullable();
 			$table->float('rating')->default(0);
 			$table->string('full_address')->nullable();
@@ -71,8 +71,8 @@ return new class extends Migration
 				->onUpdate('cascade')
 				->onDelete('cascade');
 
-			$table->foreign('major_code')
-				->references('code')
+			$table->foreign('major_id')
+				->references('id')
 				->on('majors')
 				->onUpdate('cascade')
 				->onDelete('cascade');

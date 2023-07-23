@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->index()->unique();
 
             $table->string('first_name');
-            $table->string('last_name');
+            $table->string('last_name')->nullable();
 			$table->string('phone')->unique();
             $table->string('email')->unique();
             $table->unsignedBigInteger('company_id')->index()->nullable()->unique();

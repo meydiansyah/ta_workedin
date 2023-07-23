@@ -14,7 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('majors', function (Blueprint $table) {
-			$table->string('code', 10)->primary();
+            $table->bigIncrements('id');
+			$table->string('code');
             $table->string('name');
 			$table->string('level');
 			$table->string('accredity');
