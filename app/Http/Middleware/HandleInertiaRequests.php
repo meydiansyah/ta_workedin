@@ -65,7 +65,8 @@ class HandleInertiaRequests extends Middleware
 
 					if($request->role_id === 3) {
 							$freelance = Freelance::with(['skills', 'university', 'major'])->where('user_id', '=', $request->id)->get()->first();
-							$process = new Process(['python3', app_path().'/PythonScript/Validate.py', $freelance->full_name]);
+							if(isset($freelance->full_name)) {
+															$process = new Process(['python3', app_path().'/PythonScript/Validate.py', $freelance->full_name]);
 							$process->run();
 
 							if ($process->isSuccessful()) {
@@ -95,6 +96,7 @@ class HandleInertiaRequests extends Middleware
 								$user->update([
 									'is_verified' => false,
 								]);
+							}
 							}
 
 							return $user->is_verified;
